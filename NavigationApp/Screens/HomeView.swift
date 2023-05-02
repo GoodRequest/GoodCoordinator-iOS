@@ -15,14 +15,14 @@ struct HomeModel: Hashable {
 
 struct HomeView: View {
 
-    @EnvironmentObject<CurrentContext<AvailableContexts>> var appContext
+    // @EnvironmentObject<CurrentContext<AvailableContexts>> var appContext
 
     var body: some View {
         VStack {
             Text("Home screen")
 
             Button(action: {
-                appContext.switch(to: .login)
+                // appContext.switch(to: .login)
             }, label: {
                 Text("Go to login")
             })

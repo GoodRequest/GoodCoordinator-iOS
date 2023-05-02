@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 protocol NavigationError: Error {
 
     var description: String { get }
@@ -54,15 +55,22 @@ enum AvailableContexts: Context, CaseIterable {
     }
 
 }
+ */
 
 @main struct NavigationApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    @StateObject private var navigationObject = NavigationObject()
+    // @StateObject private var navigationObject = NavigationObject()
 
     var body: some Scene {
-        AppContext(allAvailable: AvailableContexts.allCases)
+        // AppContext(allAvailable: AvailableContexts.allCases)
+
+        AppRouter {
+            NavigationRouter {
+                LoginView(model: LoginModel())
+            }
+        }
     }
 
     /*

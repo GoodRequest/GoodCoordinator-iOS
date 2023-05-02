@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 protocol Context: Identifiable {
 
     associatedtype ContentType: View
@@ -55,27 +55,186 @@ struct AppContext<ContextType: Context>: Scene {
     }
 
 }
+*/
 
-struct Path {
+protocol Route: Equatable {
 
-}
-
-final class AppRouter: ObservableObject {
-
-    @Published private var currentRoute: String = ""
-
-    var path: [Path] = []
+    var id: UUID { get }
 
 }
 
-struct AppRouterScene: Scene {
+extension Route {
 
-    @StateObject private var appRouter = AppRouter()
+    func eraseToAnyRoute() -> AnyRoute {
+        AnyRoute(self)
+    }
+
+}
+
+extension Route where Self: Equatable {
+
+    func equals<R>(other: R) -> Bool where R: Route {
+        return id == other.id
+    }
+
+}
+
+struct AnyRoute: Route {
+
+    private let route: any Route
+
+    init(_ other: any Route) {
+        self.route = other
+    }
+
+    var id: UUID {
+        route.id
+    }
+
+}
+
+extension AnyRoute: Equatable {
+
+    static func == (lhs: AnyRoute, rhs: AnyRoute) -> Bool {
+        lhs.equals(other: rhs)
+    }
+
+}
+
+struct Root: Route {
+
+    let id: UUID = UUID()
+
+}
+
+struct Push: Route {
+
+    let id: UUID = UUID()
+
+}
+
+protocol Routeable {
+
+    associatedtype Model: Hashable
+
+}
+
+protocol Screen: View, Routeable {
+
+    init(model: Model)
+    func ok()
+
+}
+
+extension Screen where Self: View {
+
+    func ok() {
+
+    }
+
+}
+
+protocol Router: View {
+
+}
+
+struct NavigationRouter<S>: Router where S: Screen {
+
+    @Environment(\.routingTree) var routingTree
+    @Environment(\.currentRoute) var currentRoute
+
+    private var path: NavigationPath { makePath() }
+    private var content: S
+
+    var body: some View {
+        NavigationStack(
+            root: { content }
+        )
+    }
+
+    init(content: () -> S) {
+        self.content = content()
+    }
+
+    private func makePath() -> NavigationPath {
+
+        thisRoute.children.reduce(NavigationPath(), { path, element in
+            path.append(0)
+
+            return
+        })
+
+        return thisRoute.children.reduce(NavigationPath(), { accumulator, element in
+            guard let onlyChild = element.children.first, element.children.count == 1 else {
+                fatalError("Navigation hierarchy corrupted")
+            }
+
+            accumulator.append(onlyChild.value)
+        })
+    }
+
+}
+
+struct TabRouter: Router {
+
+    var body: some View {
+        EmptyView()
+    }
+
+}
+
+struct SimpleRouter<S>: Router where S: Screen {
+
+    private let content: S
+
+    var body: some View {
+        content
+    }
+
+    init(content: () -> S) {
+        self.content = content()
+    }
+
+}
+
+struct AppRouter<R>: Scene where R: Router {
+
+    private let content: R
 
     var body: some Scene {
         WindowGroup {
-            Text("Sample router")
+            content.environment(\.routingTree, RoutingTree.defaultValue)
         }
+    }
+
+    init(content: () -> R) {
+        self.content = content()
+    }
+
+}
+
+struct RoutingTree: EnvironmentKey {
+
+    static var defaultValue: Node<AnyRoute> { Node(Root().eraseToAnyRoute()) }
+    
+}
+
+struct CurrentRoute: EnvironmentKey {
+
+    static var defaultValue: AnyRoute { Root().eraseToAnyRoute() }
+
+}
+
+extension EnvironmentValues {
+
+    var routingTree: Tree<AnyRoute> {
+        get { self[RoutingTree.self] }
+        set { self[RoutingTree.self] = newValue }
+    }
+
+    var currentRoute: AnyRoute {
+        get { self[CurrentRoute.self] }
+        set { self[CurrentRoute.self] = newValue }
     }
 
 }

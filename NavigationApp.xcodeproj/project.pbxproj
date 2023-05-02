@@ -14,6 +14,7 @@
 		0995792D29FA719D00029662 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995792C29FA719D00029662 /* LoginView.swift */; };
 		0995792F29FA733300029662 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995792E29FA733300029662 /* RegistrationView.swift */; };
 		09B3A03029FAB261007BF934 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B3A02F29FAB261007BF934 /* Context.swift */; };
+		09BD8DA92A012A000066BF6D /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BD8DA82A012A000066BF6D /* Tree.swift */; };
 		09F4C0B929FA7FC200081AC4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4C0B829FA7FC200081AC4 /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		0995792C29FA719D00029662 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		0995792E29FA733300029662 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		09B3A02F29FAB261007BF934 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		09BD8DA82A012A000066BF6D /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		09F4C0B829FA7FC200081AC4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				09B3A02F29FAB261007BF934 /* Context.swift */,
+				09BD8DA82A012A000066BF6D /* Tree.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09BD8DA92A012A000066BF6D /* Tree.swift in Sources */,
 				0995792D29FA719D00029662 /* LoginView.swift in Sources */,
 				0995792B29FA70DF00029662 /* AppDelegate.swift in Sources */,
 				0995791A29FA702900029662 /* NavigationApp.swift in Sources */,

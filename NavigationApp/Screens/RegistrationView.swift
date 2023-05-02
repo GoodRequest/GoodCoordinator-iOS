@@ -16,7 +16,7 @@ struct RegistrationModel: Hashable {
 struct RegistrationView: View {
 
     @State private var agrees: Bool = false
-    @EnvironmentObject<NavigationObject> var navigation
+    // @EnvironmentObject<NavigationObject> var navigation
 
     var model: RegistrationModel
 
@@ -32,14 +32,14 @@ struct RegistrationView: View {
             Button(action: {
                 print("Registering...")
 
-                navigation.set(NavigationPath([HomeModel()]))
+                // navigation.set(NavigationPath([HomeModel()]))
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
             Button(action: {
                 print("Going back")
 
-                navigation.pop()
+                // navigation.pop()
             }, label: {
                 Text("Cancel")
             })
