@@ -18,6 +18,22 @@ final class Node<Value> {
         1 + children.reduce(0) { $0 + $1.count }
     }
 
+    var hasSingleChild: Bool {
+        children.count <= 1
+    }
+
+    var firstChild: Node? {
+        return children.first
+    }
+
+    var lastLeaf: Node {
+        var lastLeaf = self
+        while let nextLeaf = firstChild {
+            lastLeaf = nextLeaf
+        }
+        return lastLeaf
+    }
+
     init(_ value: Value) {
         self.value = value
         children = []

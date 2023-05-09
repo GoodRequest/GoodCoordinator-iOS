@@ -23,6 +23,9 @@ final class LoginModel: ObservableObject, Hashable {
 
 struct LoginView: Screen {
 
+    typealias Content = Self
+    typealias Data = LoginModel
+
     @State private var username: String = ""
     @State private var password: String = ""
 
@@ -31,11 +34,13 @@ struct LoginView: Screen {
 
     init(model: LoginModel) {
         self.viewModel = model
-
-        self.ok()
     }
 
-    // @EnvironmentObject<NavigationController> var navigation
+    var id: String {
+        "loginView"
+    }
+
+    @Environment(\.routingTree) var routingTree
 
     var body: some View {
         return VStack {
@@ -52,7 +57,7 @@ struct LoginView: Screen {
             )
 
             Button(action: {
-                // navigation.pop()
+                routingTree.lastLeaf.add(child: Node(Push(screen: RegistrationView(model: RegistrationModel(name: username)))))
             }, label: {
                 Text("Go to home")
             })

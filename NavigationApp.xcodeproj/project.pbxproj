@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09906A7F2A0A59F000F27FB4 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A7E2A0A59F000F27FB4 /* Route.swift */; };
+		09906A812A0A5A0500F27FB4 /* Routeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A802A0A5A0400F27FB4 /* Routeable.swift */; };
+		09906A832A0A5A4500F27FB4 /* NavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */; };
 		0995791A29FA702900029662 /* NavigationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995791929FA702900029662 /* NavigationApp.swift */; };
 		0995792029FA702A00029662 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0995791F29FA702A00029662 /* Assets.xcassets */; };
 		0995792329FA702A00029662 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0995792229FA702A00029662 /* Preview Assets.xcassets */; };
@@ -19,6 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09906A7E2A0A59F000F27FB4 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		09906A802A0A5A0400F27FB4 /* Routeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routeable.swift; sourceTree = "<group>"; };
+		09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouter.swift; sourceTree = "<group>"; };
 		0995791629FA702900029662 /* NavigationApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavigationApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0995791929FA702900029662 /* NavigationApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationApp.swift; sourceTree = "<group>"; };
 		0995791F29FA702A00029662 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -86,6 +92,9 @@
 			children = (
 				09B3A02F29FAB261007BF934 /* Context.swift */,
 				09BD8DA82A012A000066BF6D /* Tree.swift */,
+				09906A7E2A0A59F000F27FB4 /* Route.swift */,
+				09906A802A0A5A0400F27FB4 /* Routeable.swift */,
+				09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -175,7 +184,10 @@
 				0995792B29FA70DF00029662 /* AppDelegate.swift in Sources */,
 				0995791A29FA702900029662 /* NavigationApp.swift in Sources */,
 				09B3A03029FAB261007BF934 /* Context.swift in Sources */,
+				09906A812A0A5A0500F27FB4 /* Routeable.swift in Sources */,
+				09906A7F2A0A59F000F27FB4 /* Route.swift in Sources */,
 				09F4C0B929FA7FC200081AC4 /* HomeView.swift in Sources */,
+				09906A832A0A5A4500F27FB4 /* NavigationRouter.swift in Sources */,
 				0995792F29FA733300029662 /* RegistrationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

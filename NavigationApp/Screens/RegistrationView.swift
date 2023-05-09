@@ -13,10 +13,16 @@ struct RegistrationModel: Hashable {
 
 }
 
-struct RegistrationView: View {
+struct RegistrationView: Screen {
+
+    typealias Content = Self
+    typealias Data = RegistrationModel
+
+    var id: String {
+        "registrationView"
+    }
 
     @State private var agrees: Bool = false
-    // @EnvironmentObject<NavigationObject> var navigation
 
     var model: RegistrationModel
 

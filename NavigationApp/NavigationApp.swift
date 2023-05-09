@@ -66,6 +66,20 @@ enum AvailableContexts: Context, CaseIterable {
     var body: some Scene {
         // AppContext(allAvailable: AvailableContexts.allCases)
 
+//        WindowGroup {
+//            NavigationStack {
+//                List {
+//                    NavigationLink(value: "A", label: { Text("A") })
+//                    NavigationLink(value: "B", label: { Text("B") })
+//                    NavigationLink(value: "C", label: { Text("C") })
+//                }
+//                .navigationTitle("asdf!")
+//                .navigationBarTitleDisplayMode(.inline)
+//                .navigationDestination(for: String.self, destination: {
+//                    Text($0)
+//                })
+//            }
+//        }
         AppRouter {
             NavigationRouter {
                 LoginView(model: LoginModel())
