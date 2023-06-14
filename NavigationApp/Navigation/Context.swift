@@ -8,69 +8,11 @@
 import SwiftUI
 import Combine
 
-//import Stinsen
-//
-//final class AppCoordinator: NavigationCoordinatable {
-//
-//    var stack: Stinsen.NavigationStack<AppCoordinator> = .init(initial: \Self.start)
-//
-//    @Root var start = makeStart
-//    @Root var goToHome = makeHome
-//
-//    @ViewBuilder func makeStart() -> some View {
-//        LoginView(model: LoginModel())
-//    }
-//
-//    @ViewBuilder func makeHome() -> some View {
-//        HomeView()
-//    }
-//
-//}
-//
-//struct AppRouter<R>: Scene where R: Router {
-//
-//    private let rootRouters: [R]
-//
-//    var body: some Scene {
-//        WindowGroup {
-//            AppCoordinator().view()
-//        }
-//    }
-//
-//    init(@ArrayBuilder<R> rootRouters: () -> [R]) {
-//        self.rootRouters = rootRouters()
-//    }
-//
-//}
+/// A Coordinator usually represents some kind of flow in the app. You do not need to implement this directly if you're not toying with other types of navigation e.g. a hamburger menu, but rather you would implement TabCoordinatable, NavigationCoordinatable or ViewCoordinatable.
 
 
-
-/// A Coordinatable usually represents some kind of flow in the app. You do not need to implement this directly if you're not toying with other types of navigation e.g. a hamburger menu, but rather you would implement TabCoordinatable, NavigationCoordinatable or ViewCoordinatable.
-protocol Coordinatable: ObservableObject, StringIdentifiable, Identifiable, Screen, ChildDismissable {
-    var parent: ChildDismissable? { get set }
-}
-
-extension Coordinatable {
-
-    var id: String {
-        return ObjectIdentifier(self).debugDescription // TODO: betterify
-    }
-
-}
-
-protocol ChildDismissable: AnyObject {
-    func dismissChild<T: Coordinatable>(coordinator: T, action: (() -> Void)?)
-}
-
-protocol StringIdentifiable: Identifiable<String> {
-
-    var id: String { get }
-
-}
 
 // ----------------
-
-
 
 protocol NavigationOutputable {
 
@@ -78,7 +20,7 @@ protocol NavigationOutputable {
 
 }
 
-struct GRTransition<T: Coordinatable, U: RouteType, Input, Output: Screen>: NavigationOutputable {
+struct GRTransition<T: Coordinator, U: RouteType, Input, Output: Screen>: NavigationOutputable {
 
     let type: U
     let closure: ((T) -> ((Input) -> Output))
@@ -92,10 +34,6 @@ struct GRTransition<T: Coordinatable, U: RouteType, Input, Output: Screen>: Navi
     }
 
 }
-
-// ----------------
-
-
 
 // ----------------
 
@@ -116,10 +54,10 @@ public class NavigationRoot: ObservableObject {
 }
 
 /// Represents a stack of routes
-class NavigationStack<T: Coordinator> {
+class NavigationStack<T: NavigationCoordinator> {
     var dismissalAction: [Int: () -> Void] = [:]
 
-    weak var parent: ChildDismissable?
+    weak var parent: (any Coordinator)?
     var poppedTo = PassthroughSubject<Int, Never>()
     let initial: PartialKeyPath<T>
     let initialInput: Any?
@@ -157,7 +95,7 @@ extension NavigationStack {
 
 struct NavigationStackItem {
     // let presentationType: PresentationType
-    let presentable: any Screen
     let keyPath: Int
     let input: Any?
+    let presentable: any Screen // child?
 }

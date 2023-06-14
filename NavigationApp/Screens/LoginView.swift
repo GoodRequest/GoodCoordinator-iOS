@@ -52,17 +52,18 @@ struct LoginView: Screen {
 
             Spacer().frame(height: 40)
 
-            NavigationLink(
-                value: RegistrationModel(name: username),
-                label: { Text("Login") }
-            )
+            Button(action: {
+
+            }, label: {
+                Text("Present registration")
+            })
 
             Button(action: {
 //                routingTree.lastLeaf.add(child: Node(Push(screen: RegistrationView(model: RegistrationModel(name: username)))))
 //                router.root(\.goToHome)
                 router.route(to: \AppCoordinator.home, ())
             }, label: {
-                Text("Go to home")
+                Text("Push to home")
             })
             .padding(.vertical, 20)
         }

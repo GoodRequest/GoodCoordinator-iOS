@@ -13,8 +13,10 @@
 		09319A0F2A39D2E900856CA5 /* RouteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A0E2A39D2E900856CA5 /* RouteType.swift */; };
 		09319A112A39D31C00856CA5 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A102A39D31C00856CA5 /* Screen.swift */; };
 		09319A132A39D34D00856CA5 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A122A39D34D00856CA5 /* Route.swift */; };
-		09319A152A39D3BC00856CA5 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A142A39D3BC00856CA5 /* Coordinator.swift */; };
-		09906A7F2A0A59F000F27FB4 /* PresentationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A7E2A0A59F000F27FB4 /* PresentationHelper.swift */; };
+		09319A152A39D3BC00856CA5 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A142A39D3BC00856CA5 /* NavigationCoordinator.swift */; };
+		09319A182A39D5D600856CA5 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A172A39D5D600856CA5 /* Coordinator.swift */; };
+		09319A1B2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A1A2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift */; };
+		09906A7F2A0A59F000F27FB4 /* NavigationPresentationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A7E2A0A59F000F27FB4 /* NavigationPresentationHelper.swift */; };
 		09906A812A0A5A0500F27FB4 /* Routeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A802A0A5A0400F27FB4 /* Routeable.swift */; };
 		09906A832A0A5A4500F27FB4 /* NavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */; };
 		0995791A29FA702900029662 /* NavigationApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995791929FA702900029662 /* NavigationApp.swift */; };
@@ -33,8 +35,10 @@
 		09319A0E2A39D2E900856CA5 /* RouteType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteType.swift; sourceTree = "<group>"; };
 		09319A102A39D31C00856CA5 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		09319A122A39D34D00856CA5 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
-		09319A142A39D3BC00856CA5 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
-		09906A7E2A0A59F000F27FB4 /* PresentationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationHelper.swift; sourceTree = "<group>"; };
+		09319A142A39D3BC00856CA5 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
+		09319A172A39D5D600856CA5 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		09319A1A2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinatorViewWrapper.swift; sourceTree = "<group>"; };
+		09906A7E2A0A59F000F27FB4 /* NavigationPresentationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPresentationHelper.swift; sourceTree = "<group>"; };
 		09906A802A0A5A0400F27FB4 /* Routeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routeable.swift; sourceTree = "<group>"; };
 		09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouter.swift; sourceTree = "<group>"; };
 		0995791629FA702900029662 /* NavigationApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NavigationApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -74,12 +78,23 @@
 		09319A0D2A39D2DA00856CA5 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
+				09319A162A39D59300856CA5 /* Navigation */,
+				09319A122A39D34D00856CA5 /* Route.swift */,
 				09319A0E2A39D2E900856CA5 /* RouteType.swift */,
 				09319A102A39D31C00856CA5 /* Screen.swift */,
-				09319A122A39D34D00856CA5 /* Route.swift */,
-				09319A142A39D3BC00856CA5 /* Coordinator.swift */,
+				09319A172A39D5D600856CA5 /* Coordinator.swift */,
 			);
 			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		09319A162A39D59300856CA5 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				09319A142A39D3BC00856CA5 /* NavigationCoordinator.swift */,
+				09319A1A2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift */,
+				09906A7E2A0A59F000F27FB4 /* NavigationPresentationHelper.swift */,
+			);
+			path = Navigation;
 			sourceTree = "<group>";
 		};
 		0995790D29FA702900029662 = {
@@ -127,7 +142,6 @@
 			children = (
 				09B3A02F29FAB261007BF934 /* Context.swift */,
 				09BD8DA82A012A000066BF6D /* Tree.swift */,
-				09906A7E2A0A59F000F27FB4 /* PresentationHelper.swift */,
 				09906A802A0A5A0400F27FB4 /* Routeable.swift */,
 				09906A822A0A5A4500F27FB4 /* NavigationRouter.swift */,
 			);
@@ -222,18 +236,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09319A182A39D5D600856CA5 /* Coordinator.swift in Sources */,
 				09BD8DA92A012A000066BF6D /* Tree.swift in Sources */,
 				0995792D29FA719D00029662 /* LoginView.swift in Sources */,
-				09319A152A39D3BC00856CA5 /* Coordinator.swift in Sources */,
+				09319A152A39D3BC00856CA5 /* NavigationCoordinator.swift in Sources */,
 				0995792B29FA70DF00029662 /* AppDelegate.swift in Sources */,
 				09319A112A39D31C00856CA5 /* Screen.swift in Sources */,
 				0995791A29FA702900029662 /* NavigationApp.swift in Sources */,
 				09319A132A39D34D00856CA5 /* Route.swift in Sources */,
 				09319A092A3852B500856CA5 /* ArrayExtension.swift in Sources */,
 				09B3A03029FAB261007BF934 /* Context.swift in Sources */,
+				09319A1B2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift in Sources */,
 				09906A812A0A5A0500F27FB4 /* Routeable.swift in Sources */,
 				09319A0F2A39D2E900856CA5 /* RouteType.swift in Sources */,
-				09906A7F2A0A59F000F27FB4 /* PresentationHelper.swift in Sources */,
+				09906A7F2A0A59F000F27FB4 /* NavigationPresentationHelper.swift in Sources */,
 				09F4C0B929FA7FC200081AC4 /* HomeView.swift in Sources */,
 				09906A832A0A5A4500F27FB4 /* NavigationRouter.swift in Sources */,
 				0995792F29FA733300029662 /* RegistrationView.swift in Sources */,

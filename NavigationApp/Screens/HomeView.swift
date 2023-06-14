@@ -15,7 +15,7 @@ struct HomeModel: Hashable {
 
 struct HomeView: View {
 
-    // @EnvironmentObject<CurrentContext<AvailableContexts>> var appContext
+    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
 
     var body: some View {
         VStack {
@@ -23,6 +23,8 @@ struct HomeView: View {
 
             Button(action: {
                 // appContext.switch(to: .login)
+
+                router.coordinator.popToRoot()
             }, label: {
                 Text("Go to login")
             })

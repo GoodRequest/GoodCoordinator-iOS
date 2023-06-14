@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-typealias RootRoute<T: Coordinatable, Input, Output: Screen> = Route<T, Root, Input, Output>
-typealias PresentRoute<T: Coordinatable, Input, Output: Screen> = Route<T, Present, Input, Output>
+typealias RootRoute<T: Coordinator, Input, Output: Screen> = Route<T, Root, Input, Output>
+typealias PresentRoute<T: Coordinator, Input, Output: Screen> = Route<T, Present, Input, Output>
 
-@propertyWrapper class Route<T: Coordinatable, U: RouteType, Input, Output: Screen> {
+@propertyWrapper class Route<T: Coordinator, U: RouteType, Input, Output: Screen> {
 
     public var wrappedValue: GRTransition<T, U, Input, Output>
 
@@ -20,7 +20,7 @@ typealias PresentRoute<T: Coordinatable, Input, Output: Screen> = Route<T, Prese
 
 }
 
-extension Route where T: Coordinatable, Input == Void , Output == AnyView {
+extension Route where T: Coordinator, Input == Void , Output == AnyView {
 
     convenience init<ViewOutput: View>(wrappedValue: @escaping ((T) -> (() -> ViewOutput))) {
         self.init(wrappedValue: GRTransition(type: U.init(), closure: { coordinator in
