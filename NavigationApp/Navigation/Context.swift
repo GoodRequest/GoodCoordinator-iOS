@@ -6,95 +6,158 @@
 //
 
 import SwiftUI
-/*
-protocol Context: Identifiable {
+import Combine
 
-    associatedtype ContentType: View
-    var content: ContentType { get }
-
-}
-
-final class CurrentContext<ContextType: Context>: ObservableObject {
-
-    @Published private(set) var id: ContextType.ID
-
-    public init(_ id: ContextType.ID) {
-        self.id = id
-    }
-
-    public func `switch`(to context: ContextType) {
-        self.id = context.id
-    }
-
-}
-
-struct AppContext<ContextType: Context>: Scene {
-
-    @StateObject private var currentContext: CurrentContext<ContextType>
-    private let contexts: [ContextType]
-
-    var body: some Scene {
-        WindowGroup {
-            getCurrentContext()
-        }
-    }
-
-    init(allAvailable available: [ContextType]) {
-        guard !available.isEmpty else { fatalError("Cannot create AppContext without any context!") }
-
-        self.contexts = available
-        self._currentContext = StateObject(wrappedValue: CurrentContext(available.first!.id))
-    }
-
-    private func getCurrentContext() -> AnyView {
-        guard let content = contexts.first(where: { $0.id == currentContext.id }) else {
-            return AnyView(EmptyView())
-        }
-
-        return AnyView(content.content.environmentObject(currentContext))
-    }
-
-}
-*/
-
-struct AppRouter<R>: Scene where R: Router {
-
-    private let content: R
-
-    var body: some Scene {
-        WindowGroup {
-            content.environment(\.routingTree, RoutingTree.defaultValue)
-        }
-    }
-
-    init(content: () -> R) {
-        self.content = content()
-    }
-
-}
-
-struct RoutingTree: EnvironmentKey {
-
-    static var defaultValue: Node<any Route> { Node(Root()) }
-    
-}
-
-//struct CurrentRoute: EnvironmentKey {
+//import Stinsen
 //
-//    static var defaultValue: any Route { Root() }
+//final class AppCoordinator: NavigationCoordinatable {
+//
+//    var stack: Stinsen.NavigationStack<AppCoordinator> = .init(initial: \Self.start)
+//
+//    @Root var start = makeStart
+//    @Root var goToHome = makeHome
+//
+//    @ViewBuilder func makeStart() -> some View {
+//        LoginView(model: LoginModel())
+//    }
+//
+//    @ViewBuilder func makeHome() -> some View {
+//        HomeView()
+//    }
+//
+//}
+//
+//struct AppRouter<R>: Scene where R: Router {
+//
+//    private let rootRouters: [R]
+//
+//    var body: some Scene {
+//        WindowGroup {
+//            AppCoordinator().view()
+//        }
+//    }
+//
+//    init(@ArrayBuilder<R> rootRouters: () -> [R]) {
+//        self.rootRouters = rootRouters()
+//    }
 //
 //}
 
-extension EnvironmentValues {
 
-    var routingTree: Tree<any Route> {
-        get { self[RoutingTree.self] }
-        set { self[RoutingTree.self] = newValue }
+
+/// A Coordinatable usually represents some kind of flow in the app. You do not need to implement this directly if you're not toying with other types of navigation e.g. a hamburger menu, but rather you would implement TabCoordinatable, NavigationCoordinatable or ViewCoordinatable.
+protocol Coordinatable: ObservableObject, StringIdentifiable, Identifiable, Screen, ChildDismissable {
+    var parent: ChildDismissable? { get set }
+}
+
+extension Coordinatable {
+
+    var id: String {
+        return ObjectIdentifier(self).debugDescription // TODO: betterify
     }
 
-//    var currentRoute: any Route {
-//        get { self[CurrentRoute.self] }
-//        set { self[CurrentRoute.self] = newValue }
-//    }
+}
 
+protocol ChildDismissable: AnyObject {
+    func dismissChild<T: Coordinatable>(coordinator: T, action: (() -> Void)?)
+}
+
+protocol StringIdentifiable: Identifiable<String> {
+
+    var id: String { get }
+
+}
+
+// ----------------
+
+
+
+protocol NavigationOutputable {
+
+    func using(coordinator: Any, input: Any) -> any Screen
+
+}
+
+struct GRTransition<T: Coordinatable, U: RouteType, Input, Output: Screen>: NavigationOutputable {
+
+    let type: U
+    let closure: ((T) -> ((Input) -> Output))
+
+    func using(coordinator: Any, input: Any) -> any Screen {
+        if Input.self == Void.self {
+            return closure(coordinator as! T)(() as! Input)
+        } else {
+            return closure(coordinator as! T)(input as! Input)
+        }
+    }
+
+}
+
+// ----------------
+
+
+
+// ----------------
+
+struct NavigationRootItem {
+    let keyPath: Int
+    let input: Any?
+    let child: any Screen
+}
+
+/// Wrapper around childCoordinators
+/// Used so that you don't need to write @Published
+public class NavigationRoot: ObservableObject {
+    @Published var item: NavigationRootItem
+
+    init(item: NavigationRootItem) {
+        self.item = item
+    }
+}
+
+/// Represents a stack of routes
+class NavigationStack<T: Coordinator> {
+    var dismissalAction: [Int: () -> Void] = [:]
+
+    weak var parent: ChildDismissable?
+    var poppedTo = PassthroughSubject<Int, Never>()
+    let initial: PartialKeyPath<T>
+    let initialInput: Any?
+    var root: NavigationRoot!
+
+    @Published var value: [NavigationStackItem]
+
+    public init(initial: PartialKeyPath<T>, _ initialInput: Any? = nil) {
+        self.value = []
+        self.initial = initial
+        self.initialInput = initialInput
+        self.root = nil
+    }
+}
+
+/// Convenience checks against the navigation stack's contents
+extension NavigationStack {
+    /**
+     The Hash of the route at the top of the stack
+     - Returns: the hash of the route at the top of the stack or -1
+     */
+    var currentRoute: Int {
+        return value.last?.keyPath ?? -1
+    }
+
+    /**
+     Checks if a particular KeyPath is in a stack
+     - Parameter keyPathHash:The hash of the keyPath
+     - Returns: Boolean indiacting whether the route is in the stack
+     */
+    func isInStack(_ keyPathHash: Int) -> Bool {
+        return value.contains { $0.keyPath == keyPathHash }
+    }
+}
+
+struct NavigationStackItem {
+    // let presentationType: PresentationType
+    let presentable: any Screen
+    let keyPath: Int
+    let input: Any?
 }

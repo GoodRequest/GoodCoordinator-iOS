@@ -57,60 +57,136 @@ enum AvailableContexts: Context, CaseIterable {
 }
  */
 
+// MARK: - main
+
 @main struct NavigationApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    // @StateObject private var navigationObject = NavigationObject()
-
     var body: some Scene {
-        // AppContext(allAvailable: AvailableContexts.allCases)
-
-//        WindowGroup {
-//            NavigationStack {
-//                List {
-//                    NavigationLink(value: "A", label: { Text("A") })
-//                    NavigationLink(value: "B", label: { Text("B") })
-//                    NavigationLink(value: "C", label: { Text("C") })
-//                }
-//                .navigationTitle("asdf!")
-//                .navigationBarTitleDisplayMode(.inline)
-//                .navigationDestination(for: String.self, destination: {
-//                    Text($0)
-//                })
-//            }
-//        }
-        AppRouter {
-            NavigationRouter {
-                LoginView(model: LoginModel())
+        WindowGroup {
+            SwiftUI.NavigationStack {
+                AnyView(AppCoordinator().body)
             }
         }
     }
 
-    /*
-    func content() -> some View {
-        NavigationStack(
-            path: $navigationObject.navigationPath,
-            root: {
-                EmptyView()
-                    .navigationDestination(for: LoginModel.self, destination: { model in
-                        LoginView()
-                            .environmentObject(navigationObject)
+}
+
+// import Stinsen
+
+final class AppCoordinator: Coordinator {
+
+    // var stack: Stinsen.NavigationStack<AppCoordinator> = .init(initial: \.root)
+    var stack: NavigationStack<AppCoordinator> = .init(initial: \.root)
+
+    // @Stinsen.NavigationCoordinatable.Root var root = makeRoot
+
+    @RootRoute var root = makeRoot
+    @PresentRoute var home = makeHome
+
+//    @Route var mainRoot = GRTransition<AppCoordinator, Push, Any, some View>(type: Push(), closure: { coordinator in
+//        return makeRoot
+//    })
+
+    @ViewBuilder func makeRoot() -> some View {
+        LoginView(model: LoginModel())
+    }
+
+    @ViewBuilder func makeHome() -> some View {
+        HomeView()
+    }
+
+}
+
+// MARK: - Coordinator view wrapper
+
+struct CoordinatorViewWrapper<T: Coordinator>: View {
+
+    var coordinator: T
+    var start: AnyView?
+
+    private let id: Int
+    private let router: NavigationRouter<T>
+
+    @ObservedObject var presentationHelper: PresentationHelper<T>
+    @ObservedObject var root: NavigationRoot
+
+    var body: some View {
+        content.environmentObject(router)
+    }
+
+    private var content: some View {
+        let contentView: any Screen
+        if id == -1 {
+            contentView = root.item.child
+        } else {
+            contentView = self.start!
+        }
+
+        return AnyView(contentView).background {
+            let destination: any View = {
+                if let view = presentationHelper.presented?.view {
+                    return AnyView(view.onDisappear {
+                        self.coordinator.stack.dismissalAction[id]?()
+                        self.coordinator.stack.dismissalAction[id] = nil
                     })
-                    .navigationDestination(for: RegistrationModel.self, destination: { model in
-                        RegistrationView(model: model)
-                            .environmentObject(navigationObject)
-                    })
-                    .navigationDestination(for: HomeModel.self, destination: { model in
-                        HomeView()
-                            .environmentObject(navigationObject)
-                    })
-                    .environmentObject(navigationObject)
-            }
+                } else {
+                    return EmptyView()
+                }
+            }()
+
+            NavigationLink(
+                destination: AnyView(destination),
+                isActive: Binding<Bool>(
+                    get: {
+                        presentationHelper.presented != nil
+                    },
+                    set: { newValue in
+                        guard !newValue else { return }
+                        self.coordinator.popTo(self.id, nil)
+
+                        // self.coordinator.appear(self.id) to iste co dolu
+                    }
+                ),
+                label: { EmptyView() }
+            )
+        }
+    }
+
+    init(id: Int, coordinator: T) {
+        self.id = id
+        self.coordinator = coordinator
+
+        self.presentationHelper = PresentationHelper(
+            id: id,
+            coordinator: coordinator
         )
-        .onChange(of: navigationObject.navigationPath, perform: { path in
-            print("Current path: \(path)")
-        })
-    }*/
+
+        self.router = NavigationRouter(
+            id: id,
+            coordinator: coordinator
+        )
+
+        if coordinator.stack.root == nil {
+            coordinator.setupRoot()
+        }
+
+        self.root = coordinator.stack.root
+
+        // RouterStore.shared.store(router: router)
+
+        if let presentation = coordinator.stack.value[safe: id] {
+            if let view = presentation.presentable as? AnyView {
+                self.start = view
+            } else {
+                fatalError("Can only show views")
+            }
+        } else if id == -1 {
+            self.start = nil
+        } else {
+            fatalError("???")
+        }
+    }
 
 }

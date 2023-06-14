@@ -7,79 +7,41 @@
 
 import SwiftUI
 
-struct NavigationRouter: Router {
-
-    @Environment(\.routingTree) var routingTree
-    @State private var path: NavigationPath = NavigationPath()
-
-    var id: UUID = UUID()
-
-    private var content: any Screen
-    private var navigationDestinations: [UUID: Binding<Bool>] = [:]
-
-    var body: some View {
-        NavigationStack(
-            path: $path,
-            root: { buildView() }
-        )
-    }
-
-    init(content: () -> some Screen) {
-        self.content = content()
-    }
-
-    private func buildView() -> some View {
-        var contentView = AnyView(content)
-        navigationDestinations.forEach { id, binding in
-            contentView = AnyView(contentView.navigationDestination(
-                isPresented: binding,
-                destination: {
-                    Text("asdf")
-                }
-            ))
-        }
-        return contentView
-    }
-
-//    private func makePathFromTree() -> NavigationPath {
-//        var navigationPath = NavigationPath()
-//
-//        var currentChild = routingTree
-//        while let child = currentChild.firstChild {
-//            navigationPath.append(child.value)
-//            currentChild = child
-//        }
-//        return navigationPath
-//    }
+protocol Routable: ObservableObject {
 
 }
 
-extension NavigationRouter {
+final class WeakRef<T: AnyObject> {
+    weak var value: T?
 
-    func push<Content: Screen>(_ step: Push<Content>) {
-         routingTree.lastLeaf.add(child: Node(step))
+    init(value: T) {
+        self.value = value
+    }
+}
+
+final class NavigationRouter<T>: Routable {
+
+    public let id: Int
+    public var coordinator: T {
+        _coordinator.value as! T
+    }
+
+    private var _coordinator: WeakRef<AnyObject>
+
+    public init(id: Int, coordinator: T) {
+        self.id = id
+        self._coordinator = WeakRef(value: coordinator as AnyObject)
     }
 
 }
 
-struct TabRouter: Router {
+extension NavigationRouter where T: Coordinator {
 
-    var body: some View {
-        EmptyView()
-    }
-
-}
-
-struct SimpleRouter<S>: Router where S: Screen {
-
-    private let content: S
-
-    var body: some View {
-        content
-    }
-
-    init(content: () -> S) {
-        self.content = content()
+    func route<U: RouteType, Input, Output: View>(
+        to route: KeyPath<T, GRTransition<T, U, Input, Output>>,
+        _ input: Input
+    ) -> T {
+        return coordinator.route(to: route, input)
     }
 
 }

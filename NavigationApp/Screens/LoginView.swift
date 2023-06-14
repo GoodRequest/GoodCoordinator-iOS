@@ -40,7 +40,8 @@ struct LoginView: Screen {
         "loginView"
     }
 
-    @Environment(\.routingTree) var routingTree
+//    @Environment(\.routingTree) var routingTree
+    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
 
     var body: some View {
         return VStack {
@@ -57,7 +58,9 @@ struct LoginView: Screen {
             )
 
             Button(action: {
-                routingTree.lastLeaf.add(child: Node(Push(screen: RegistrationView(model: RegistrationModel(name: username)))))
+//                routingTree.lastLeaf.add(child: Node(Push(screen: RegistrationView(model: RegistrationModel(name: username)))))
+//                router.root(\.goToHome)
+                router.route(to: \AppCoordinator.home, ())
             }, label: {
                 Text("Go to home")
             })
