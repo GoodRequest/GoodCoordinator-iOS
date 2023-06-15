@@ -22,6 +22,12 @@ struct HomeView: View {
             Text("Home screen")
 
             Button(action: {
+                router.route(to: \.home, ())
+            }, label: {
+                Text("Push more")
+            })
+
+            Button(action: {
                 // appContext.switch(to: .login)
 
                 router.coordinator.popToRoot()

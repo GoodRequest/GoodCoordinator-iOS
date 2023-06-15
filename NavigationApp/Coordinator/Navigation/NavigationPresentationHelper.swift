@@ -66,6 +66,7 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
 //                        }
 //                    )
 //                    .navigationViewStyle(StackNavigationViewStyle())
+//                    SwiftUI.NavigationStack { view }
 //                )
             }
         }

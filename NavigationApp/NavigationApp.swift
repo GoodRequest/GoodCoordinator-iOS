@@ -17,6 +17,10 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
+//            SwiftUI.NavigationView {
+//                coordinator.body
+//            }.navigationViewStyle(.stack)
+
             SwiftUI.NavigationStack {
                 coordinator.body
             }
@@ -27,15 +31,10 @@ import SwiftUI
 
 final class AppCoordinator: NavigationCoordinator {
 
-    // var stack: Stinsen.NavigationStack<AppCoordinator> = .init(initial: \.root)
     var stack: NavigationStack<AppCoordinator> = .init(initial: \.root)
 
     @RootRoute var root = makeRoot
     @PresentRoute var home = makeHome
-
-//    @Route var mainRoot = GRTransition<AppCoordinator, Push, Any, some View>(type: Push(), closure: { coordinator in
-//        return makeRoot
-//    })
 
     @ViewBuilder func makeRoot() -> some View {
         LoginView(model: LoginModel())

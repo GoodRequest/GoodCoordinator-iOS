@@ -68,6 +68,7 @@ struct LoginView: Screen {
             .padding(.vertical, 20)
         }
         .padding()
+        .navigationTitle("Dobry vecer")
     }
 
 }
