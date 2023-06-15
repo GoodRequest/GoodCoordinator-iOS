@@ -9,3 +9,4 @@ import SwiftUI
 
 protocol Screen: View {}
 extension AnyView: Screen {}
+extension EmptyView: Screen {}

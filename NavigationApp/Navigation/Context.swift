@@ -40,7 +40,7 @@ struct GRTransition<T: Coordinator, U: RouteType, Input, Output: Screen>: Naviga
 struct NavigationRootItem {
     let keyPath: Int
     let input: Any?
-    let child: any Screen
+    let screen: any Screen
 }
 
 /// Wrapper around childCoordinators
@@ -97,5 +97,5 @@ struct NavigationStackItem {
     // let presentationType: PresentationType
     let keyPath: Int
     let input: Any?
-    let presentable: any Screen // child?
+    let screen: any Screen // child?
 }

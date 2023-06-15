@@ -22,7 +22,7 @@ struct HomeView: View {
             Text("Home screen")
 
             Button(action: {
-                router.route(to: \.home, ())
+                router.route(to: \.uiKit, ())
             }, label: {
                 Text("Push more")
             })
@@ -37,6 +37,8 @@ struct HomeView: View {
             .padding(.vertical, 20)
         }
         .padding()
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
 }

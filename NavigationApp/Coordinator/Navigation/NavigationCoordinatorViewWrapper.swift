@@ -7,95 +7,17 @@
 
 import SwiftUI
 
-//final class PresentationActiveHelper: ObservableObject {
-//
-//    @Published var presentationActive: Bool = false
-//
-//}
-
 struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
 
     var coordinator: T
-    var start: AnyView?
+    var content: any Screen
 
-    private let id: Int
+    private let id: Int // TODO: get rid of IDs
     private let router: NavigationRouter<T>
 
     @ObservedObject var presentationHelper: NavigationPresentationHelper<T>
-    @ObservedObject var root: NavigationRoot
 
-//    @ObservedObject var presentationActive: PresentationActiveHelper = .init()
-
-    var body: some View {
-        let destination: AnyView = {
-            if let view = presentationHelper.presented {
-                return AnyView(view.onDisappear {
-                    self.coordinator.stack.dismissalAction[id]?()
-                    self.coordinator.stack.dismissalAction[id] = nil
-                })
-            } else {
-                return AnyView(EmptyView())
-            }
-        }()
-
-        return content.environmentObject(router).navigationDestination(
-            isPresented: Binding<Bool>(
-                get: {
-                    print("ID:", id, "Get:", presentationHelper.presented != nil)
-                    return presentationHelper.presented != nil
-                },
-                set: { newValue in
-                    print("ID:", id, "Set:", newValue)
-                    guard !newValue else { return }
-                    self.coordinator.popTo(self.id, nil)
-                }
-            ),
-            destination: { destination }
-        )
-    }
-
-    private var content: some View {
-        let contentView: any Screen
-        if id == -1 {
-            contentView = root.item.child
-        } else {
-            contentView = self.start!
-        }
-
-//        let contentView = (id == -1) ? (root.item.child) : (self.start!)
-
-        return AnyView(contentView)// .background {
-//            let destination: any View = {
-//                if let view = presentationHelper.presented {
-//                    return view.onDisappear {
-//                        self.coordinator.stack.dismissalAction[id]?()
-//                        self.coordinator.stack.dismissalAction[id] = nil
-//                    }
-//                } else {
-//                    return EmptyView()
-//                }
-//            }()
-
-//            Text("Is active: \(presentationActive.presentationActive.description)")
-
-//            NavigationLink(
-//                destination: AnyView(destination),
-//                isActive: Binding<Bool>(
-//                    get: {
-//                        if id != -1 { print("Get:", presentationHelper.presented != nil) }
-//                        return presentationHelper.presented != nil
-//                    },
-//                    set: { newValue in
-//                        guard !newValue else { return }
-//                        self.coordinator.popTo(self.id, nil)
-//
-//                        // self.coordinator.appear(self.id) to iste co dolu
-//                    }
-//                ),
-//                label: { EmptyView() }
-//            ).hidden()
-//        }
-    }
+    // MARK: - Initialization
 
     init(id: Int, coordinator: T) {
         self.id = id
@@ -115,29 +37,68 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
             coordinator.setupRoot()
         }
 
-        self.root = coordinator.stack.root
-
         // RouterStore.shared.store(router: router)
 
-        if let presentation = coordinator.stack.value[safe: id] {
-            if let view = presentation.presentable as? AnyView { // TODO: useless cast
-                self.start = view
-            } else {
-                fatalError("Can only show views")
-            }
+        if let stackItem = coordinator.stack.value[safe: id] {
+            self.content = stackItem.screen
         } else if id == -1 {
-            self.start = nil
+            self.content = coordinator.stack.root.item.screen
         } else {
-            fatalError("???")
+            print("⛔️ Pushed screen missing from coordinator stack!")
+            self.content = EmptyView()
         }
+    }
 
-//        presentationHelper.$presented.sink { [self] in
-//            presentationActive.presentationActive = ($0 != nil)
-//            if id == -1 {
-//                print("Is nil:", $0 == nil, $0)
-//                print("Is active:", self.presentationActive.presentationActive)
-//            }
-//        }.store(in: &presentationHelper.cancellables)
+    // MARK: - Body
+
+    var body: some View {
+        if #available(iOS 16, *) {
+            navigatableContent().environmentObject(router)
+        } else {
+            navigatableContent_old().environmentObject(router)
+        }
+    }
+
+    // MARK: - Navigation
+
+    @available(iOS 16, *)
+    @ViewBuilder private func navigatableContent() -> some View {
+        AnyView(content).navigationDestination(
+            isPresented: presentationBinding(),
+            destination: destination
+        )
+    }
+
+    @ViewBuilder private func navigatableContent_old() -> some View {
+        AnyView(content).background {
+            NavigationLink(
+                destination: destination(),
+                isActive: presentationBinding(),
+                label: { EmptyView() }
+            ).hidden()
+        }
+    }
+
+    @ViewBuilder private func destination() -> some View {
+        if let view = presentationHelper.presented {
+            AnyView(view).onDisappear {
+                self.coordinator.stack.dismissalAction[id]?() // TODO: presunut inde
+                self.coordinator.stack.dismissalAction[id] = nil
+            }
+        } else {
+            EmptyView()
+        }
+    }
+
+    // MARK: - Bindings
+
+    private func presentationBinding() -> Binding<Bool> {
+        Binding<Bool>(get: {
+            presentationHelper.presented != nil
+        }, set: {
+            guard !$0 else { return }
+            coordinator.popTo(id)
+        })
     }
 
 }

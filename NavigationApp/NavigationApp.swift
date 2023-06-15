@@ -17,12 +17,14 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
-//            SwiftUI.NavigationView {
-//                coordinator.body
-//            }.navigationViewStyle(.stack)
-
-            SwiftUI.NavigationStack {
-                coordinator.body
+            if #available(iOS 16, *) {
+                SwiftUI.NavigationStack {
+                    coordinator.body
+                }
+            } else {
+                SwiftUI.NavigationView {
+                    coordinator.body
+                }.navigationViewStyle(.stack)
             }
         }
     }
@@ -35,6 +37,7 @@ final class AppCoordinator: NavigationCoordinator {
 
     @RootRoute var root = makeRoot
     @PresentRoute var home = makeHome
+    @PresentRoute var uiKit = makeUiKit
 
     @ViewBuilder func makeRoot() -> some View {
         LoginView(model: LoginModel())
@@ -42,6 +45,22 @@ final class AppCoordinator: NavigationCoordinator {
 
     @ViewBuilder func makeHome() -> some View {
         HomeView()
+    }
+
+    @ViewBuilder func makeUiKit() -> some View {
+        CollectionViewRepresentable()
+    }
+
+}
+
+struct CollectionViewRepresentable: UIViewControllerRepresentable {
+
+    func makeUIViewController(context: Context) -> some UIViewController {
+        return UICollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        print("hello world")
     }
 
 }

@@ -67,7 +67,7 @@ extension NavigationCoordinator {
         let item = NavigationRootItem(
             keyPath: self.stack.initial.hashValue,
             input: self.stack.initialInput,
-            child: presentable
+            screen: presentable
         )
 
         self.stack.root = NavigationRoot(item: item)
@@ -86,7 +86,7 @@ extension NavigationCoordinator {
         self.stack.value.append(NavigationStackItem(
             keyPath: route.hashValue,
             input: input,
-            presentable: output
+            screen: output
         ))
 
         return self

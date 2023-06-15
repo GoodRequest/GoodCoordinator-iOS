@@ -8,16 +8,10 @@
 import SwiftUI
 import Combine
 
-struct Presented {
-
-    var view: AnyView
-
-}
-
 final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableObject {
 
     private let id: Int
-    let navigationStack: NavigationStack<T>
+    let navigationStack: NavigationStack<T>; #warning("Memory leak")
     var cancellables = Set<AnyCancellable>()
 
     @Published var presented: (any Screen)?
@@ -55,7 +49,7 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
         // This check is important to get the behaviour as using a bool-state in the view that you set
         if stackItems.count - 1 == nextId, self.presented == nil {
             if let value = stackItems[safe: nextId] {
-                let presentable = value.presentable
+                let presentable = value.screen
 
                 let view = NavigationCoordinatorViewWrapper(id: nextId, coordinator: coordinator)
                 self.presented = AnyView(view)
