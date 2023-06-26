@@ -7,15 +7,24 @@
 
 import Foundation
 
-protocol Coordinator: ObservableObject, Screen { // , ChildDismissable {
+protocol Coordinator: ObservableObject { // , ChildDismissable {
 
 //    var parent: ChildDismissable? { get set }
 
+    associatedtype State
+    associatedtype Input
+
+    init(_ input: Input)
+
     var parent: (any Coordinator)? { get set }
+    var state: State { get set }
+
+    func setRoot(state: inout State, to: any Screen)
 
 }
 
-extension Coordinator {
+extension Coordinator where Input == Void {
+
 //
 //    var id: String {
 //        return ObjectIdentifier(self).debugDescription // TODO: betterify

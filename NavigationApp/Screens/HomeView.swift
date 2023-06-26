@@ -13,7 +13,7 @@ struct HomeModel: Hashable {
 
 }
 
-struct HomeView: View {
+struct HomeView: Screen {
 
     @EnvironmentObject var router: NavigationRouter<AppCoordinator>
 
@@ -22,7 +22,8 @@ struct HomeView: View {
             Text("Home screen")
 
             Button(action: {
-                router.route(to: \.uiKit, ())
+//                router.route(to: \.uiKit, ())
+                router.coordinator.route(to: \.homePush)
             }, label: {
                 Text("Push more")
             })
@@ -30,7 +31,7 @@ struct HomeView: View {
             Button(action: {
                 // appContext.switch(to: .login)
 
-                router.coordinator.popToRoot()
+//                router.coordinator.popToRoot()
             }, label: {
                 Text("Go to login")
             })

@@ -13,19 +13,11 @@ import SwiftUI
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    private let coordinator = AppCoordinator()
+    private let coordinator = AppCoordinator(())
 
     var body: some Scene {
         WindowGroup {
-            if #available(iOS 16, *) {
-                SwiftUI.NavigationStack {
-                    coordinator.body
-                }
-            } else {
-                SwiftUI.NavigationView {
-                    coordinator.body
-                }.navigationViewStyle(.stack)
-            }
+            coordinator.body
         }
     }
 
@@ -33,27 +25,47 @@ import SwiftUI
 
 final class AppCoordinator: NavigationCoordinator {
 
-    var stack: NavigationStack<AppCoordinator> = .init(initial: \.root)
+    typealias Input = Void
+    var state: NavigationStack<AppCoordinator, Void> = .init()
 
-    @RootRoute var root = makeRoot
-    @PresentRoute var home = makeHome
-    @PresentRoute var uiKit = makeUiKit
+    @RootStep(makeRoot) var root
+    @RootStep(makeHome) var homeRoot
+    @PushStep(makeHome) var homePush
 
-    @ViewBuilder func makeRoot() -> some View {
-        LoginView(model: LoginModel())
+//    @PresentRoute var uiKit = makeUiKit
+
+    @ViewBuilder func makeRoot() -> some Screen {
+        AnyView(LoginView(model: LoginModel()).onAppear {
+            // print("Input: \(input)")
+            print("No params")
+        })
     }
 
-    @ViewBuilder func makeHome() -> some View {
-        HomeView()
+    @ViewBuilder func makeHome() -> some Screen {
+        // HomeView()
+        AnyView(OtherCoordinator().body)
     }
 
-    @ViewBuilder func makeUiKit() -> some View {
+    @ViewBuilder func makeUiKit() -> some Screen {
         CollectionViewRepresentable()
     }
 
 }
 
-struct CollectionViewRepresentable: UIViewControllerRepresentable {
+final class OtherCoordinator: NavigationCoordinator {
+
+    typealias Input = Void
+    var state: NavigationStack<OtherCoordinator, Void> = .init()
+
+    @RootStep(makeRoot) var root
+
+    @ViewBuilder func makeRoot() -> some Screen {
+        AnyView(Text("Text!"))
+    }
+
+}
+
+struct CollectionViewRepresentable: UIViewControllerRepresentable, Screen {
 
     func makeUIViewController(context: Context) -> some UIViewController {
         return UICollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())

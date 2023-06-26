@@ -33,16 +33,12 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
             coordinator: coordinator
         )
 
-        if coordinator.stack.root == nil {
-            coordinator.setupRoot()
-        }
-
         // RouterStore.shared.store(router: router)
 
-        if let stackItem = coordinator.stack.value[safe: id] {
+        if let stackItem = coordinator.state.items[safe: id] {
             self.content = stackItem.screen
         } else if id == -1 {
-            self.content = coordinator.stack.root.item.screen
+            self.content = coordinator.state.root
         } else {
             print("⛔️ Pushed screen missing from coordinator stack!")
             self.content = EmptyView()
@@ -82,8 +78,8 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
     @ViewBuilder private func destination() -> some View {
         if let view = presentationHelper.presented {
             AnyView(view).onDisappear {
-                self.coordinator.stack.dismissalAction[id]?() // TODO: presunut inde
-                self.coordinator.stack.dismissalAction[id] = nil
+//                self.coordinator.stack.dismissalAction[id]?() // TODO: presunut inde
+//                self.coordinator.stack.dismissalAction[id] = nil
             }
         } else {
             EmptyView()

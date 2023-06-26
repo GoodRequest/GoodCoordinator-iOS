@@ -14,26 +14,26 @@ import Combine
 
 // ----------------
 
-protocol NavigationOutputable {
-
-    func using(coordinator: Any, input: Any) -> any Screen
-
-}
-
-struct GRTransition<T: Coordinator, U: RouteType, Input, Output: Screen>: NavigationOutputable {
-
-    let type: U
-    let closure: ((T) -> ((Input) -> Output))
-
-    func using(coordinator: Any, input: Any) -> any Screen {
-        if Input.self == Void.self {
-            return closure(coordinator as! T)(() as! Input)
-        } else {
-            return closure(coordinator as! T)(input as! Input)
-        }
-    }
-
-}
+//protocol NavigationOutputable {
+//
+//    func using(coordinator: Any, input: Any) -> any Screen
+//
+//}
+//
+//struct GRTransition<T: Coordinator, U: RouteType, Input, Output: Screen>: NavigationOutputable {
+//
+//    let type: U
+//    let closure: ((T) -> ((Input) -> Output))
+//
+//    func using(coordinator: Any, input: Any) -> any Screen {
+//        if Input.self == Void.self {
+//            return closure(coordinator as! T)(() as! Input)
+//        } else {
+//            return closure(coordinator as! T)(input as! Input)
+//        }
+//    }
+//
+//}
 
 // ----------------
 
@@ -53,6 +53,13 @@ public class NavigationRoot: ObservableObject {
     }
 }
 
+class CoordinatorRoot: ObservableObject {
+
+    
+
+}
+
+/*
 /// Represents a stack of routes
 class NavigationStack<T: NavigationCoordinator> {
     var dismissalAction: [Int: () -> Void] = [:]
@@ -92,10 +99,31 @@ extension NavigationStack {
         return value.contains { $0.keyPath == keyPathHash }
     }
 }
+*/
+class NavigationStack<T: NavigationCoordinator, InputType> {
 
-struct NavigationStackItem {
+    weak var parent: (any Coordinator)?
+
+    @Published var root: any Screen
+    @Published var items: [NavigationStackItem<Any>] = [] // covariant
+
+    init() {
+        self.root = EmptyView()
+    }
+
+}
+
+//extension NavigationStack where InputType == Void {
+//
+//    convenience init(root: KeyPath<T, Root<T, Void>>) {
+//        self.init(root: root, input: ())
+//    }
+//
+//}
+
+struct NavigationStackItem<Input> {
     // let presentationType: PresentationType
-    let keyPath: Int
-    let input: Any?
-    let screen: any Screen // child?
+    let keyPath: AnyKeyPath
+    let input: Input
+    var screen: any Screen // child?
 }

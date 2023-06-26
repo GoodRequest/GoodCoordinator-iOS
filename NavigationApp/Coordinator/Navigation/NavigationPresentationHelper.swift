@@ -11,18 +11,18 @@ import Combine
 final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableObject {
 
     private let id: Int
-    let navigationStack: NavigationStack<T>; #warning("Memory leak")
+    let navigationStack: NavigationStack<T, T.Input>; #warning("Memory leak")
     var cancellables = Set<AnyCancellable>()
 
     @Published var presented: (any Screen)?
 
     init(id: Int, coordinator: T) {
         self.id = id
-        self.navigationStack = coordinator.stack
+        self.navigationStack = coordinator.state
 
         self.setupPresented(coordinator: coordinator)
 
-        navigationStack.$value
+        navigationStack.$items
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self, weak coordinator] _ in
@@ -31,17 +31,23 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
             }
             .store(in: &cancellables)
 
-        navigationStack.poppedTo.filter { int -> Bool in int <= id }.sink { [weak self] int in
-            print(int, id)
-            DispatchQueue.main.async { [weak self] in
-                self?.presented = nil
+        navigationStack.$root
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak coordinator] in
             }
-        }
-        .store(in: &cancellables)
+
+//        navigationStack.poppedTo.filter { int -> Bool in int <= id }.sink { [weak self] int in
+//            print(int, id)
+//            DispatchQueue.main.async { [weak self] in
+//                self?.presented = nil
+//            }
+//        }
+//        .store(in: &cancellables)
     }
 
     func setupPresented(coordinator: T) {
-        let stackItems = self.navigationStack.value
+        let stackItems = self.navigationStack.items
 
         let nextId = id + 1
 

@@ -37,11 +37,11 @@ final class NavigationRouter<T>: Routable {
 
 extension NavigationRouter where T: NavigationCoordinator {
 
-    func route<U: RouteType, Input, Output: View>(
-        to route: KeyPath<T, GRTransition<T, U, Input, Output>>,
-        _ input: Input
-    ) -> T {
-        return coordinator.route(to: route, input)
-    }
+//    func route<U: RouteType, Input, Output: View>(
+//        to route: KeyPath<T, GRTransition<T, U, Input, Output>>,
+//        _ input: Input
+//    ) -> T {
+//        return coordinator.route(to: route, input)
+//    }
 
 }
