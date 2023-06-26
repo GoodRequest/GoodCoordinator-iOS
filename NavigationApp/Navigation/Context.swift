@@ -100,7 +100,7 @@ extension NavigationStack {
     }
 }
 */
-class NavigationStack<T: NavigationCoordinator, InputType> {
+class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
 
     weak var parent: (any Coordinator)?
 

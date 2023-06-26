@@ -26,7 +26,7 @@ import SwiftUI
 final class AppCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack<AppCoordinator, Void> = .init()
+    @Published var state: NavigationStack<AppCoordinator, Void> = .init()
 
     @RootStep(makeRoot) var root
     @RootStep(makeHome) var homeRoot

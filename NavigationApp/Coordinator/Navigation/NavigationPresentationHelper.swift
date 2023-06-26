@@ -14,12 +14,16 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
     let navigationStack: NavigationStack<T, T.Input>; #warning("Memory leak")
     var cancellables = Set<AnyCancellable>()
 
+    @Published var current: any Screen // force unwrap dat prec
     @Published var presented: (any Screen)?
 
     init(id: Int, coordinator: T) {
         self.id = id
         self.navigationStack = coordinator.state
 
+        self.current = EmptyView()
+
+        self.setupCurrent(coordinator: coordinator)
         self.setupPresented(coordinator: coordinator)
 
         navigationStack.$items
@@ -34,8 +38,11 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
         navigationStack.$root
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak coordinator] in
+            .sink { [weak self, weak coordinator] _ in
+                guard let self, let coordinator else { return }
+                setupCurrent(coordinator: coordinator)
             }
+            .store(in: &cancellables)
 
 //        navigationStack.poppedTo.filter { int -> Bool in int <= id }.sink { [weak self] int in
 //            print(int, id)
@@ -44,6 +51,18 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
 //            }
 //        }
 //        .store(in: &cancellables)
+    }
+
+    func setupCurrent(coordinator: T) {
+        if let stackItem = coordinator.state.items[safe: id] {
+            self.current = stackItem.screen
+        } else if id == -1 {
+            self.current = coordinator.state.root
+            #warning("TODO: update rootu")
+        } else {
+            print("⛔️ Pushed screen missing from coordinator stack!")
+            self.current = EmptyView()
+        }
     }
 
     func setupPresented(coordinator: T) {
