@@ -62,7 +62,7 @@ struct LoginView: Screen {
 //                routingTree.lastLeaf.add(child: Node(Push(screen: RegistrationView(model: RegistrationModel(name: username)))))
 //                router.root(\.goToHome)
 //                router.route(to: \AppCoordinator.home, ())
-                router.coordinator.route(to: \.homeRoot)
+                router.coordinator.route(to: \.homePush)
             }, label: {
                 Text("Push to home")
             })

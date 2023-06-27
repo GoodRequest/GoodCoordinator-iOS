@@ -38,8 +38,6 @@ import Combine
 // ----------------
 
 struct NavigationRootItem {
-    let keyPath: Int
-    let input: Any?
     let screen: any Screen
 }
 
@@ -104,11 +102,19 @@ class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
 
     weak var parent: (any Coordinator)?
 
-    @Published var root: any Screen
+    @Published var root: NavigationRootItem
     @Published var items: [NavigationStackItem<Any>] = [] // covariant
 
     init() {
-        self.root = EmptyView()
+        self.root = NavigationRootItem(screen: EmptyView())
+    }
+
+    subscript(screenWithId id: Int) -> any Screen {
+        if id == -1 {
+            return root.screen
+        } else {
+            return items[safe: id]?.screen ?? EmptyView()
+        }
     }
 
 }

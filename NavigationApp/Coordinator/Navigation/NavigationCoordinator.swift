@@ -99,7 +99,7 @@ extension NavigationCoordinator {
 //        )
 
 //        self.state.root.screen = rootScreen
-        state.root = screen
+        state.root = NavigationRootItem(screen: screen)
     }
 
     func popToRoot() {
@@ -118,7 +118,11 @@ extension NavigationCoordinator {
 
         let transition = self[keyPath: route]
 
-        transition.apply(&(self as! Transition.CoordinatorType).state, coordinator: (self as! Transition.CoordinatorType), input: input, keyPath: route)
+        transition.apply(
+            coordinator: (self as! Transition.CoordinatorType),
+            input: input,
+            keyPath: route
+        )
 
         return self
     }

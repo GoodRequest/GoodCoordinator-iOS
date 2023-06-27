@@ -9,7 +9,10 @@ import SwiftUI
 
 struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
 
-    var coordinator: T
+    @ObservedObject var coordinator: T
+    var current: any Screen {
+        coordinator.state[screenWithId: id]
+    }
 
     private let id: Int // TODO: get rid of IDs
     private let router: NavigationRouter<T>
@@ -33,6 +36,15 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
         )
 
         // RouterStore.shared.store(router: router)
+
+//        if id == -1 {
+//            self.current = coordinator.state.root
+//        } else if let stackItem = coordinator.state.items[safe: id] {
+//            self.current = stackItem.screen
+//        } else {
+//            print("⛔️ Pushed screen missing from coordinator stack!")
+//            self.current = EmptyView()
+//        }
     }
 
     // MARK: - Body
@@ -49,14 +61,14 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
 
     @available(iOS 16, *)
     @ViewBuilder private func navigatableContent() -> some View {
-        AnyView(presentationHelper.current).navigationDestination(
+        AnyView(current).navigationDestination(
             isPresented: presentationBinding(),
             destination: destination
         )
     }
 
     @ViewBuilder private func navigatableContent_old() -> some View {
-        AnyView(presentationHelper.current).background {
+        AnyView(current).background {
             NavigationLink(
                 destination: destination(),
                 isActive: presentationBinding(),

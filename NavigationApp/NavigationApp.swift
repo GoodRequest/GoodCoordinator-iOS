@@ -42,8 +42,8 @@ final class AppCoordinator: NavigationCoordinator {
     }
 
     @ViewBuilder func makeHome() -> some Screen {
-        // HomeView()
-        AnyView(OtherCoordinator().body)
+//        HomeView()
+         AnyView(OtherCoordinator(()).body)
     }
 
     @ViewBuilder func makeUiKit() -> some Screen {
@@ -60,7 +60,7 @@ final class OtherCoordinator: NavigationCoordinator {
     @RootStep(makeRoot) var root
 
     @ViewBuilder func makeRoot() -> some Screen {
-        AnyView(Text("Text!"))
+        AnyView(Text("Input"))
     }
 
 }

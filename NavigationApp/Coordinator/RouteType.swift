@@ -18,7 +18,7 @@ protocol RouteType {
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType>)
 
     var screenBuilder: ScreenBuilder<CoordinatorType, InputType> { get }
-    func apply(_ state: inout CoordinatorType.State, coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath)
+    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath)
 
 }
 
@@ -40,8 +40,8 @@ extension RouteType where InputType == Void {
         })
     }
 
-    func apply(_ state: inout CoordinatorType.State, coordinator: CoordinatorType, keyPath: AnyKeyPath) {
-        apply(&state, coordinator: coordinator, input: (), keyPath: keyPath)
+    func apply(coordinator: CoordinatorType, keyPath: AnyKeyPath) {
+        apply(coordinator: coordinator, input: (), keyPath: keyPath)
     }
 
 }
@@ -83,11 +83,11 @@ struct Root<CoordinatorType: Coordinator, InputType>: RouteType {
         self.screenBuilder = wrappedValue
     }
 
-    func apply(_ state: inout CoordinatorType.State, coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
+    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
         print("Pop all and switch root")
 
         let screen = prepareScreen(coordinator: coordinator, input: input)
-        coordinator.setRoot(state: &state, to: screen)
+        coordinator.setRoot(state: &coordinator.state, to: screen)
     }
 
 }
@@ -101,8 +101,8 @@ struct Push<CoordinatorType: NavigationCoordinator, InputType>: RouteType {
         self.screenBuilder = wrappedValue
     }
 
-    func apply(_ state: inout CoordinatorType.State, coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
-        state.items.append(NavigationStackItem(
+    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
+        coordinator.state.items.append(NavigationStackItem(
             keyPath: keyPath,
             input: input,
             screen: prepareScreen(coordinator: coordinator, input: input)
