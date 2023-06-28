@@ -23,7 +23,7 @@ struct HomeView: Screen {
 
             Button(action: {
 //                router.route(to: \.uiKit, ())
-                router.coordinator.route(to: \.homePush)
+                router.coordinator.route(to: \.registration)
             }, label: {
                 Text("Push more")
             })
@@ -32,6 +32,7 @@ struct HomeView: Screen {
                 // appContext.switch(to: .login)
 
 //                router.coordinator.popToRoot()
+                router.coordinator.route(to: \.root)
             }, label: {
                 Text("Go to login")
             })

@@ -29,8 +29,8 @@ final class AppCoordinator: NavigationCoordinator {
     @Published var state: NavigationStack<AppCoordinator, Void> = .init()
 
     @RootStep(makeRoot) var root
-    @RootStep(makeHome) var homeRoot
-    @PushStep(makeHome) var homePush
+    @RootStep(makeHome) var home
+    @PushStep(makeRegistration) var registration
 
 //    @PresentRoute var uiKit = makeUiKit
 
@@ -42,12 +42,19 @@ final class AppCoordinator: NavigationCoordinator {
     }
 
     @ViewBuilder func makeHome() -> some Screen {
-//        HomeView()
-         AnyView(OtherCoordinator(()).body)
+        HomeView()
     }
 
     @ViewBuilder func makeUiKit() -> some Screen {
         CollectionViewRepresentable()
+    }
+
+    @ViewBuilder func makeRegistration() -> some Screen {
+        RegistrationView(model: RegistrationModel(name: "Jozko mrkvicka"))
+    }
+
+    @ViewBuilder func makeOther() -> some Screen {
+        AnyView(OtherCoordinator(()).body.navigationTitle("Iny title"))
     }
 
 }
@@ -60,7 +67,8 @@ final class OtherCoordinator: NavigationCoordinator {
     @RootStep(makeRoot) var root
 
     @ViewBuilder func makeRoot() -> some Screen {
-        AnyView(Text("Input"))
+        // AnyView(Text("Input"))
+        RegistrationView(model: RegistrationModel(name: "asdf"))
     }
 
 }

@@ -81,6 +81,9 @@ extension NavigationCoordinator {
 //            self.stack.value = Array(self.stack.value.prefix(int + 1))
 //            self.stack.poppedTo.send(int)
 //        }
+
+        print("Popping to \(int)")
+        state.pop(to: int)
     }
 
     func setRoot(state: inout State, to screen: any Screen) {
@@ -100,6 +103,11 @@ extension NavigationCoordinator {
 
 //        self.state.root.screen = rootScreen
         state.root = NavigationRootItem(screen: screen)
+
+    }
+
+    func pop() {
+        popTo(state.items.count - 2)
     }
 
     func popToRoot() {

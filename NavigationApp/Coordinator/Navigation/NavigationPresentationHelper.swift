@@ -23,47 +23,45 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
         self.setupPresented(coordinator: coordinator)
 
         navigationStack.$items
+            .scan(([], [])) { ($0.1, $1) }
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self, weak coordinator] _ in
+            .sink { [weak self, weak coordinator] previous, current in
                 guard let self, let coordinator else { return }
-                setupPresented(coordinator: coordinator)
+                print("Items changed - \(previous.count) => \(current.count)")
+                onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)
 
-//        navigationStack.poppedTo.filter { int -> Bool in int <= id }.sink { [weak self] int in
-//            print(int, id)
-//            DispatchQueue.main.async { [weak self] in
-//                self?.presented = nil
-//            }
-//        }
-//        .store(in: &cancellables)
+        navigationStack.$root
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+    }
+
+    func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
+        if current.count > previous.count {
+            setupPresented(coordinator: coordinator)
+        } else {
+            let popDestination = (current.count - 1)
+            popPresented(to: popDestination)
+        }
+    }
+
+    func popPresented(to destination: Int) {
+        if id >= destination {
+            print("Setting presented = nil @ \(id)")
+            presented = nil
+        }
     }
 
     func setupPresented(coordinator: T) {
-        let stackItems = self.navigationStack.items
-
         let nextId = id + 1
+        let isTopScreen = (self.presented == nil) && (navigationStack.items.count - 1 == nextId)
 
-        // Only apply updates on last screen in navigation stack
-        // This check is important to get the behaviour as using a bool-state in the view that you set
-        if stackItems.count - 1 == nextId, self.presented == nil {
-            if let value = stackItems[safe: nextId] {
-                let presentable = value.screen
-
-                let view = NavigationCoordinatorViewWrapper(id: nextId, coordinator: coordinator)
-                self.presented = AnyView(view)
-//                self.presented = AnyView(
-//                    NavigationView(
-//                        content: {
-//                            view.navigationBarHidden(true)
-//                        }
-//                    )
-//                    .navigationViewStyle(StackNavigationViewStyle())
-//                    SwiftUI.NavigationStack { view }
-//                )
-            }
-        }
+        // Only apply changes on last screen in navigation stack
+        guard isTopScreen else { return }
+        self.presented = NavigationCoordinatorViewWrapper(id: nextId, coordinator: coordinator)
     }
 
 }

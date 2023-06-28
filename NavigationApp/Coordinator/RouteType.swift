@@ -7,9 +7,6 @@
 
 // ----------------
 
-typealias ScreenBuilder<CoordinatorType, InputType> = ((CoordinatorType) -> ((InputType) -> any Screen))
-typealias VoidScreenBuilder<CoordinatorType> = ((CoordinatorType) -> () -> any Screen)
-
 protocol RouteType {
 
     associatedtype CoordinatorType: Coordinator

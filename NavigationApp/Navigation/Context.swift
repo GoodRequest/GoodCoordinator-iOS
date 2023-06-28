@@ -105,16 +105,34 @@ class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
     @Published var root: NavigationRootItem
     @Published var items: [NavigationStackItem<Any>] = [] // covariant
 
+    private var lastPoppedItem: (NavigationStackItem<Any>)?
+
     init() {
         self.root = NavigationRootItem(screen: EmptyView())
     }
 
-    subscript(screenWithId id: Int) -> any Screen {
+    func screenWithId(_ id: Int) -> any Screen {
         if id == -1 {
             return root.screen
         } else {
-            return items[safe: id]?.screen ?? EmptyView()
+            return items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
         }
+    }
+
+    func pop(to id: Int) {
+        print("Remove navigation items until \(id)")
+
+        let popIndex = id + 1
+        lastPoppedItem = items[safe: popIndex]
+        items.remove(at: popIndex)
+
+        lastPoppedItem?.dismissAction?()
+    }
+
+    func revert() {
+        guard let lastPoppedItem else { return }
+        items.append(lastPoppedItem)
+        self.lastPoppedItem = nil
     }
 
 }
@@ -128,8 +146,10 @@ class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
 //}
 
 struct NavigationStackItem<Input> {
-    // let presentationType: PresentationType
+
     let keyPath: AnyKeyPath
     let input: Input
     var screen: any Screen // child?
+    var dismissAction: VoidClosure? = nil
+
 }

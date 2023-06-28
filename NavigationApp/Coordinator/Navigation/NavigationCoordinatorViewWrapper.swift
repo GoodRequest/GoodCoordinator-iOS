@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
+struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
 
-    @ObservedObject var coordinator: T
-    var current: any Screen {
-        coordinator.state[screenWithId: id]
+    var coordinator: T
+    var current: some View {
+        Color.clear.overlay { AnyView(coordinator.state.screenWithId(id)) }
     }
 
     private let id: Int // TODO: get rid of IDs
@@ -36,15 +36,6 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
         )
 
         // RouterStore.shared.store(router: router)
-
-//        if id == -1 {
-//            self.current = coordinator.state.root
-//        } else if let stackItem = coordinator.state.items[safe: id] {
-//            self.current = stackItem.screen
-//        } else {
-//            print("⛔️ Pushed screen missing from coordinator stack!")
-//            self.current = EmptyView()
-//        }
     }
 
     // MARK: - Body
@@ -61,14 +52,14 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
 
     @available(iOS 16, *)
     @ViewBuilder private func navigatableContent() -> some View {
-        AnyView(current).navigationDestination(
+        current.navigationDestination(
             isPresented: presentationBinding(),
             destination: destination
         )
     }
 
     @ViewBuilder private func navigatableContent_old() -> some View {
-        AnyView(current).background {
+        current.background {
             NavigationLink(
                 destination: destination(),
                 isActive: presentationBinding(),
@@ -80,6 +71,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: View {
     @ViewBuilder private func destination() -> some View {
         if let view = presentationHelper.presented {
             AnyView(view).onDisappear {
+//                coordinator.state.pop(to: id)
 //                self.coordinator.stack.dismissalAction[id]?() // TODO: presunut inde
 //                self.coordinator.stack.dismissalAction[id] = nil
             }

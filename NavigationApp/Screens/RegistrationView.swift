@@ -26,6 +26,8 @@ struct RegistrationView: Screen {
 
     var model: RegistrationModel
 
+    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
+
     var body: some View {
         VStack(spacing: 16) {
             Text("Hello, \(model.hashValue)")
@@ -33,19 +35,20 @@ struct RegistrationView: Screen {
             Spacer().frame(height: 100)
 
             Toggle(isOn: $agrees, label: {
-                Text("Sell my soul")
+                Text("Agree?")
             })
             Button(action: {
                 print("Registering...")
 
                 // navigation.set(NavigationPath([HomeModel()]))
+                router.coordinator.route(to: \.registration)
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
             Button(action: {
                 print("Going back")
 
-                // navigation.pop()
+                router.coordinator.pop()
             }, label: {
                 Text("Cancel")
             })
