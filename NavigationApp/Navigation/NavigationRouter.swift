@@ -22,15 +22,16 @@ final class WeakRef<T: AnyObject> {
 final class NavigationRouter<T>: Routable {
 
     public let id: Int
-    public var coordinator: T {
-        _coordinator.value as! T
-    }
+    public var coordinator: T// {
+//        _coordinator.value as! T
+//    }
 
-    private var _coordinator: WeakRef<AnyObject>
+//    private var _coordinator: WeakRef<AnyObject>
 
     public init(id: Int, coordinator: T) {
         self.id = id
-        self._coordinator = WeakRef(value: coordinator as AnyObject)
+//        self._coordinator = WeakRef(value: coordinator as AnyObject)
+        self.coordinator = coordinator
     }
 
 }

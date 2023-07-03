@@ -26,9 +26,9 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
             .scan(([], [])) { ($0.1, $1) }
             .dropFirst()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self, weak coordinator] previous, current in
-                guard let self, let coordinator else { return }
-                print("Items changed - \(previous.count) => \(current.count)")
+            .sink { [weak self] previous, current in
+                guard let self else { return }
+                print("[\(id)] Items changed - \(previous.count) => \(current.count)")
                 onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)
@@ -50,7 +50,7 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
 
     func popPresented(to destination: Int) {
         if id >= destination {
-            print("Setting presented = nil @ \(id)")
+            print("[\(id)] Setting presented = nil")
             presented = nil
         }
     }

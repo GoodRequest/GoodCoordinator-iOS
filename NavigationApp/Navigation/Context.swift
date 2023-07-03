@@ -98,9 +98,9 @@ extension NavigationStack {
     }
 }
 */
-class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
+final class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
 
-    weak var parent: (any Coordinator)?
+    var parent: (any Coordinator)?
 
     @Published var root: NavigationRootItem
     @Published var items: [NavigationStackItem<Any>] = [] // covariant

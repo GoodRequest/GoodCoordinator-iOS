@@ -70,11 +70,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
 
     @ViewBuilder private func destination() -> some View {
         if let view = presentationHelper.presented {
-            AnyView(view).onDisappear {
-//                coordinator.state.pop(to: id)
-//                self.coordinator.stack.dismissalAction[id]?() // TODO: presunut inde
-//                self.coordinator.stack.dismissalAction[id] = nil
-            }
+            AnyView(view)
         } else {
             EmptyView()
         }

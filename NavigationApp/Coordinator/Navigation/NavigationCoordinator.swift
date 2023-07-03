@@ -27,10 +27,10 @@ extension NavigationCoordinator {
     init(_ input: Input) {
         self.init()
 
-        setRoot(state: &state, to: root.prepareScreen(coordinator: self, input: input))
+        setRoot(to: root.prepareScreen(coordinator: self, input: input))
     }
 
-    weak var parent: (any Coordinator)? {
+    var parent: (any Coordinator)? {
         get {
             return state.parent
         } set {
@@ -86,7 +86,7 @@ extension NavigationCoordinator {
         state.pop(to: int)
     }
 
-    func setRoot(state: inout State, to screen: any Screen) {
+    func setRoot(to screen: any Screen) {
         // let x = self[keyPath: self.stack.initial] as! NavigationOutputable
         // let presentable = x.using(coordinator: self, input: self.stack.initialInput as Any)
 
@@ -107,7 +107,11 @@ extension NavigationCoordinator {
     }
 
     func pop() {
-        popTo(state.items.count - 2)
+        if state.items.isEmpty {
+            fatalError("TODO: dismiss self from parent?")
+        } else {
+            popTo(state.items.count - 2)
+        }
     }
 
     func popToRoot() {

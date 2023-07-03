@@ -84,7 +84,7 @@ struct Root<CoordinatorType: Coordinator, InputType>: RouteType {
         print("Pop all and switch root")
 
         let screen = prepareScreen(coordinator: coordinator, input: input)
-        coordinator.setRoot(state: &coordinator.state, to: screen)
+        coordinator.setRoot(to: screen)
     }
 
 }

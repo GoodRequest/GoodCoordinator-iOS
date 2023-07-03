@@ -17,20 +17,20 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
-            coordinator.body
+            AnyView(coordinator)
         }
     }
 
 }
 
-final class AppCoordinator: NavigationCoordinator {
+struct AppCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    @Published var state: NavigationStack<AppCoordinator, Void> = .init()
+    var state: NavigationStack<AppCoordinator, Void> = .init()
 
     @RootStep(makeRoot) var root
     @RootStep(makeHome) var home
-    @PushStep(makeRegistration) var registration
+    @PushStep(makeOther) var registration
 
 //    @PresentRoute var uiKit = makeUiKit
 
@@ -54,24 +54,57 @@ final class AppCoordinator: NavigationCoordinator {
     }
 
     @ViewBuilder func makeOther() -> some Screen {
-        AnyView(OtherCoordinator(()).body.navigationTitle("Iny title"))
+        OtherCoordinator(())
     }
 
 }
 
-final class OtherCoordinator: NavigationCoordinator {
+struct OtherCoordinator: NavigationCoordinator {
 
     typealias Input = Void
     var state: NavigationStack<OtherCoordinator, Void> = .init()
 
     @RootStep(makeRoot) var root
+    @PushStep(makeAppCoordinator) var pushAppCoordinator
 
     @ViewBuilder func makeRoot() -> some Screen {
         // AnyView(Text("Input"))
         RegistrationView(model: RegistrationModel(name: "asdf"))
     }
 
+    @ViewBuilder func makeAppCoordinator() -> some Screen {
+        AppCoordinator()
+    }
+
+    @ViewBuilder func makePushSomething() -> some Screen {
+        AnyView(Text("Push"))
+    }
+
 }
+
+
+
+
+
+
+final class MyCoordinator: NavigationCoordinator {
+
+    typealias Input = Void
+    var state: NavigationStack<MyCoordinator, Void> = .init()
+
+   @RootStep(makeRootView) var root
+
+    @ViewBuilder func makeRootView() -> some Screen {
+        AnyView(Text("My root view"))
+    }
+
+}
+
+
+
+
+
+
 
 struct CollectionViewRepresentable: UIViewControllerRepresentable, Screen {
 
