@@ -7,9 +7,9 @@
 
 import SwiftUI // TODO: treba? vyhodit prec 2x View
 
-protocol NavigationCoordinator: Coordinator where State == NavigationStack<Self, Input> {
+protocol NavigationCoordinator: PresentationCoordinator where State: NavigationStack {
 
-    var root: Root<Self, Input> { get }
+    var root: Root<Self> { get }
     init()
 
 }
@@ -82,7 +82,7 @@ extension NavigationCoordinator {
 //            self.stack.poppedTo.send(int)
 //        }
 
-        print("Popping to \(int)")
+        print("[\(type(of: self))] Popping to \(int)")
         state.pop(to: int)
     }
 
@@ -103,12 +103,15 @@ extension NavigationCoordinator {
 
 //        self.state.root.screen = rootScreen
         state.root = NavigationRootItem(screen: screen)
+    }
 
+    func abortChild() {
+        pop()
     }
 
     func pop() {
         if state.items.isEmpty {
-            fatalError("TODO: dismiss self from parent?")
+            parent?.abortChild()
         } else {
             popTo(state.items.count - 2)
         }
@@ -116,27 +119,6 @@ extension NavigationCoordinator {
 
     func popToRoot() {
         popTo(-1, nil)
-    }
-
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Self where Transition.InputType == Void {
-        self.route(to: route, ())
-    }
-
-    func route<Transition: RouteType>(
-        to route: KeyPath<Self, Transition>,
-        _ input: Transition.InputType
-    ) -> Self {
-        guard self is Transition.CoordinatorType else { fatalError("Unsupported transition") }
-
-        let transition = self[keyPath: route]
-
-        transition.apply(
-            coordinator: (self as! Transition.CoordinatorType),
-            input: input,
-            keyPath: route
-        )
-
-        return self
     }
 
 }

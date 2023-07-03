@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#warning("wtf")
+
 protocol Routable: ObservableObject {
 
 }

@@ -27,7 +27,7 @@ struct RegistrationView: Screen {
     var model: RegistrationModel
 
 //    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
-    @EnvironmentObject var router: NavigationRouter<OtherCoordinator>
+    @EnvironmentObject var router: PresentationRouter<OtherCoordinator>
 
     var body: some View {
         VStack(spacing: 16) {
@@ -42,20 +42,20 @@ struct RegistrationView: Screen {
                 print("Registering...")
 
                 // navigation.set(NavigationPath([HomeModel()]))
-                router.coordinator.route(to: \.pushAppCoordinator)
+                router.coordinator.route(to: \.presentSomething)
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
             Button(action: {
                 print("Going back")
 
-                // router.coordinator.pop()
-                router.coordinator.pop()
+//                router.coordinator.pop()
             }, label: {
                 Text("Cancel")
             })
         }
         .padding()
+        .navigationTitle("Agreements")
     }
 
 }

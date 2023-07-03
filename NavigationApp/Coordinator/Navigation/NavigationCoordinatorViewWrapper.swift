@@ -17,7 +17,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
     private let id: Int // TODO: get rid of IDs
     private let router: NavigationRouter<T>
 
-    @ObservedObject var presentationHelper: NavigationPresentationHelper<T>
+    @ObservedObject var presentationHelper: NavigationCoordinatorHelper<T>
 
     // MARK: - Initialization
 
@@ -25,7 +25,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
         self.id = id
         self.coordinator = coordinator
 
-        self.presentationHelper = NavigationPresentationHelper(
+        self.presentationHelper = NavigationCoordinatorHelper(
             id: id,
             coordinator: coordinator
         )

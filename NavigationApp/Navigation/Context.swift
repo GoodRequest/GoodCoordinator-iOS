@@ -37,26 +37,6 @@ import Combine
 
 // ----------------
 
-struct NavigationRootItem {
-    let screen: any Screen
-}
-
-/// Wrapper around childCoordinators
-/// Used so that you don't need to write @Published
-public class NavigationRoot: ObservableObject {
-    @Published var item: NavigationRootItem
-
-    init(item: NavigationRootItem) {
-        self.item = item
-    }
-}
-
-class CoordinatorRoot: ObservableObject {
-
-    
-
-}
-
 /*
 /// Represents a stack of routes
 class NavigationStack<T: NavigationCoordinator> {
@@ -98,21 +78,16 @@ extension NavigationStack {
     }
 }
 */
-final class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObject {
+class NavigationStack: PresentationState {
 
-    var parent: (any Coordinator)?
-
-    @Published var root: NavigationRootItem
     @Published var items: [NavigationStackItem<Any>] = [] // covariant
-
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    init() {
-        self.root = NavigationRootItem(screen: EmptyView())
-    }
-
     func screenWithId(_ id: Int) -> any Screen {
-        if id == -1 {
+        if id < -1 {
+            assertionFailure("Invalid screen index!")
+            return EmptyView()
+        } else if id == -1 {
             return root.screen
         } else {
             return items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
@@ -120,9 +95,12 @@ final class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObje
     }
 
     func pop(to id: Int) {
-        print("Remove navigation items until \(id)")
-
         let popIndex = id + 1
+        if id == -1 && items.isEmpty { return print("Already at root") }
+        guard items.startIndex..<items.endIndex ~= popIndex else {
+            preconditionFailure("Invalid index. Use `abortChild()` instead.")
+        }
+
         lastPoppedItem = items[safe: popIndex]
         items.remove(at: popIndex)
 
@@ -137,13 +115,11 @@ final class NavigationStack<T: NavigationCoordinator, InputType>: ObservableObje
 
 }
 
-//extension NavigationStack where InputType == Void {
-//
-//    convenience init(root: KeyPath<T, Root<T, Void>>) {
-//        self.init(root: root, input: ())
-//    }
-//
-//}
+struct NavigationRootItem {
+
+    let screen: any Screen
+
+}
 
 struct NavigationStackItem<Input> {
 

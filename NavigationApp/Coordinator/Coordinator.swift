@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-protocol Coordinator: Screen { // , ChildDismissable {
-
-//    var parent: ChildDismissable? { get set }
+protocol Coordinator: Screen {
 
     associatedtype State
     associatedtype Input
@@ -19,12 +17,41 @@ protocol Coordinator: Screen { // , ChildDismissable {
     var parent: (any Coordinator)? { get set }
     var state: State { get set }
 
+    /// Removes the last child from coordinator stack.
+    /// Useful when popping from different coordinators
+    /// or dismissing context.
+    func abortChild()
     func setRoot(to: any Screen)
+
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Self where Transition.CoordinatorType.Input == Void
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>, _ input: Transition.CoordinatorType.Input) -> Self
 
 }
 
-protocol StringIdentifiable: Identifiable<String> {}
+extension Coordinator {
 
-//protocol ChildDismissable: AnyObject {
-//    func dismissChild<T: Coordinator>(coordinator: T, action: (() -> Void)?)
-//}
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Self where Transition.CoordinatorType.Input == Void {
+        self.route(to: route, ())
+    }
+
+    func route<Transition: RouteType>(
+        to route: KeyPath<Self, Transition>,
+        _ input: Transition.CoordinatorType.Input
+    ) -> Self {
+        guard self is Transition.CoordinatorType else { fatalError("Unsupported transition") }
+
+        let transition = self[keyPath: route]
+
+        transition.apply(
+            coordinator: (self as! Transition.CoordinatorType),
+            input: input,
+            keyPath: route
+        )
+
+        return self
+    }
+
+}
+
+#warning("is required?")
+protocol StringIdentifiable: Identifiable<String> {}

@@ -1,5 +1,5 @@
 //
-//  Route.swift
+//  NavigationCoordinatorHelper.swift
 //  NavigationApp
 //
 //  Created by Filip Šašala on 09/05/2023.
@@ -8,10 +8,10 @@
 import SwiftUI
 import Combine
 
-final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableObject {
+final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObject {
 
     private let id: Int
-    let navigationStack: NavigationStack<T, T.Input>; #warning("Memory leak?")
+    let navigationStack: NavigationStack; #warning("Memory leak?")
     var cancellables = Set<AnyCancellable>()
 
     @Published var presented: (any Screen)?
@@ -28,7 +28,7 @@ final class NavigationPresentationHelper<T: NavigationCoordinator>: ObservableOb
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }
-                print("[\(id)] Items changed - \(previous.count) => \(current.count)")
+                print("[\(id), \(type(of: coordinator))] Items changed - \(previous.count) => \(current.count)")
                 onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)

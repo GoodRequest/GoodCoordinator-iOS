@@ -17,7 +17,7 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
-            AnyView(coordinator)
+            coordinator
         }
     }
 
@@ -26,7 +26,7 @@ import SwiftUI
 struct AppCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack<AppCoordinator, Void> = .init()
+    var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
     @RootStep(makeHome) var home
@@ -59,13 +59,13 @@ struct AppCoordinator: NavigationCoordinator {
 
 }
 
-struct OtherCoordinator: NavigationCoordinator {
+struct OtherCoordinator: PresentationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack<OtherCoordinator, Void> = .init()
+    var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
-    @PushStep(makeAppCoordinator) var pushAppCoordinator
+    @PresentStep(makePresentSomething) var presentSomething
 
     @ViewBuilder func makeRoot() -> some Screen {
         // AnyView(Text("Input"))
@@ -73,11 +73,12 @@ struct OtherCoordinator: NavigationCoordinator {
     }
 
     @ViewBuilder func makeAppCoordinator() -> some Screen {
-        AppCoordinator()
+        AppCoordinator(())
     }
 
-    @ViewBuilder func makePushSomething() -> some Screen {
-        AnyView(Text("Push"))
+    @ViewBuilder func makePresentSomething() -> some Screen {
+//        AnyView(Text("Present"))
+        MyCoordinator(())
     }
 
 }
@@ -87,15 +88,15 @@ struct OtherCoordinator: NavigationCoordinator {
 
 
 
-final class MyCoordinator: NavigationCoordinator {
+struct MyCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack<MyCoordinator, Void> = .init()
+    var state: NavigationStack = .init()
 
    @RootStep(makeRootView) var root
 
     @ViewBuilder func makeRootView() -> some Screen {
-        AnyView(Text("My root view"))
+        AnyView(Text("My root view").navigationTitle("Modal"))
     }
 
 }

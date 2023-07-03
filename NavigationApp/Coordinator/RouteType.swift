@@ -10,24 +10,27 @@
 protocol RouteType {
 
     associatedtype CoordinatorType: Coordinator
-    associatedtype InputType
 
-    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType>)
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, CoordinatorType.Input>)
 
-    var screenBuilder: ScreenBuilder<CoordinatorType, InputType> { get }
-    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath)
+    var screenBuilder: ScreenBuilder<CoordinatorType, CoordinatorType.Input> { get }
+    func apply(coordinator: CoordinatorType, input: CoordinatorType.Input, keyPath: AnyKeyPath)
 
 }
 
 extension RouteType {
 
-    func prepareScreen(coordinator: CoordinatorType, input: InputType) -> any Screen {
-        return screenBuilder(coordinator)(input)
+    func prepareScreen(coordinator: CoordinatorType, input: CoordinatorType.Input) -> any Screen {
+        let screen = screenBuilder(coordinator)(input)
+        if var screen = screen as? any Coordinator {
+            screen.parent = coordinator
+        }
+        return screen
     }
 
 }
 
-extension RouteType where InputType == Void {
+extension RouteType where CoordinatorType.Input == Void {
 
     init(wrappedValue: @escaping VoidScreenBuilder<CoordinatorType>) {
         self.init(wrappedValue: { (coordinator: CoordinatorType) in
@@ -45,20 +48,21 @@ extension RouteType where InputType == Void {
 
 // ----------------
 
-typealias RootStep<CoordinatorType: Coordinator, InputType> = NavigationStep<Root<CoordinatorType, InputType>>
-typealias PushStep<CoordinatorType: NavigationCoordinator, InputType> = NavigationStep<Push<CoordinatorType, InputType>>
+typealias RootStep<CoordinatorType: Coordinator> = NavigationStep<Root<CoordinatorType>>
+typealias PushStep<CoordinatorType: NavigationCoordinator> = NavigationStep<Push<CoordinatorType>>
+typealias PresentStep<CoordinatorType: PresentationCoordinator> = NavigationStep<Present<CoordinatorType>>
 
 @propertyWrapper final class NavigationStep<Route: RouteType> {
 
     var wrappedValue: Route
 
-    init(_ screen: @escaping ScreenBuilder<Route.CoordinatorType, Route.InputType>) {
+    init(_ screen: @escaping ScreenBuilder<Route.CoordinatorType, Route.CoordinatorType.Input>) {
         self.wrappedValue = Route.init(wrappedValue: screen)
     }
 
 }
 
-extension NavigationStep where Route.InputType == Void {
+extension NavigationStep where Route.CoordinatorType.Input == Void {
 
     convenience init(_ screen: @escaping VoidScreenBuilder<Route.CoordinatorType>) {
         self.init { (coordinator: Route.CoordinatorType) in
@@ -72,17 +76,15 @@ extension NavigationStep where Route.InputType == Void {
 
 // ----------------
 
-struct Root<CoordinatorType: Coordinator, InputType>: RouteType {
+struct Root<CoordinatorType: Coordinator>: RouteType {
 
-    var screenBuilder: ScreenBuilder<CoordinatorType, InputType>
+    var screenBuilder: ScreenBuilder<CoordinatorType, CoordinatorType.Input>
 
-    init(wrappedValue: @escaping (CoordinatorType) -> ((InputType) -> any Screen)) {
+    init(wrappedValue: @escaping (CoordinatorType) -> ((CoordinatorType.Input) -> any Screen)) {
         self.screenBuilder = wrappedValue
     }
 
-    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
-        print("Pop all and switch root")
-
+    func apply(coordinator: CoordinatorType, input: CoordinatorType.Input, keyPath: AnyKeyPath) {
         let screen = prepareScreen(coordinator: coordinator, input: input)
         coordinator.setRoot(to: screen)
     }
@@ -90,16 +92,34 @@ struct Root<CoordinatorType: Coordinator, InputType>: RouteType {
 }
 
 
-struct Push<CoordinatorType: NavigationCoordinator, InputType>: RouteType {
+struct Push<CoordinatorType: NavigationCoordinator>: RouteType {
 
-    var screenBuilder: ScreenBuilder<CoordinatorType, InputType>
+    var screenBuilder: ScreenBuilder<CoordinatorType, CoordinatorType.Input>
 
-    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType>) {
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, CoordinatorType.Input>) {
         self.screenBuilder = wrappedValue
     }
 
-    func apply(coordinator: CoordinatorType, input: InputType, keyPath: AnyKeyPath) {
+    func apply(coordinator: CoordinatorType, input: CoordinatorType.Input, keyPath: AnyKeyPath) {
         coordinator.state.items.append(NavigationStackItem(
+            keyPath: keyPath,
+            input: input,
+            screen: prepareScreen(coordinator: coordinator, input: input)
+        ))
+    }
+
+}
+
+struct Present<CoordinatorType: PresentationCoordinator>: RouteType {
+
+    var screenBuilder: ScreenBuilder<CoordinatorType, CoordinatorType.Input>
+
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, CoordinatorType.Input>) {
+        self.screenBuilder = wrappedValue
+    }
+
+    func apply(coordinator: CoordinatorType, input: CoordinatorType.Input, keyPath: AnyKeyPath) {
+        coordinator.state.present(PresentationItem(
             keyPath: keyPath,
             input: input,
             screen: prepareScreen(coordinator: coordinator, input: input)
