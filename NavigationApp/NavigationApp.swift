@@ -29,28 +29,16 @@ struct AppCoordinator: NavigationCoordinator {
     var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
-    @RootStep(makeHome) var home
-    @PushStep(makeOther) var registration
-
-//    @PresentRoute var uiKit = makeUiKit
+    @RootStep(makeHome) var `switch`
+    @PushStep(makeHome) var push
+    @PresentStep(makeOther) var present
 
     @ViewBuilder func makeRoot() -> some Screen {
-        AnyView(LoginView(model: LoginModel()).onAppear {
-            // print("Input: \(input)")
-            print("No params")
-        })
+        LoginView(model: LoginModel())
     }
 
     @ViewBuilder func makeHome() -> some Screen {
         HomeView()
-    }
-
-    @ViewBuilder func makeUiKit() -> some Screen {
-        CollectionViewRepresentable()
-    }
-
-    @ViewBuilder func makeRegistration() -> some Screen {
-        RegistrationView(model: RegistrationModel(name: "Jozko mrkvicka"))
     }
 
     @ViewBuilder func makeOther() -> some Screen {
@@ -77,16 +65,10 @@ struct OtherCoordinator: PresentationCoordinator {
     }
 
     @ViewBuilder func makePresentSomething() -> some Screen {
-//        AnyView(Text("Present"))
-        MyCoordinator(())
+        AppCoordinator(())
     }
 
 }
-
-
-
-
-
 
 struct MyCoordinator: NavigationCoordinator {
 

@@ -7,12 +7,9 @@
 
 import SwiftUI
 
-struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
+struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier {
 
     var coordinator: T
-    var current: some View {
-        Color.clear.overlay { AnyView(coordinator.state.screenWithId(id)) }
-    }
 
     private let id: Int // TODO: get rid of IDs
     private let router: NavigationRouter<T>
@@ -31,7 +28,6 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
         )
 
         self.router = NavigationRouter(
-            id: id,
             coordinator: coordinator
         )
 
@@ -40,26 +36,26 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: Screen {
 
     // MARK: - Body
 
-    var body: some View {
+    func body(content: Content) -> some View {
         if #available(iOS 16, *) {
-            navigatableContent().environmentObject(router)
+            navigatableContent(current: content).environmentObject(router)
         } else {
-            navigatableContent_old().environmentObject(router)
+            navigatableContent_old(current: content).environmentObject(router)
         }
     }
 
     // MARK: - Navigation
 
     @available(iOS 16, *)
-    @ViewBuilder private func navigatableContent() -> some View {
-        current.navigationDestination(
+    @ViewBuilder private func navigatableContent(current: Content) -> some View {
+        Color.clear.overlay { current }.navigationDestination(
             isPresented: presentationBinding(),
             destination: destination
         )
     }
 
-    @ViewBuilder private func navigatableContent_old() -> some View {
-        current.background {
+    @ViewBuilder private func navigatableContent_old(current: Content) -> some View {
+        Color.clear.overlay { current }.background {
             NavigationLink(
                 destination: destination(),
                 isActive: presentationBinding(),

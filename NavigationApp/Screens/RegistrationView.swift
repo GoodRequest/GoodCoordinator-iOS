@@ -26,7 +26,6 @@ struct RegistrationView: Screen {
 
     var model: RegistrationModel
 
-//    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
     @EnvironmentObject var router: PresentationRouter<OtherCoordinator>
 
     var body: some View {
@@ -49,7 +48,7 @@ struct RegistrationView: Screen {
             Button(action: {
                 print("Going back")
 
-//                router.coordinator.pop()
+                router.coordinator.dismiss()
             }, label: {
                 Text("Cancel")
             })

@@ -71,7 +71,7 @@ extension PresentationCoordinator {
     }
 
     @ViewBuilder var body: some View {
-        PresentationCoordinatorViewWrapper(coordinator: self)
+        AnyView(state.root.screen).modifier(PresentationCoordinatorViewWrapper(coordinator: self))
     }
 
     init(_ input: Input) {
@@ -86,6 +86,10 @@ extension PresentationCoordinator {
 
     func abortChild() {
         state.dismiss()
+    }
+
+    func dismiss() {
+        parent?.abortChild()
     }
 
 }

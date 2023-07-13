@@ -44,7 +44,7 @@ struct LoginView: Screen {
     @EnvironmentObject var router: NavigationRouter<AppCoordinator>
 
     var body: some View {
-        return VStack {
+        VStack {
             Text("Login view")
 
             TextField("Username", text: $username)
@@ -52,18 +52,26 @@ struct LoginView: Screen {
 
             Spacer().frame(height: 40)
 
-            Button(action: {
-                router.coordinator.route(to: \.registration)
-            }, label: {
-                Text("Present registration")
-            })
+            Group {
+                Button(action: {
+                    router.coordinator.route(to: \.push)
+                }, label: {
+                    Text("Push next")
+                })
 
-            Button(action: {
-                router.coordinator.route(to: \.home)
-            }, label: {
-                Text("Switch to home")
-            })
-            .padding(.vertical, 20)
+                Button(action: {
+                    router.coordinator.route(to: \.present)
+                }, label: {
+                    Text("Present other")
+                })
+
+                Button(action: {
+                    router.coordinator.route(to: \.switch)
+                }, label: {
+                    Text("Switch to home")
+                })
+            }
+            .padding()
         }
         .padding()
         .navigationTitle("Dobry vecer")

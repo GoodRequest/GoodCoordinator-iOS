@@ -7,6 +7,8 @@
 
 import SwiftUI
 
-protocol Screen: View {}
-extension AnyView: Screen {}
-extension EmptyView: Screen {}
+typealias Screen = SwiftUI.View
+
+// protocol Screen: View {}
+// extension AnyView: Screen {}
+// extension EmptyView: Screen {}

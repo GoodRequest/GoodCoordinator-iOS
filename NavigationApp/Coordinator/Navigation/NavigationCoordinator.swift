@@ -41,11 +41,15 @@ extension NavigationCoordinator {
     @ViewBuilder var body: some View {
         if #available(iOS 16, *) {
             SwiftUI.NavigationStack {
-                NavigationCoordinatorViewWrapper(id: -1, coordinator: self)
+                state.screenWithId(-1)
+                    .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
+                    .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
             }
         } else {
             SwiftUI.NavigationView {
-                NavigationCoordinatorViewWrapper(id: -1, coordinator: self)
+                state.screenWithId(-1)
+                    .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
+                    .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
             }.navigationViewStyle(.stack)
         }
     }
@@ -106,7 +110,11 @@ extension NavigationCoordinator {
     }
 
     func abortChild() {
-        pop()
+        if !state.presented.isEmpty {
+            state.dismiss()
+        } else {
+            pop()
+        }
     }
 
     func pop() {

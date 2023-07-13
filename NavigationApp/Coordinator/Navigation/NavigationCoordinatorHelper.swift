@@ -61,7 +61,17 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
-        self.presented = NavigationCoordinatorViewWrapper(id: nextId, coordinator: coordinator)
+        self.presented = AnyView(coordinator.state.screenWithId(nextId))
+            .modifier(NavigationCoordinatorViewWrapper(
+                id: nextId,
+                coordinator: coordinator
+            ))
     }
 
 }
+
+/*
+ var current: some View {
+ Color.clear.overlay { AnyView(coordinator.state.screenWithId(id)) }
+ }
+ */

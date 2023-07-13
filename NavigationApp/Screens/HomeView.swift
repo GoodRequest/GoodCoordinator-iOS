@@ -21,22 +21,32 @@ struct HomeView: Screen {
         VStack {
             Text("Home screen")
 
+            Group {
+                Button(action: {
+                    router.coordinator.route(to: \.push)
+                }, label: {
+                    Text("Push more")
+                })
+
+                Button(action: {
+                    router.coordinator.pop()
+                }, label: {
+                    Text("Pop")
+                })
+
+                Button(action: {
+                    router.coordinator.popToRoot()
+                }, label: {
+                    Text("Pop to root")
+                })
+            }
+            .padding()
+
             Button(action: {
-//                router.route(to: \.uiKit, ())
-                router.coordinator.route(to: \.registration)
+                router.coordinator.route(to: \.push)
             }, label: {
                 Text("Push more")
             })
-
-            Button(action: {
-                // appContext.switch(to: .login)
-
-//                router.coordinator.popToRoot()
-                router.coordinator.route(to: \.root)
-            }, label: {
-                Text("Go to login")
-            })
-            .padding(.vertical, 20)
         }
         .padding()
         .navigationTitle("Home")

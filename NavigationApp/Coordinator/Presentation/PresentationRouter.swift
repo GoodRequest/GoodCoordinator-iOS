@@ -7,12 +7,5 @@
 
 import Foundation
 
-final class PresentationRouter<T>: Routable {
 
-    var coordinator: T
 
-    init(coordinator: T) {
-        self.coordinator = coordinator
-    }
-    
-}

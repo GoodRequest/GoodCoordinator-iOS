@@ -83,14 +83,15 @@ class NavigationStack: PresentationState {
     @Published var items: [NavigationStackItem<Any>] = [] // covariant
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    func screenWithId(_ id: Int) -> any Screen {
+    @ViewBuilder func screenWithId(_ id: Int) -> some Screen {
         if id < -1 {
-            assertionFailure("Invalid screen index!")
-            return EmptyView()
+            let _ = assertionFailure("Invalid screen index!")
+            EmptyView()
         } else if id == -1 {
-            return root.screen
+            AnyView(root.screen)
         } else {
-            return items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
+            let screen = items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
+            AnyView(screen)
         }
     }
 
@@ -103,6 +104,8 @@ class NavigationStack: PresentationState {
 
         lastPoppedItem = items[safe: popIndex]
         items.remove(at: popIndex)
+
+        // TODO: pop multiple
 
         lastPoppedItem?.dismissAction?()
     }

@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-#warning("wtf")
-
-protocol Routable: ObservableObject {
-
-}
-
 final class WeakRef<T: AnyObject> {
     weak var value: T?
 
@@ -21,30 +15,30 @@ final class WeakRef<T: AnyObject> {
     }
 }
 
-final class NavigationRouter<T>: Routable {
+protocol Router: ObservableObject {
 
-    public let id: Int
-    public var coordinator: T// {
-//        _coordinator.value as! T
-//    }
+    associatedtype CoordinatorType
 
-//    private var _coordinator: WeakRef<AnyObject>
+    var coordinator: CoordinatorType { get }
 
-    public init(id: Int, coordinator: T) {
-        self.id = id
-//        self._coordinator = WeakRef(value: coordinator as AnyObject)
+}
+
+final class PresentationRouter<CoordinatorType: PresentationCoordinator>: Router {
+
+    var coordinator: CoordinatorType
+
+    init(coordinator: CoordinatorType) {
         self.coordinator = coordinator
     }
 
 }
 
-extension NavigationRouter where T: NavigationCoordinator {
+final class NavigationRouter<CoordinatorType: NavigationCoordinator>: Router {
 
-//    func route<U: RouteType, Input, Output: View>(
-//        to route: KeyPath<T, GRTransition<T, U, Input, Output>>,
-//        _ input: Input
-//    ) -> T {
-//        return coordinator.route(to: route, input)
-//    }
+    public var coordinator: CoordinatorType
+
+    public init(coordinator: CoordinatorType) {
+        self.coordinator = coordinator
+    }
 
 }

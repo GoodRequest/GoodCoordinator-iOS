@@ -7,13 +7,9 @@
 
 import SwiftUI
 
-struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: Screen {
+struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModifier {
 
     var coordinator: T
-    var current: some View {
-        Color.clear.overlay { AnyView(coordinator.state.root.screen) }
-    }
-
     private let router: PresentationRouter<T>
 
     @ObservedObject var presentationHelper: PresentationCoordinatorHelper<T>
@@ -31,8 +27,8 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: Screen {
 
     // MARK: - Body
 
-    var body: some View {
-        current.sheet(
+    func body(content: Content) -> some View {
+        Color.clear.overlay { content }.sheet(
             isPresented: presentationBinding(),
             content: presentedView
         )
@@ -59,3 +55,9 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: Screen {
     }
 
 }
+
+/*
+ var current: some View {
+ Color.clear.overlay { AnyView(coordinator.state.root.screen) }
+ }
+ */
