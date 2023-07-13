@@ -28,7 +28,7 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
     // MARK: - Body
 
     func body(content: Content) -> some View {
-        Color.clear.overlay { content }.sheet(
+        content.sheet(
             isPresented: presentationBinding(),
             content: presentedView
         )

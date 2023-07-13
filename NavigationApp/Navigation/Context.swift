@@ -78,9 +78,12 @@ extension NavigationStack {
     }
 }
 */
+
+// MARK: - Navigation stack
+
 class NavigationStack: PresentationState {
 
-    @Published var items: [NavigationStackItem<Any>] = [] // covariant
+    @Published private(set) var items: [NavigationStackItem<Any>] = [] // covariant
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
     @ViewBuilder func screenWithId(_ id: Int) -> some Screen {
@@ -95,19 +98,31 @@ class NavigationStack: PresentationState {
         }
     }
 
+}
+
+// MARK: - Navigation
+
+extension NavigationStack {
+
+    func push(items newItems: [NavigationStackItem<Any>]) {
+        items.append(contentsOf: newItems)
+    }
+
     func pop(to id: Int) {
         let popIndex = id + 1
-        if id == -1 && items.isEmpty { return print("Already at root") }
+        if id == -1 && items.isEmpty {
+            return assertionFailure("Already at root. Use `abortChild()` instead.")
+        }
         guard items.startIndex..<items.endIndex ~= popIndex else {
-            preconditionFailure("Invalid index. Use `abortChild()` instead.")
+            return assertionFailure("Invalid index. Use `abortChild()` instead.")
         }
 
-        lastPoppedItem = items[safe: popIndex]
-        items.remove(at: popIndex)
+        let rangeToPop = popIndex..<items.endIndex
+        let itemsToPop = items[rangeToPop]
+        lastPoppedItem = itemsToPop.first
 
-        // TODO: pop multiple
-
-        lastPoppedItem?.dismissAction?()
+        items.remove(atOffsets: IndexSet(integersIn: rangeToPop))
+        itemsToPop.reversed().forEach { $0.dismissAction?() }
     }
 
     func revert() {
@@ -117,6 +132,18 @@ class NavigationStack: PresentationState {
     }
 
 }
+
+// MARK: - Helper functions
+
+extension NavigationStack {
+
+    func canPopTo(id: Int) -> Bool {
+        -1..<items.endIndex ~= id
+    }
+
+}
+
+// MARK: - Navigation stack items
 
 struct NavigationRootItem {
 

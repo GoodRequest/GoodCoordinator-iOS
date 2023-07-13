@@ -48,14 +48,14 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
 
     @available(iOS 16, *)
     @ViewBuilder private func navigatableContent(current: Content) -> some View {
-        Color.clear.overlay { current }.navigationDestination(
+        current.navigationDestination(
             isPresented: presentationBinding(),
             destination: destination
         )
     }
 
     @ViewBuilder private func navigatableContent_old(current: Content) -> some View {
-        Color.clear.overlay { current }.background {
+        current.background {
             NavigationLink(
                 destination: destination(),
                 isActive: presentationBinding(),
@@ -65,7 +65,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
     }
 
     @ViewBuilder private func destination() -> some View {
-        if let view = presentationHelper.presented {
+        if let view = presentationHelper.child {
             AnyView(view)
         } else {
             EmptyView()
@@ -76,9 +76,10 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
 
     private func presentationBinding() -> Binding<Bool> {
         Binding<Bool>(get: {
-            presentationHelper.presented != nil
+            presentationHelper.child != nil
         }, set: {
-            guard !$0 else { return }
+            /// Check that the binding is being set to false and is valid
+            guard !$0 && coordinator.canPopTo(id: id) else { return }
             coordinator.popTo(id)
         })
     }

@@ -43,9 +43,9 @@ struct HomeView: Screen {
             .padding()
 
             Button(action: {
-                router.coordinator.route(to: \.push)
+                router.coordinator.route(to: \.present)
             }, label: {
-                Text("Push more")
+                Text("Present other")
             })
         }
         .padding()

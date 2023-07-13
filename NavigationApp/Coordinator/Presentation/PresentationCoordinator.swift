@@ -16,7 +16,6 @@ struct PresentationItem<Input> {
 
 }
 
-
 class PresentationState: ObservableObject {
 
     var parent: (any Coordinator)?
@@ -29,12 +28,12 @@ class PresentationState: ObservableObject {
     }
 
     func present(_ item: PresentationItem<Any>) {
-        guard presented.count < 1 else { fatalError("Presenting multiple windows is not supported") }
+        guard presented.count < 1 else { preconditionFailure("Presenting multiple windows is not supported") }
         presented.append(item)
     }
 
     func dismiss() {
-        guard presented.count <= 1 else { fatalError("Presenting multiple windows is not supported") }
+        guard presented.count <= 1 else { preconditionFailure("Presenting multiple windows is not supported") }
         presented = []
     }
 

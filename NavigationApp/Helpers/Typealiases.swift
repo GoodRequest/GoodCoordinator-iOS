@@ -9,5 +9,5 @@ import Foundation
 
 typealias VoidClosure = () -> Void
 
-typealias ScreenBuilder<CoordinatorType, InputType> = ((CoordinatorType) -> ((InputType) -> any Screen))
-typealias VoidScreenBuilder<CoordinatorType> = ((CoordinatorType) -> () -> any Screen)
+typealias ScreenBuilder<CoordinatorType, InputType, ResultType> = ((CoordinatorType) -> ((InputType) -> ResultType))
+typealias VoidScreenBuilder<CoordinatorType, ResultType> = ((CoordinatorType) -> () -> ResultType)

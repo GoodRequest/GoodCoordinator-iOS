@@ -14,13 +14,13 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
     let navigationStack: NavigationStack; #warning("Memory leak?")
     var cancellables = Set<AnyCancellable>()
 
-    @Published var presented: (any Screen)?
+    @Published var child: (any Screen)?
 
     init(id: Int, coordinator: T) {
         self.id = id
         self.navigationStack = coordinator.state
 
-        self.setupPresented(coordinator: coordinator)
+        self.setupChild(coordinator: coordinator)
 
         navigationStack.$items
             .scan(([], [])) { ($0.1, $1) }
@@ -41,31 +41,31 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
     func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
         if current.count > previous.count {
-            setupPresented(coordinator: coordinator)
+            setupChild(coordinator: coordinator)
         } else {
+            #warning("TODO: pop only once if possible")
             let popDestination = (current.count - 1)
-            popPresented(to: popDestination)
+            popChild(to: popDestination)
         }
     }
 
-    func popPresented(to destination: Int) {
+    func popChild(to destination: Int) {
         if id >= destination {
-            print("[\(id)] Setting presented = nil")
-            presented = nil
+            print("[\(id)] Setting child = nil")
+            child = nil
         }
     }
 
-    func setupPresented(coordinator: T) {
+    func setupChild(coordinator: T) {
         let nextId = id + 1
-        let isTopScreen = (self.presented == nil) && (navigationStack.items.count - 1 == nextId)
+        let isTopScreen = (self.child == nil) && (navigationStack.items.count - 1 == nextId)
 
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
-        self.presented = AnyView(coordinator.state.screenWithId(nextId))
-            .modifier(NavigationCoordinatorViewWrapper(
-                id: nextId,
-                coordinator: coordinator
-            ))
+        self.child = coordinator.state.screenWithId(nextId).modifier(NavigationCoordinatorViewWrapper(
+            id: nextId,
+            coordinator: coordinator
+        ))
     }
 
 }

@@ -69,6 +69,10 @@ extension NavigationCoordinator {
 //        self.popTo(value - 1, action)
 //    }
 
+    func canPopTo(id: Int) -> Bool {
+        state.canPopTo(id: id)
+    }
+
     internal func popTo(_ int: Int, _ action: (() -> ())? = nil) {
 //        if let action = action {
 //            self.stack.dismissalAction[int] = action
@@ -85,8 +89,6 @@ extension NavigationCoordinator {
 //            self.stack.value = Array(self.stack.value.prefix(int + 1))
 //            self.stack.poppedTo.send(int)
 //        }
-
-        print("[\(type(of: self))] Popping to \(int)")
         state.pop(to: int)
     }
 

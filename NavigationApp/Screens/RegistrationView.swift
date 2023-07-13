@@ -15,39 +15,28 @@ struct RegistrationModel: Hashable {
 
 struct RegistrationView: Screen {
 
-    typealias Content = Self
-    typealias Data = RegistrationModel
-
-    var id: String {
-        "registrationView"
-    }
-
     @State private var agrees: Bool = false
-
     var model: RegistrationModel
 
     @EnvironmentObject var router: PresentationRouter<OtherCoordinator>
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Hello, \(model.hashValue)")
+            Text("Hello, \(model.name)")
 
             Spacer().frame(height: 100)
 
             Toggle(isOn: $agrees, label: {
                 Text("Agree?")
             })
-            Button(action: {
-                print("Registering...")
 
-                // navigation.set(NavigationPath([HomeModel()]))
+            Button(action: {
                 router.coordinator.route(to: \.presentSomething)
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
-            Button(action: {
-                print("Going back")
 
+            Button(action: {
                 router.coordinator.dismiss()
             }, label: {
                 Text("Cancel")

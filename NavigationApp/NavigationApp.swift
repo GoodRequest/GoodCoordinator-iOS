@@ -42,22 +42,22 @@ struct AppCoordinator: NavigationCoordinator {
     }
 
     @ViewBuilder func makeOther() -> some Screen {
-        OtherCoordinator(())
+        OtherCoordinator("Janko Hraško")
     }
 
 }
 
 struct OtherCoordinator: PresentationCoordinator {
 
-    typealias Input = Void
+    typealias Input = String
     var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
     @PresentStep(makePresentSomething) var presentSomething
 
-    @ViewBuilder func makeRoot() -> some Screen {
+    @ViewBuilder func makeRoot(name: String) -> some Screen {
         // AnyView(Text("Input"))
-        RegistrationView(model: RegistrationModel(name: "asdf"))
+        RegistrationView(model: RegistrationModel(name: name))
     }
 
     @ViewBuilder func makeAppCoordinator() -> some Screen {
