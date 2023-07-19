@@ -60,7 +60,9 @@ struct LoginView: Screen {
                 })
 
                 Button(action: {
-                    router.coordinator.route(to: \.present)
+                    router.coordinator.route(to: \.present) {
+                        print("dismissed")
+                    }
                 }, label: {
                     Text("Present other")
                 })

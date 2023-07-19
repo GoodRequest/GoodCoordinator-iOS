@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PresentationItem<Input> {
 
-    let keyPath: AnyKeyPath
     let input: Input
     var screen: any Screen // child?
     var dismissAction: VoidClosure? = nil
@@ -43,9 +42,10 @@ class PresentationState: ObservableObject {
 
 protocol PresentationCoordinator: Coordinator where State: PresentationState {
 
-    var root: Root<Self> { get }
+    associatedtype RootType: View
+    var root: Root<Self, RootType, Input> { get }
     init()
-    
+
 }
 
 extension PresentationCoordinator where Input == Void {

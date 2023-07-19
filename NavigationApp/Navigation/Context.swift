@@ -153,7 +153,6 @@ struct NavigationRootItem {
 
 struct NavigationStackItem<Input> {
 
-    let keyPath: AnyKeyPath
     let input: Input
     var screen: any Screen // child?
     var dismissAction: VoidClosure? = nil

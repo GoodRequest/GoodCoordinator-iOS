@@ -33,38 +33,39 @@ struct AppCoordinator: NavigationCoordinator {
     @PushStep(makeHome) var push
     @PresentStep(makeOther) var present
 
-    @ViewBuilder func makeRoot() -> some Screen {
+    @ViewBuilder func makeRoot() -> LoginView {
         LoginView(model: LoginModel())
     }
 
-    @ViewBuilder func makeHome() -> some Screen {
+    @ViewBuilder func makeHome() -> HomeView {
         HomeView()
     }
 
-    @ViewBuilder func makeOther() -> some Screen {
-        OtherCoordinator("Janko Hraško")
+    @ViewBuilder func makeOther(action: @escaping VoidClosure) -> OtherCoordinator {
+        OtherCoordinator(action)
     }
 
 }
 
 struct OtherCoordinator: PresentationCoordinator {
 
-    typealias Input = String
+    typealias Input = VoidClosure
     var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
     @PresentStep(makePresentSomething) var presentSomething
 
-    @ViewBuilder func makeRoot(name: String) -> some Screen {
-        // AnyView(Text("Input"))
-        RegistrationView(model: RegistrationModel(name: name))
+    @ViewBuilder func makeRoot(name: @escaping VoidClosure) -> AnyView {
+        AnyView(RegistrationView(model: RegistrationModel(name: "Name")).onDisappear {
+            name()
+        })
     }
 
-    @ViewBuilder func makeAppCoordinator() -> some Screen {
+    @ViewBuilder func makeAppCoordinator() -> AppCoordinator {
         AppCoordinator(())
     }
 
-    @ViewBuilder func makePresentSomething() -> some Screen {
+    @ViewBuilder func makePresentSomething() -> AppCoordinator {
         AppCoordinator(())
     }
 
@@ -75,15 +76,13 @@ struct MyCoordinator: NavigationCoordinator {
     typealias Input = Void
     var state: NavigationStack = .init()
 
-   @RootStep(makeRootView) var root
+    @RootStep(makeRoot) var root
 
-    @ViewBuilder func makeRootView() -> some Screen {
-        AnyView(Text("My root view").navigationTitle("Modal"))
+    @ViewBuilder func makeRoot() -> AnyView {
+        AnyView(Text("asdf my coordinator"))
     }
 
 }
-
-
 
 
 

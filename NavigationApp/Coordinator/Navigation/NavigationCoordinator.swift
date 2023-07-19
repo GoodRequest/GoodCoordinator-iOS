@@ -9,7 +9,8 @@ import SwiftUI // TODO: treba? vyhodit prec 2x View
 
 protocol NavigationCoordinator: PresentationCoordinator where State: NavigationStack {
 
-    var root: Root<Self> { get }
+    associatedtype RootType: View
+    var root: Root<Self, RootType, Input> { get }
     init()
 
 }

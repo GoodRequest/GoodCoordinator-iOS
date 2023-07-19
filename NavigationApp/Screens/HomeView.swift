@@ -43,7 +43,9 @@ struct HomeView: Screen {
             .padding()
 
             Button(action: {
-                router.coordinator.route(to: \.present)
+                router.coordinator.route(to: \.present) {
+                    print("dimsissedadjsakld")
+                }
             }, label: {
                 Text("Present other")
             })

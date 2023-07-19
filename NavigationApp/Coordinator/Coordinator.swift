@@ -23,32 +23,31 @@ protocol Coordinator: Screen {
     func abortChild()
     func setRoot(to: any Screen)
 
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Self where Transition.CoordinatorType.Input == Void
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>, _ input: Transition.CoordinatorType.Input) -> Self
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Transition.ScreenType where Transition.InputType == Void
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>, _ input: Transition.InputType) -> Transition.ScreenType
 
 }
 
 extension Coordinator {
 
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Self where Transition.CoordinatorType.Input == Void {
+    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Transition.ScreenType where Transition.InputType == Void {
         self.route(to: route, ())
     }
 
     func route<Transition: RouteType>(
         to route: KeyPath<Self, Transition>,
-        _ input: Transition.CoordinatorType.Input
-    ) -> Self {
+        _ input: Transition.InputType
+    ) -> Transition.ScreenType {
         guard self is Transition.CoordinatorType else { fatalError("Unsupported transition") } // TODO: type check?
 
         let transition = self[keyPath: route]
 
-        transition.apply(
+        let result: Transition.ScreenType = transition.apply(
             coordinator: (self as! Transition.CoordinatorType),
-            input: input,
-            keyPath: route
+            input: input
         )
 
-        return self
+        return result
     }
 
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-typealias Screen = SwiftUI.View
+ typealias Screen = SwiftUI.View
 
 // protocol Screen: View {}
 // extension AnyView: Screen {}
