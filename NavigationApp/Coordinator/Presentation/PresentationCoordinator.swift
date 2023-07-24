@@ -31,7 +31,11 @@ class PresentationState: ObservableObject {
     var parent: (any Coordinator)?
 
     @Published var root: NavigationRootItem
-    @Published var presented: [PresentationItem<Any>] = [] // covariant
+    @Published var presented: [PresentationItem<Any>] = [] { // covariant
+        didSet {
+            print("Presentation state: \(oldValue.count == 1) -> \(presented.count == 1)")
+        }
+    }
 
     init() {
         self.root = NavigationRootItem(screen: EmptyView())
@@ -42,9 +46,13 @@ class PresentationState: ObservableObject {
         presented.append(item)
     }
 
-    func dismiss() {
+    func dismissChild() {
         guard presented.count <= 1 else { preconditionFailure("Presenting multiple windows is not supported") }
         presented = []
+    }
+
+    func canDismissChild() -> Bool {
+        presented.count == 1
     }
 
 }
@@ -94,12 +102,25 @@ extension PresentationCoordinator {
         state.root = NavigationRootItem(screen: screen)
     }
 
+    func canDismissChild() -> Bool {
+        state.canDismissChild()
+    }
+
+    func canBeDismissed() -> Bool {
+        (parent as? any PresentationCoordinator)?.state.canDismissChild() ?? false
+    }
+
     func abortChild() {
-        state.dismiss()
+        guard canDismissChild() else { return }
+        state.dismissChild()
     }
 
     func dismiss() {
         parent?.abortChild()
+    }
+
+    func dismissChild() {
+        state.dismissChild()
     }
 
 }

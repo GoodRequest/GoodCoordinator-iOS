@@ -23,7 +23,6 @@ final class PresentationCoordinatorHelper<T: PresentationCoordinator>: Observabl
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }
-                print("[\(type(of: coordinator))] Presented: \(current.count)")
                 onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)
@@ -35,7 +34,9 @@ final class PresentationCoordinatorHelper<T: PresentationCoordinator>: Observabl
     }
 
     func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
-        guard current.count != previous.count else { return }
+//        guard current.count != previous.count else {
+//            return objectWillChange.send()
+//        }
 
         if current.count > previous.count {
             presented = [coordinator.state.presented.first].compactMap { $0 }

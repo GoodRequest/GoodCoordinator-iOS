@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09319A062A384FC200856CA5 /* Stinsen in Frameworks */ = {isa = PBXBuildFile; productRef = 09319A052A384FC200856CA5 /* Stinsen */; };
 		09319A092A3852B500856CA5 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A082A3852B500856CA5 /* ArrayExtension.swift */; };
 		09319A0C2A389C5800856CA5 /* SharedObject in Frameworks */ = {isa = PBXBuildFile; productRef = 09319A0B2A389C5800856CA5 /* SharedObject */; };
 		09319A0F2A39D2E900856CA5 /* RouteType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09319A0E2A39D2E900856CA5 /* RouteType.swift */; };
@@ -70,7 +69,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				09319A0C2A389C5800856CA5 /* SharedObject in Frameworks */,
-				09319A062A384FC200856CA5 /* Stinsen in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,7 +196,6 @@
 			);
 			name = NavigationApp;
 			packageProductDependencies = (
-				09319A052A384FC200856CA5 /* Stinsen */,
 				09319A0B2A389C5800856CA5 /* SharedObject */,
 			);
 			productName = NavigationApp;
@@ -230,7 +227,6 @@
 			);
 			mainGroup = 0995790D29FA702900029662;
 			packageReferences = (
-				09319A042A384FC200856CA5 /* XCRemoteSwiftPackageReference "stinsen" */,
 				09319A0A2A389C5800856CA5 /* XCRemoteSwiftPackageReference "swiftui-shared-object" */,
 			);
 			productRefGroup = 0995791729FA702900029662 /* Products */;
@@ -493,14 +489,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		09319A042A384FC200856CA5 /* XCRemoteSwiftPackageReference "stinsen" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rundfunk47/stinsen";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
 		09319A0A2A389C5800856CA5 /* XCRemoteSwiftPackageReference "swiftui-shared-object" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-shared-object.git";
@@ -512,11 +500,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		09319A052A384FC200856CA5 /* Stinsen */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09319A042A384FC200856CA5 /* XCRemoteSwiftPackageReference "stinsen" */;
-			productName = Stinsen;
-		};
 		09319A0B2A389C5800856CA5 /* SharedObject */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 09319A0A2A389C5800856CA5 /* XCRemoteSwiftPackageReference "swiftui-shared-object" */;

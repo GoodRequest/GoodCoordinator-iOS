@@ -27,7 +27,6 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }
-                print("[\(id), \(type(of: coordinator))] Items changed - \(previous.count) => \(current.count)")
                 onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)
@@ -43,6 +42,10 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
             setupChild(coordinator: coordinator)
         } else {
             #warning("TODO: pop only once if possible")
+//
+//            let isTopScreen = (self.child == nil) && (navigationStack.items.count - 1 == (id + 1))
+//            guard isTopScreen else { return }
+
             let popDestination = (current.count - 1)
             popChild(to: popDestination)
         }
@@ -50,7 +53,6 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
     func popChild(to destination: Int) {
         if id >= destination {
-            print("[\(id)] Setting child = nil")
             child = nil
         }
     }

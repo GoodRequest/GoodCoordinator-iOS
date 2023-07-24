@@ -17,13 +17,13 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
-            coordinator
+            coordinator.body
         }
     }
 
 }
 
-struct AppCoordinator: NavigationCoordinator {
+final class AppCoordinator: NavigationCoordinator {
 
     typealias Input = Void
     var state: NavigationStack = .init()
@@ -47,7 +47,7 @@ struct AppCoordinator: NavigationCoordinator {
 
 }
 
-struct OtherCoordinator: NavigationCoordinator {
+final class OtherCoordinator: NavigationCoordinator {
 
     typealias Input = String
     var state: NavigationStack = .init()
@@ -74,7 +74,7 @@ struct OtherCoordinator: NavigationCoordinator {
 
 }
 
-struct MyCoordinator: NavigationCoordinator {
+final class MyCoordinator: NavigationCoordinator {
 
     typealias Input = Void
     var state: NavigationStack = .init()

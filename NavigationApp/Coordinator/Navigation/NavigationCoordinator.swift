@@ -55,21 +55,6 @@ extension NavigationCoordinator {
         }
     }
 
-//    func dismissChild<T: Coordinator>(coordinator: T, action: (() -> Void)? = nil) {
-//        guard let value = stack.value.firstIndex(where: { item in
-//            guard let presentable = item.presentable as? (any StringIdentifiable) else {
-//                return false
-//            }
-//
-//            return presentable.id == coordinator.id
-//        }) else {
-//            assertionFailure("Can not dismiss child when coordinator is top of the stack.")
-//            return
-//        }
-//
-//        self.popTo(value - 1, action)
-//    }
-
     func canPopTo(id: Int) -> Bool {
         state.canPopTo(id: id)
     }
@@ -94,27 +79,12 @@ extension NavigationCoordinator {
     }
 
     func setRoot(to screen: any Screen) {
-        // let x = self[keyPath: self.stack.initial] as! NavigationOutputable
-        // let presentable = x.using(coordinator: self, input: self.stack.initialInput as Any)
-
-        // let rootScreen = self[keyPath: self.stack.initial](self)("")
-//        let rootRoute = self[keyPath: self.state.root.keyPath] as! Root<Self, Input>
-//        let rootScreen = rootRoute.prepareScreen(coordinator: self, input: self.state.root.input)
-//        let rootScreen = rootRoute(self)(self.state.root.input)
-
-//        let item = NavigationRootItem(
-//            keyPath: self.state.root.keyPath.hashValue,
-//            input: self.state.root.input,
-//            screen: rootScreen
-//        )
-
-//        self.state.root.screen = rootScreen
         state.root = NavigationRootItem(screen: screen)
     }
 
     func abortChild() {
-        if !state.presented.isEmpty {
-            state.dismiss()
+        if canDismissChild() {
+            dismissChild()
         } else {
             pop()
         }
@@ -124,7 +94,7 @@ extension NavigationCoordinator {
         if state.items.isEmpty {
             parent?.abortChild()
         } else {
-            popTo(state.items.count - 2)
+            popTo((state.items.count - 1 /* Index */) - 1 /* Previous */ )
         }
     }
 

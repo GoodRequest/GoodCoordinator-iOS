@@ -83,7 +83,11 @@ extension NavigationStack {
 
 class NavigationStack: PresentationState {
 
-    @Published private(set) var items: [NavigationStackItem<Any>] = [] // covariant
+    @Published private(set) var items: [NavigationStackItem<Any>] = []  { // covariant
+        didSet {
+            print("Navigation stack items: \(oldValue.count) -> \(items.count)")
+        }
+    }
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
     @ViewBuilder func screenWithId(_ id: Int) -> some Screen {
@@ -138,7 +142,7 @@ extension NavigationStack {
 extension NavigationStack {
 
     func canPopTo(id: Int) -> Bool {
-        -1..<items.endIndex ~= id
+        -1..<(items.endIndex - 1) ~= id
     }
 
 }

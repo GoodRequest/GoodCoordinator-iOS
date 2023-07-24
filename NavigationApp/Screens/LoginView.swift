@@ -41,7 +41,6 @@ struct LoginView: Screen {
         "loginView"
     }
 
-//    @Environment(\.routingTree) var routingTree
     @EnvironmentObject var router: Router<AppCoordinator>
 
     var body: some View {
@@ -55,8 +54,8 @@ struct LoginView: Screen {
 
             Group {
                 Button(action: {
-                    router.coordinator.route(to: \.push).route(to: \.push, "")
-//                    router.coordinator.route(to: \.push).route(to: \.present).route(to: \.push)
+//                    router.coordinator.route(to: \.push).route(to: \.push, "")
+                    router.coordinator.route(to: \.push).route(to: \.present).route(to: \.push)
                 }, label: {
                     Text("Push next")
                 })
@@ -69,7 +68,7 @@ struct LoginView: Screen {
                 })
 
                 Button(action: {
-                    router.coordinator.route(to: \.switch)
+                    router.coordinator.route(to: \.push)
                 }, label: {
                     Text("Switch to home")
                 })

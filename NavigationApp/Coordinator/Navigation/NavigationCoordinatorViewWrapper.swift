@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier {
 
-    var coordinator: T
+    let coordinator: T
 
     private let id: Int // TODO: get rid of IDs
     private let router: Router<T>

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModifier {
 
-    var coordinator: T
+    let coordinator: T
     private let router: Router<T>
 
     @ObservedObject var presentationHelper: PresentationCoordinatorHelper<T>
@@ -59,8 +59,8 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
         return Binding<Bool>(get: {
             !presentationHelper.presented.isEmpty
         }, set: {
-            guard !$0 else { return }
-            coordinator.state.dismiss()
+            guard !$0, coordinator.state.canDismissChild() else { return }
+            coordinator.state.dismissChild()
         })
     }
 
