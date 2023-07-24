@@ -15,29 +15,11 @@ final class WeakRef<T: AnyObject> {
     }
 }
 
-protocol Router: ObservableObject {
+final class Router<CoordinatorType: Coordinator>: ObservableObject {
 
-    associatedtype CoordinatorType
-
-    var coordinator: CoordinatorType { get }
-
-}
-
-final class PresentationRouter<CoordinatorType: PresentationCoordinator>: Router {
-
-    var coordinator: CoordinatorType
+    private(set) var coordinator: CoordinatorType
 
     init(coordinator: CoordinatorType) {
-        self.coordinator = coordinator
-    }
-
-}
-
-final class NavigationRouter<CoordinatorType: NavigationCoordinator>: Router {
-
-    public var coordinator: CoordinatorType
-
-    public init(coordinator: CoordinatorType) {
         self.coordinator = coordinator
     }
 

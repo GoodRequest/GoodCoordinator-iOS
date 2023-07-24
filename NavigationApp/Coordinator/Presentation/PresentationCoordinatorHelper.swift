@@ -13,14 +13,13 @@ final class PresentationCoordinatorHelper<T: PresentationCoordinator>: Observabl
     let presentationState: PresentationState; #warning("Memory leak?")
     var cancellables = Set<AnyCancellable>()
 
-    @Published var presented: (any Screen)?
+    @Published var presented: [PresentationItem<Any>] = [] // covariant
 
     init(coordinator: T) {
         self.presentationState = coordinator.state
 
         presentationState.$presented
             .scan(([], [])) { ($0.1, $1) }
-            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }
@@ -36,10 +35,12 @@ final class PresentationCoordinatorHelper<T: PresentationCoordinator>: Observabl
     }
 
     func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
+        guard current.count != previous.count else { return }
+
         if current.count > previous.count {
-            presented = coordinator.state.presented.first?.screen
+            presented = [coordinator.state.presented.first].compactMap { $0 }
         } else {
-            presented = nil
+            presented = []
         }
     }
 

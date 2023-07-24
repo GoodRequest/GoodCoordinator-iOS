@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 final class LoginModel: ObservableObject, Hashable {
 
@@ -41,7 +42,7 @@ struct LoginView: Screen {
     }
 
 //    @Environment(\.routingTree) var routingTree
-    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
+    @EnvironmentObject var router: Router<AppCoordinator>
 
     var body: some View {
         VStack {
@@ -54,15 +55,15 @@ struct LoginView: Screen {
 
             Group {
                 Button(action: {
-                    router.coordinator.route(to: \.push)
+                    router.coordinator.route(to: \.push).route(to: \.push, "")
+//                    router.coordinator.route(to: \.push).route(to: \.present).route(to: \.push)
                 }, label: {
                     Text("Push next")
                 })
 
                 Button(action: {
-                    router.coordinator.route(to: \.present) {
-                        print("dismissed")
-                    }
+                    router.coordinator.route(to: \.present).route(to: \.push, "")
+//                    router.coordinator.route(to: \.push).route(to: \.present)
                 }, label: {
                     Text("Present other")
                 })

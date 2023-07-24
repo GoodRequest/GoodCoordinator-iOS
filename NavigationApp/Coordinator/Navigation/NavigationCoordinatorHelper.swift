@@ -24,7 +24,6 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
         navigationStack.$items
             .scan(([], [])) { ($0.1, $1) }
-            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }

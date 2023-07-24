@@ -7,9 +7,20 @@
 
 import SwiftUI
 
+enum PresentationStyle: Equatable {
+
+    case sheet
+    case fullScreenCover
+    case popover
+    case inspector
+
+}
+
 struct PresentationItem<Input> {
 
     let input: Input
+    let style: PresentationStyle
+
     var screen: any Screen // child?
     var dismissAction: VoidClosure? = nil
 
@@ -89,19 +100,6 @@ extension PresentationCoordinator {
 
     func dismiss() {
         parent?.abortChild()
-    }
-
-}
-
-extension PresentationCoordinator {
-
-    func isPresenting() -> Binding<Bool> {
-        Binding(get: {
-            state.presented.count == 1
-        }, set: {
-            guard !$0 else { return }
-            state.dismiss()
-        })
     }
 
 }

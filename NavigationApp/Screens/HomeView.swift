@@ -15,7 +15,7 @@ struct HomeModel: Hashable {
 
 struct HomeView: Screen {
 
-    @EnvironmentObject var router: NavigationRouter<AppCoordinator>
+    @EnvironmentObject var router: Router<AppCoordinator>
 
     var body: some View {
         VStack {
@@ -43,9 +43,7 @@ struct HomeView: Screen {
             .padding()
 
             Button(action: {
-                router.coordinator.route(to: \.present) {
-                    print("dimsissedadjsakld")
-                }
+                router.coordinator.route(to: \.present)
             }, label: {
                 Text("Present other")
             })

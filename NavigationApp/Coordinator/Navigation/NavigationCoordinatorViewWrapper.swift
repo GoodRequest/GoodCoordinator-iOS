@@ -12,7 +12,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
     var coordinator: T
 
     private let id: Int // TODO: get rid of IDs
-    private let router: NavigationRouter<T>
+    private let router: Router<T>
 
     @ObservedObject var presentationHelper: NavigationCoordinatorHelper<T>
 
@@ -27,7 +27,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
             coordinator: coordinator
         )
 
-        self.router = NavigationRouter(
+        self.router = Router(
             coordinator: coordinator
         )
 

@@ -10,7 +10,7 @@ import SwiftUI
 struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModifier {
 
     var coordinator: T
-    private let router: PresentationRouter<T>
+    private let router: Router<T>
 
     @ObservedObject var presentationHelper: PresentationCoordinatorHelper<T>
 
@@ -19,7 +19,7 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
     init(coordinator: T) {
         self.coordinator = coordinator
 
-        self.router = PresentationRouter(coordinator: coordinator)
+        self.router = Router(coordinator: coordinator)
         self.presentationHelper = PresentationCoordinatorHelper(coordinator: coordinator)
 
         // RouterStore.shared.store(router: router)
@@ -29,14 +29,22 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
 
     func body(content: Content) -> some View {
         content.sheet(
-            isPresented: presentationBinding(),
+            isPresented: presentationBinding(style: .sheet),
+            content: presentedView
+        )
+        .fullScreenCover(
+            isPresented: presentationBinding(style: .fullScreenCover),
+            content: presentedView
+        )
+        .popover(
+            isPresented: presentationBinding(style: .popover),
             content: presentedView
         )
         .environmentObject(router)
     }
 
     @ViewBuilder func presentedView() -> some View {
-        if let presented = coordinator.state.presented.first?.screen {
+        if let presented = presentationHelper.presented.first?.screen {
             AnyView(presented)
         } else {
             EmptyView()
@@ -45,9 +53,11 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
 
     // MARK: - Bindings
 
-    private func presentationBinding() -> Binding<Bool> {
-        Binding<Bool>(get: {
-            presentationHelper.presented != nil
+    private func presentationBinding(style: PresentationStyle?) -> Binding<Bool> {
+        guard style == presentationHelper.presented.first?.style else { return .constant(false) }
+
+        return Binding<Bool>(get: {
+            !presentationHelper.presented.isEmpty
         }, set: {
             guard !$0 else { return }
             coordinator.state.dismiss()

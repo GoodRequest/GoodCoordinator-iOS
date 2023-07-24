@@ -11,16 +11,27 @@ protocol RouteType {
 
     associatedtype CoordinatorType: Coordinator
     associatedtype ScreenType: Screen
+    associatedtype Options
 
     associatedtype InputType
     // associatedtype ResultType
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>)
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>, options: Options)
 
+    var options: Options { get }
     var screenBuilder: ScreenBuilder<CoordinatorType, InputType, ScreenType> { get }
 
     func apply(coordinator: CoordinatorType, input: InputType) -> ScreenType
     func apply(coordinator: CoordinatorType, input: InputType)
+
+}
+
+extension RouteType where Options == Void {
+
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>, options: Options) {
+        self.init(wrappedValue: wrappedValue)
+    }
 
 }
 
@@ -34,24 +45,8 @@ extension RouteType {
         return screen
     }
 
-}
-
-extension RouteType where InputType == Void {
-
-    init(wrappedValue: @escaping VoidScreenBuilder<CoordinatorType, ScreenType>) {
-        self.init(wrappedValue: { (coordinator: CoordinatorType) in
-            return { (_: ()) -> ScreenType in
-                return wrappedValue(coordinator)()
-            }
-        })
-    }
-
-    func apply(coordinator: CoordinatorType) -> ScreenType {
-        return apply(coordinator: coordinator, input: ())
-    }
-
-    func apply(coordinator: CoordinatorType) {
-        apply(coordinator: coordinator, input: ()) as Void
+    func apply(coordinator: CoordinatorType, input: InputType) {
+        _ = apply(coordinator: coordinator, input: input) as ScreenType
     }
 
 }
@@ -84,16 +79,28 @@ typealias PresentStep<
         self.wrappedValue = Route.init(wrappedValue: screen)
     }
 
+    init(_ screen: @escaping ScreenBuilder<Route.CoordinatorType, Route.InputType, Route.ScreenType>, _ options: Route.Options) {
+        self.wrappedValue = Route.init(wrappedValue: screen, options: options)
+    }
+
 }
 
 extension NavigationStep where Route.InputType == Void {
 
     convenience init(_ screen: @escaping VoidScreenBuilder<Route.CoordinatorType, Route.ScreenType>) {
-        self.init { (coordinator: Route.CoordinatorType) in
+        self.init({ (coordinator: Route.CoordinatorType) in
             return { (_: ()) -> Route.ScreenType in
                 return screen(coordinator)()
             }
-        }
+        })
+    }
+
+    convenience init(_ screen: @escaping VoidScreenBuilder<Route.CoordinatorType, Route.ScreenType>, _ options: Route.Options) {
+        self.init({ (coordinator: Route.CoordinatorType) in
+            return { (_: ()) -> Route.ScreenType in
+                return screen(coordinator)()
+            }
+        }, options)
     }
 
 }
@@ -102,10 +109,12 @@ extension NavigationStep where Route.InputType == Void {
 
 struct Root<CoordinatorType: Coordinator, ScreenType: Screen, InputType>: RouteType {
 
+    var options: Void
     var screenBuilder: ScreenBuilder<CoordinatorType, InputType, ScreenType>
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>) {
         self.screenBuilder = wrappedValue
+        self.options = ()
     }
 
     func apply(coordinator: CoordinatorType, input: InputType) -> ScreenType {
@@ -115,42 +124,44 @@ struct Root<CoordinatorType: Coordinator, ScreenType: Screen, InputType>: RouteT
         return screen
     }
 
-    func apply(coordinator: CoordinatorType, input: InputType) {
-        fatalError()
-    }
-
 }
 
 struct Present<CoordinatorType: PresentationCoordinator, ScreenType: Coordinator, InputType>: RouteType {
 
+    var options: PresentationStyle
     var screenBuilder: ScreenBuilder<CoordinatorType, InputType, ScreenType>
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>) {
         self.screenBuilder = wrappedValue
+        self.options = .sheet
+    }
+
+    init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>, options: PresentationStyle) {
+        self.screenBuilder = wrappedValue
+        self.options = options
     }
 
     func apply(coordinator: CoordinatorType, input: InputType) -> ScreenType {
         let screen = prepareScreen(coordinator: coordinator, input: input)
         coordinator.state.present(PresentationItem(
             input: input,
+            style: options,
             screen: screen
         ))
 
         return screen
     }
 
-    func apply(coordinator: CoordinatorType, input: InputType) {
-        fatalError()
-    }
-
 }
 
 struct Push<CoordinatorType: NavigationCoordinator, ScreenType: Screen, InputType>: RouteType {
 
+    var options: Void
     var screenBuilder: ScreenBuilder<CoordinatorType, InputType, ScreenType>
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>) {
         self.screenBuilder = wrappedValue
+        self.options = ()
     }
 
     func apply(coordinator: CoordinatorType, input: InputType) -> ScreenType {
@@ -163,10 +174,6 @@ struct Push<CoordinatorType: NavigationCoordinator, ScreenType: Screen, InputTyp
         ])
 
         return screen
-    }
-
-    func apply(coordinator: CoordinatorType, input: InputType) {
-        fatalError()
     }
 
 }

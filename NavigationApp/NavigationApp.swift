@@ -30,8 +30,8 @@ struct AppCoordinator: NavigationCoordinator {
 
     @RootStep(makeRoot) var root
     @RootStep(makeHome) var `switch`
-    @PushStep(makeHome) var push
-    @PresentStep(makeOther) var present
+    @PushStep(makeOther) var push
+    @PresentStep(makeOther, .sheet) var present
 
     @ViewBuilder func makeRoot() -> LoginView {
         LoginView(model: LoginModel())
@@ -41,31 +41,34 @@ struct AppCoordinator: NavigationCoordinator {
         HomeView()
     }
 
-    @ViewBuilder func makeOther(action: @escaping VoidClosure) -> OtherCoordinator {
-        OtherCoordinator(action)
+    @ViewBuilder func makeOther() -> OtherCoordinator {
+        OtherCoordinator("Sample text")
     }
 
 }
 
-struct OtherCoordinator: PresentationCoordinator {
+struct OtherCoordinator: NavigationCoordinator {
 
-    typealias Input = VoidClosure
+    typealias Input = String
     var state: NavigationStack = .init()
 
     @RootStep(makeRoot) var root
-    @PresentStep(makePresentSomething) var presentSomething
+    @PushStep(makeRoot) var push
+    @PresentStep(makeAppCoordinator, .sheet) var present
 
-    @ViewBuilder func makeRoot(name: @escaping VoidClosure) -> AnyView {
-        AnyView(RegistrationView(model: RegistrationModel(name: "Name")).onDisappear {
-            name()
-        })
+    func makeRoot(name: String) -> AnyView {
+        let view: any View
+
+        if #available(iOS 16.4, *) {
+            view = RegistrationView(model: RegistrationModel(name: "Name"))
+        } else {
+            view = EmptyView()
+        }
+
+        return AnyView(view)
     }
 
     @ViewBuilder func makeAppCoordinator() -> AppCoordinator {
-        AppCoordinator(())
-    }
-
-    @ViewBuilder func makePresentSomething() -> AppCoordinator {
         AppCoordinator(())
     }
 

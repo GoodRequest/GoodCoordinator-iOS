@@ -18,7 +18,7 @@ struct RegistrationView: Screen {
     @State private var agrees: Bool = false
     var model: RegistrationModel
 
-    @EnvironmentObject var router: PresentationRouter<OtherCoordinator>
+    @EnvironmentObject var router: Router<OtherCoordinator>
 
     var body: some View {
         VStack(spacing: 16) {
@@ -31,7 +31,7 @@ struct RegistrationView: Screen {
             })
 
             Button(action: {
-                router.coordinator.route(to: \.presentSomething)
+                router.coordinator.route(to: \.push, "")
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
@@ -44,6 +44,7 @@ struct RegistrationView: Screen {
         }
         .padding()
         .navigationTitle("Agreements")
+        .interactiveDismissDisabled()
     }
 
 }
