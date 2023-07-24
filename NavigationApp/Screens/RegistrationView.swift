@@ -52,7 +52,7 @@ struct RegistrationView: Screen {
 struct RegistrationView_Previews: PreviewProvider {
 
     static var previews: some View {
-        RegistrationView(model: RegistrationModel(name: "Janko"))
+        RegistrationView(model: RegistrationModel(name: "Janko")).makeView()
     }
 
 }

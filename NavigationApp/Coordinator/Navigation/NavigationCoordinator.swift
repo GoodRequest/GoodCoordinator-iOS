@@ -9,7 +9,7 @@ import SwiftUI // TODO: treba? vyhodit prec 2x View
 
 protocol NavigationCoordinator: PresentationCoordinator where State: NavigationStack {
 
-    associatedtype RootType: View
+    associatedtype RootType: Screen
     var root: Root<Self, RootType, Input> { get }
     init()
 
@@ -42,13 +42,13 @@ extension NavigationCoordinator {
     @ViewBuilder var body: some View {
         if #available(iOS 16, *) {
             SwiftUI.NavigationStack {
-                state.screenWithId(-1)
+                state.screenWithId(-1).makeView()
                     .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
                     .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
             }
         } else {
             SwiftUI.NavigationView {
-                state.screenWithId(-1)
+                state.screenWithId(-1).makeView()
                     .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
                     .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
             }.navigationViewStyle(.stack)

@@ -14,7 +14,7 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
     let navigationStack: NavigationStack; #warning("Memory leak?")
     var cancellables = Set<AnyCancellable>()
 
-    @Published var child: (any Screen)?
+    @Published var child: (any View)?
 
     init(id: Int, coordinator: T) {
         self.id = id
@@ -63,7 +63,7 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
-        self.child = coordinator.state.screenWithId(nextId).modifier(NavigationCoordinatorViewWrapper(
+        self.child = coordinator.state.screenWithId(nextId).makeView().modifier(NavigationCoordinatorViewWrapper(
             id: nextId,
             coordinator: coordinator
         ))

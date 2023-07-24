@@ -52,5 +52,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5C664094-1864-44F5-BA76-A71F002A8B16"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "5C664094-1864-44F5-BA76-A71F002A8B16 - cb2fd944638c0e68"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NavigationApp.NavigationCoordinator.body.getter : some"
+                  moduleName = "NavigationApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filipsasala/Desktop/NavigationApp/NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44"
+                  offsetFromSymbolStart = "932">
+               </Location>
+               <Location
+                  uuid = "5C664094-1864-44F5-BA76-A71F002A8B16 - 98876a54016f4ec3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI.ModifiedContent&lt;SwiftUI.ModifiedContent&lt;SwiftUI.AnyView, NavigationApp.PresentationCoordinatorViewWrapper&lt;&#x3c4;_0_0&gt;&gt;, NavigationApp.NavigationCoordinatorViewWrapper&lt;&#x3c4;_0_0&gt;&gt; in NavigationApp.NavigationCoordinator.body.getter : some"
+                  moduleName = "NavigationApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filipsasala/Desktop/NavigationApp/NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "45"
+                  endingLineNumber = "45"
+                  offsetFromSymbolStart = "440">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

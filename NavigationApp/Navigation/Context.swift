@@ -90,15 +90,15 @@ class NavigationStack: PresentationState {
     }
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    @ViewBuilder func screenWithId(_ id: Int) -> some Screen {
+    func screenWithId(_ id: Int) -> any Screen {
         if id < -1 {
             let _ = assertionFailure("Invalid screen index!")
-            EmptyView()
+            return EmptyView()
         } else if id == -1 {
-            AnyView(root.screen)
+            return root.screen
         } else {
             let screen = items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
-            AnyView(screen)
+            return screen
         }
     }
 

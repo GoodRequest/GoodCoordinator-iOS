@@ -61,7 +61,7 @@ class PresentationState: ObservableObject {
 
 protocol PresentationCoordinator: Coordinator where State: PresentationState {
 
-    associatedtype RootType: View
+    associatedtype RootType: Screen
     var root: Root<Self, RootType, Input> { get }
     init()
 
@@ -89,7 +89,7 @@ extension PresentationCoordinator {
     }
 
     @ViewBuilder var body: some View {
-        AnyView(state.root.screen).modifier(PresentationCoordinatorViewWrapper(coordinator: self))
+        state.root.screen.makeView().modifier(PresentationCoordinatorViewWrapper(coordinator: self))
     }
 
     init(_ input: Input) {

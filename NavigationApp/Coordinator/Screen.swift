@@ -7,8 +7,32 @@
 
 import SwiftUI
 
- typealias Screen = SwiftUI.View
+protocol Screen {
 
-// protocol Screen: View {}
-// extension AnyView: Screen {}
-// extension EmptyView: Screen {}
+    associatedtype Body: View
+    @ViewBuilder var body: Body { get }
+
+}
+
+extension Screen {
+
+    func makeView() -> AnyView {
+        AnyView(body)
+    }
+
+}
+
+extension AnyView: Screen {
+
+    var body: Never {
+        fatalError("This property is never accessed")
+    }
+
+}
+extension EmptyView: Screen {
+
+    var body: Never {
+        fatalError("This property is never accessed")
+    }
+
+}

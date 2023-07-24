@@ -45,7 +45,7 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
 
     @ViewBuilder func presentedView() -> some View {
         if let presented = presentationHelper.presented.first?.screen {
-            AnyView(presented)
+            presented.makeView()
         } else {
             EmptyView()
         }

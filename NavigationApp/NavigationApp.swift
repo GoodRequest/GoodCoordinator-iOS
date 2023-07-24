@@ -17,7 +17,7 @@ import SwiftUI
 
     var body: some Scene {
         WindowGroup {
-            coordinator.body
+            coordinator.makeView()
         }
     }
 
@@ -33,15 +33,15 @@ final class AppCoordinator: NavigationCoordinator {
     @PushStep(makeOther) var push
     @PresentStep(makeOther, .sheet) var present
 
-    @ViewBuilder func makeRoot() -> LoginView {
+    func makeRoot() -> LoginView {
         LoginView(model: LoginModel())
     }
 
-    @ViewBuilder func makeHome() -> HomeView {
+    func makeHome() -> HomeView {
         HomeView()
     }
 
-    @ViewBuilder func makeOther() -> OtherCoordinator {
+    func makeOther() -> OtherCoordinator {
         OtherCoordinator("Sample text")
     }
 
@@ -60,7 +60,7 @@ final class OtherCoordinator: NavigationCoordinator {
         let view: any View
 
         if #available(iOS 16.4, *) {
-            view = RegistrationView(model: RegistrationModel(name: "Name"))
+            view = RegistrationView(model: RegistrationModel(name: "Name")).makeView()
         } else {
             view = EmptyView()
         }
@@ -68,7 +68,7 @@ final class OtherCoordinator: NavigationCoordinator {
         return AnyView(view)
     }
 
-    @ViewBuilder func makeAppCoordinator() -> AppCoordinator {
+    func makeAppCoordinator() -> AppCoordinator {
         AppCoordinator(())
     }
 

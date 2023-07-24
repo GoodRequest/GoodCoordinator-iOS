@@ -84,7 +84,7 @@ struct LoginView: Screen {
 struct LoginView_Previews: PreviewProvider {
 
     static var previews: some View {
-        LoginView(model: LoginModel())
+        LoginView(model: LoginModel()).makeView()
     }
 
 }
