@@ -39,6 +39,10 @@ extension NavigationCoordinator {
         }
     }
 
+    func makeView() -> AnyView {
+        return AnyView(body)
+    }
+
     @ViewBuilder var body: some View {
         if #available(iOS 16, *) {
             SwiftUI.NavigationStack {
@@ -56,7 +60,13 @@ extension NavigationCoordinator {
     }
 
     func canPopTo(id: Int) -> Bool {
-        state.canPopTo(id: id)
+        let isValidIndex = state.isValidIndex(id: id)
+        let isPresenting = state.isPresenting()
+
+        let childCoordinator = state.top()?.screen as? (any NavigationCoordinator)
+        // let childCoordinatorActive = !(childCoordinator?.state.items.isEmpty ?? false)
+
+        return isValidIndex && !isPresenting // && !childCoordinatorActive
     }
 
     internal func popTo(_ int: Int, _ action: (() -> ())? = nil) {
@@ -79,7 +89,7 @@ extension NavigationCoordinator {
     }
 
     func setRoot(to screen: any Screen) {
-        state.root = NavigationRootItem(screen: screen)
+        state.root = CoordinatorRootItem(screen: screen)
     }
 
     func abortChild() {

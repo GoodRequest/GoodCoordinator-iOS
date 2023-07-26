@@ -22,7 +22,7 @@ final class LoginModel: ObservableObject, Hashable {
 
 }
 
-struct LoginView: Screen {
+struct LoginView: View, Screen {
 
     typealias Content = Self
     typealias Data = LoginModel
@@ -54,21 +54,30 @@ struct LoginView: Screen {
 
             Group {
                 Button(action: {
-//                    router.coordinator.route(to: \.push).route(to: \.push, "")
-                    router.coordinator.route(to: \.push).route(to: \.present).route(to: \.push)
+                    let coordinator = router.coordinator
+                    print("Address 1: \(address(of: coordinator))")
+
+                    let coordinator2 = coordinator.route(to: \.push)
+                    print("Address 2: \(address(of: coordinator2))")
+
+                    let coordinator3 = coordinator2.route(to: \.present)
+                    print("Address 3: \(address(of: coordinator3))")
+
+                    let coordinator4 = coordinator3.route(to: \.push)
+                    print("Address 4: \(address(of: coordinator4))")
                 }, label: {
                     Text("Push next")
                 })
 
                 Button(action: {
-                    router.coordinator.route(to: \.present).route(to: \.push, "")
+                    router.coordinator.route(to: \.pushHome)// .route(to: \.push, username)
 //                    router.coordinator.route(to: \.push).route(to: \.present)
                 }, label: {
                     Text("Present other")
                 })
 
                 Button(action: {
-                    router.coordinator.route(to: \.push)
+                    router.coordinator.route(to: \.switch)
                 }, label: {
                     Text("Switch to home")
                 })

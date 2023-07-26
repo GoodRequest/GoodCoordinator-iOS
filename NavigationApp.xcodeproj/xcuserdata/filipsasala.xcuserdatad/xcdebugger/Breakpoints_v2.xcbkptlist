@@ -7,9 +7,10 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "22A9B1BA-A043-48C3-BDEF-F2D25B4815E3"
+            uuid = "E4E2800C-DBD7-4747-B5A0-133AA0682C7B"
             shouldBeEnabled = "Yes"
-            ignoreCount = "0"
+            condition = "title == &quot;AppCoordinator&quot;"
+            ignoreCount = "2"
             continueAfterRunningActions = "No"
             filePath = "NavigationApp/Navigation/Context.swift"
             startingColumnNumber = "9223372036854775807"
@@ -23,79 +24,62 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E260AF82-5693-4841-8452-815416C40CA6"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "NavigationApp/Coordinator/Presentation/PresentationCoordinator.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "presented"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B0953833-7776-4275-A846-C2FF975D2EBB"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "NavigationApp/Coordinator/Navigation/NavigationCoordinatorViewWrapper.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "presentationBinding()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "5C664094-1864-44F5-BA76-A71F002A8B16"
+            uuid = "7C5189CE-9604-46BD-9F1C-0887D6FDEFE4"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "canPopTo(id:)"
+            landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "5C664094-1864-44F5-BA76-A71F002A8B16 - cb2fd944638c0e68"
+                  uuid = "7C5189CE-9604-46BD-9F1C-0887D6FDEFE4 - eab3dbb0f9370751"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "NavigationApp.NavigationCoordinator.body.getter : some"
+                  symbolName = "NavigationApp.NavigationCoordinator.canPopTo(id: Swift.Int) -&gt; Swift.Bool"
                   moduleName = "NavigationApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/filipsasala/Desktop/NavigationApp/NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44"
-                  offsetFromSymbolStart = "932">
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "636">
                </Location>
                <Location
-                  uuid = "5C664094-1864-44F5-BA76-A71F002A8B16 - 98876a54016f4ec3"
+                  uuid = "7C5189CE-9604-46BD-9F1C-0887D6FDEFE4 - eab3dbb0f9370751"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; SwiftUI.ModifiedContent&lt;SwiftUI.ModifiedContent&lt;SwiftUI.AnyView, NavigationApp.PresentationCoordinatorViewWrapper&lt;&#x3c4;_0_0&gt;&gt;, NavigationApp.NavigationCoordinatorViewWrapper&lt;&#x3c4;_0_0&gt;&gt; in NavigationApp.NavigationCoordinator.body.getter : some"
+                  symbolName = "NavigationApp.NavigationCoordinator.canPopTo(id: Swift.Int) -&gt; Swift.Bool"
                   moduleName = "NavigationApp"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/filipsasala/Desktop/NavigationApp/NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "440">
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "668">
+               </Location>
+               <Location
+                  uuid = "7C5189CE-9604-46BD-9F1C-0887D6FDEFE4 - eab3dbb0f9370713"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NavigationApp.NavigationCoordinator.canPopTo(id: Swift.Int) -&gt; Swift.Bool"
+                  moduleName = "NavigationApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/filipsasala/Desktop/NavigationApp/NavigationApp/Coordinator/Navigation/NavigationCoordinator.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "69"
+                  endingLineNumber = "69"
+                  offsetFromSymbolStart = "816">
                </Location>
             </Locations>
          </BreakpointContent>

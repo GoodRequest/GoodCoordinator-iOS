@@ -30,15 +30,23 @@ class PresentationState: ObservableObject {
 
     var parent: (any Coordinator)?
 
-    @Published var root: NavigationRootItem
+    @Published var root: CoordinatorRootItem
     @Published var presented: [PresentationItem<Any>] = [] { // covariant
+        willSet {
+            print("Will set on: \(address(of: self))")
+        }
         didSet {
             print("Presentation state: \(oldValue.count == 1) -> \(presented.count == 1)")
         }
     }
 
     init() {
-        self.root = NavigationRootItem(screen: EmptyView())
+        self.root = CoordinatorRootItem(screen: EmptyView())
+        print("+ init \(address(of: self))")
+    }
+
+    deinit {
+        print("- deinit \(address(of: self))")
     }
 
     func present(_ item: PresentationItem<Any>) {
@@ -53,6 +61,10 @@ class PresentationState: ObservableObject {
 
     func canDismissChild() -> Bool {
         presented.count == 1
+    }
+
+    func isPresenting() -> Bool {
+        canDismissChild()
     }
 
 }
@@ -89,7 +101,7 @@ extension PresentationCoordinator {
     }
 
     @ViewBuilder var body: some View {
-        state.root.screen.makeView().modifier(PresentationCoordinatorViewWrapper(coordinator: self))
+        AnyView(state.root.screen.makeView()).modifier(PresentationCoordinatorViewWrapper(coordinator: self))
     }
 
     init(_ input: Input) {
@@ -99,7 +111,7 @@ extension PresentationCoordinator {
     }
 
     func setRoot(to screen: any Screen) {
-        state.root = NavigationRootItem(screen: screen)
+        state.root = CoordinatorRootItem(screen: screen)
     }
 
     func canDismissChild() -> Bool {

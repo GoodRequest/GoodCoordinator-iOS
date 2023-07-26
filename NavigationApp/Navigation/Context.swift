@@ -84,13 +84,16 @@ extension NavigationStack {
 class NavigationStack: PresentationState {
 
     @Published private(set) var items: [NavigationStackItem<Any>] = []  { // covariant
+        willSet {
+            print("Will set on: \(title)")
+        }
         didSet {
             print("Navigation stack items: \(oldValue.count) -> \(items.count)")
         }
     }
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    func screenWithId(_ id: Int) -> any Screen {
+    func screenWithId(_ id: Int) -> Screen {
         if id < -1 {
             let _ = assertionFailure("Invalid screen index!")
             return EmptyView()
@@ -100,6 +103,13 @@ class NavigationStack: PresentationState {
             let screen = items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
             return screen
         }
+    }
+
+    let title: String
+    init(string: String) {
+        self.title = string
+
+        super.init()
     }
 
 }
@@ -141,15 +151,19 @@ extension NavigationStack {
 
 extension NavigationStack {
 
-    func canPopTo(id: Int) -> Bool {
+    func isValidIndex(id: Int) -> Bool {
         -1..<(items.endIndex - 1) ~= id
+    }
+
+    func top() -> NavigationStackItem<Any>? {
+        items.last
     }
 
 }
 
 // MARK: - Navigation stack items
 
-struct NavigationRootItem {
+struct CoordinatorRootItem {
 
     let screen: any Screen
 

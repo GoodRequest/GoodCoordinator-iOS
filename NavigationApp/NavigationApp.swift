@@ -26,11 +26,12 @@ import SwiftUI
 final class AppCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack = .init()
+    var state: NavigationStack = .init(string: "AppCoordinator")
 
     @RootStep(makeRoot) var root
     @RootStep(makeHome) var `switch`
     @PushStep(makeOther) var push
+    @PushStep(makeHome) var pushHome
     @PresentStep(makeOther, .sheet) var present
 
     func makeRoot() -> LoginView {
@@ -50,26 +51,27 @@ final class AppCoordinator: NavigationCoordinator {
 final class OtherCoordinator: NavigationCoordinator {
 
     typealias Input = String
-    var state: NavigationStack = .init()
+    var state: NavigationStack = .init(string: "OtherCoordinator")
 
     @RootStep(makeRoot) var root
-    @PushStep(makeRoot) var push
+    @PushStep(makeMine) var push
+    @PushStep(makeSampleScreen) var pushSample
     @PresentStep(makeAppCoordinator, .sheet) var present
 
-    func makeRoot(name: String) -> AnyView {
-        let view: any View
+    func makeRoot(name: String) -> RegistrationView {
+        RegistrationView(model: RegistrationModel(name: name))
+    }
 
-        if #available(iOS 16.4, *) {
-            view = RegistrationView(model: RegistrationModel(name: "Name")).makeView()
-        } else {
-            view = EmptyView()
-        }
-
-        return AnyView(view)
+    func makeSampleScreen() -> AnyView {
+        AnyView(Text("Dobry vecer 3"))
     }
 
     func makeAppCoordinator() -> AppCoordinator {
         AppCoordinator(())
+    }
+
+    func makeMine() -> MyCoordinator {
+        MyCoordinator(())
     }
 
 }
@@ -77,7 +79,7 @@ final class OtherCoordinator: NavigationCoordinator {
 final class MyCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack = .init()
+    var state: NavigationStack = .init(string: "MyCoordinator")
 
     @RootStep(makeRoot) var root
 
@@ -99,6 +101,10 @@ struct CollectionViewRepresentable: UIViewControllerRepresentable, Screen {
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         print("hello world")
+    }
+
+    func makeView() -> Never {
+        preconditionFailure()
     }
 
 }

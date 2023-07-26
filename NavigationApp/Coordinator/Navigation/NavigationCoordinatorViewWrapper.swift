@@ -14,7 +14,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
     private let id: Int // TODO: get rid of IDs
     private let router: Router<T>
 
-    @ObservedObject var presentationHelper: NavigationCoordinatorHelper<T>
+    @ObservedObject var navigationHelper: NavigationCoordinatorHelper<T>
 
     // MARK: - Initialization
 
@@ -22,7 +22,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
         self.id = id
         self.coordinator = coordinator
 
-        self.presentationHelper = NavigationCoordinatorHelper(
+        self.navigationHelper = NavigationCoordinatorHelper(
             id: id,
             coordinator: coordinator
         )
@@ -65,7 +65,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
     }
 
     @ViewBuilder private func destination() -> some View {
-        if let view = presentationHelper.child {
+        if let view = navigationHelper.nextChild {
             AnyView(view)
         } else {
             EmptyView()
@@ -76,7 +76,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
 
     private func presentationBinding() -> Binding<Bool> {
         Binding<Bool>(get: {
-            presentationHelper.child != nil
+            navigationHelper.nextChild != nil
         }, set: {
             /// Check that the binding is being set to false and is valid
             guard !$0 && coordinator.canPopTo(id: id) else { return }

@@ -13,7 +13,7 @@ struct HomeModel: Hashable {
 
 }
 
-struct HomeView: Screen {
+struct HomeView: View, Screen {
 
     @EnvironmentObject var router: Router<AppCoordinator>
 

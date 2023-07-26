@@ -13,7 +13,7 @@ struct RegistrationModel: Hashable {
 
 }
 
-struct RegistrationView: Screen {
+struct RegistrationView: View, Screen {
 
     @State private var agrees: Bool = false
     var model: RegistrationModel
@@ -31,20 +31,19 @@ struct RegistrationView: Screen {
             })
 
             Button(action: {
-                router.coordinator.route(to: \.push, "")
+                router.coordinator.route(to: \.pushSample)
             }, label: {
                 agrees ? Text("Yes!") : Text("No")
             })
 
             Button(action: {
-                router.coordinator.dismiss()
+                router.coordinator.route(to: \.present)
             }, label: {
                 Text("Cancel")
             })
         }
         .padding()
         .navigationTitle("Agreements")
-        .interactiveDismissDisabled()
     }
 
 }

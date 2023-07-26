@@ -11,23 +11,27 @@ import Combine
 final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObject {
 
     private let id: Int
+
     let navigationStack: NavigationStack; #warning("Memory leak?")
+    let coordinator: T
+
     var cancellables = Set<AnyCancellable>()
 
-    @Published var child: (any View)?
+    @Published var nextChild: (any View)?
 
     init(id: Int, coordinator: T) {
         self.id = id
+        self.coordinator = coordinator
         self.navigationStack = coordinator.state
 
-        self.setupChild(coordinator: coordinator)
+        self.setupChild()
 
         navigationStack.$items
             .scan(([], [])) { ($0.1, $1) }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] previous, current in
                 guard let self else { return }
-                onItemsChanged(coordinator: coordinator, previous: previous, current: current)
+                onItemsChanged(previous: previous, current: current)
             }
             .store(in: &cancellables)
 
@@ -37,15 +41,10 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
             .store(in: &cancellables)
     }
 
-    func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
+    func onItemsChanged(previous: [Any], current: [Any]) {
         if current.count > previous.count {
-            setupChild(coordinator: coordinator)
+            setupChild()
         } else {
-            #warning("TODO: pop only once if possible")
-//
-//            let isTopScreen = (self.child == nil) && (navigationStack.items.count - 1 == (id + 1))
-//            guard isTopScreen else { return }
-
             let popDestination = (current.count - 1)
             popChild(to: popDestination)
         }
@@ -53,20 +52,26 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
 
     func popChild(to destination: Int) {
         if id >= destination {
-            child = nil
+            nextChild = nil
         }
     }
 
-    func setupChild(coordinator: T) {
+    func setupChild() {
         let nextId = id + 1
-        let isTopScreen = (self.child == nil) && (navigationStack.items.count - 1 == nextId)
+        let isTopScreen = (self.nextChild == nil) && (navigationStack.items.count - 1 == nextId)
 
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
-        self.child = coordinator.state.screenWithId(nextId).makeView().modifier(NavigationCoordinatorViewWrapper(
-            id: nextId,
-            coordinator: coordinator
-        ))
+
+        let child = coordinator.state.screenWithId(nextId)
+        if child is (any Coordinator) {
+            self.nextChild = child.makeView()
+        } else {
+            self.nextChild = child.makeView().modifier(NavigationCoordinatorViewWrapper(
+                id: nextId,
+                coordinator: coordinator
+            ))
+        }
     }
 
 }

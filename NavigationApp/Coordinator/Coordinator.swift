@@ -38,10 +38,9 @@ extension Coordinator {
         to route: KeyPath<Self, Transition>,
         _ input: Transition.InputType
     ) -> Transition.ScreenType {
-        guard self is Transition.CoordinatorType else { fatalError("Unsupported transition") } // TODO: type check?
+        assert(self is Transition.CoordinatorType)
 
         let transition = self[keyPath: route]
-
         let result: Transition.ScreenType = transition.apply(
             coordinator: (self as! Transition.CoordinatorType),
             input: input

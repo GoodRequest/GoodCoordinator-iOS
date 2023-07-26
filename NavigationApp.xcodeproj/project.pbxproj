@@ -29,6 +29,7 @@
 		0995792D29FA719D00029662 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995792C29FA719D00029662 /* LoginView.swift */; };
 		0995792F29FA733300029662 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0995792E29FA733300029662 /* RegistrationView.swift */; };
 		09B3A03029FAB261007BF934 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09B3A02F29FAB261007BF934 /* Context.swift */; };
+		09BA38C32A71279F00760BB0 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BA38C22A71279F00760BB0 /* Address.swift */; };
 		09BD8DA92A012A000066BF6D /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09BD8DA82A012A000066BF6D /* Tree.swift */; };
 		09D0BA762A4C3C58001C1A1F /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D0BA752A4C3C58001C1A1F /* Typealiases.swift */; };
 		09F4C0B929FA7FC200081AC4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F4C0B829FA7FC200081AC4 /* HomeView.swift */; };
@@ -58,6 +59,7 @@
 		0995792C29FA719D00029662 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		0995792E29FA733300029662 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		09B3A02F29FAB261007BF934 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		09BA38C22A71279F00760BB0 /* Address.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		09BD8DA82A012A000066BF6D /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		09D0BA752A4C3C58001C1A1F /* Typealiases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealiases.swift; sourceTree = "<group>"; };
 		09F4C0B829FA7FC200081AC4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			children = (
 				09319A082A3852B500856CA5 /* ArrayExtension.swift */,
 				09D0BA752A4C3C58001C1A1F /* Typealiases.swift */,
+				09BA38C22A71279F00760BB0 /* Address.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				09319A1B2A39DD5A00856CA5 /* NavigationCoordinatorViewWrapper.swift in Sources */,
 				09906A812A0A5A0500F27FB4 /* Routeable.swift in Sources */,
 				09319A0F2A39D2E900856CA5 /* RouteType.swift in Sources */,
+				09BA38C32A71279F00760BB0 /* Address.swift in Sources */,
 				09906A7F2A0A59F000F27FB4 /* NavigationCoordinatorHelper.swift in Sources */,
 				09D0BA762A4C3C58001C1A1F /* Typealiases.swift in Sources */,
 				096234D52A52E9B4006B1715 /* PresentationCoordinator.swift in Sources */,

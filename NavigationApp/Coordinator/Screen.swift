@@ -9,30 +9,17 @@ import SwiftUI
 
 protocol Screen {
 
-    associatedtype Body: View
-    @ViewBuilder var body: Body { get }
+    func makeView() -> AnyView
 
 }
 
-extension Screen {
+extension Screen where Self: View {
 
     func makeView() -> AnyView {
-        AnyView(body)
+        AnyView(self)
     }
 
 }
 
-extension AnyView: Screen {
-
-    var body: Never {
-        fatalError("This property is never accessed")
-    }
-
-}
-extension EmptyView: Screen {
-
-    var body: Never {
-        fatalError("This property is never accessed")
-    }
-
-}
+extension AnyView: Screen {}
+extension EmptyView: Screen {}
