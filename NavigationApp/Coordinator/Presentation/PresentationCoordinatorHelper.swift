@@ -34,10 +34,6 @@ final class PresentationCoordinatorHelper<T: PresentationCoordinator>: Observabl
     }
 
     func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {
-//        guard current.count != previous.count else {
-//            return objectWillChange.send()
-//        }
-
         if current.count > previous.count {
             presented = [coordinator.state.presented.first].compactMap { $0 }
         } else {

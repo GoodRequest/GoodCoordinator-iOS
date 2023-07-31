@@ -78,21 +78,6 @@ extension NavigationCoordinator {
     }
 
     internal func popTo(_ int: Int, _ action: (() -> ())? = nil) {
-//        if let action = action {
-//            self.stack.dismissalAction[int] = action
-//        }
-//
-//        guard int + 1 <= self.stack.value.count else {
-//            return
-//        }
-//
-//        if int == -1 {
-//            self.stack.value = []
-//            self.stack.poppedTo.send(-1)
-//        } else if int >= 0 {
-//            self.stack.value = Array(self.stack.value.prefix(int + 1))
-//            self.stack.poppedTo.send(int)
-//        }
         state.pop(to: int)
     }
 

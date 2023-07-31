@@ -89,10 +89,6 @@ final class MyCoordinator: NavigationCoordinator {
 
 }
 
-
-
-
-
 struct CollectionViewRepresentable: UIViewControllerRepresentable, Screen {
 
     func makeUIViewController(context: Context) -> some UIViewController {

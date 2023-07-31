@@ -65,9 +65,3 @@ struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModif
     }
 
 }
-
-/*
- var current: some View {
- Color.clear.overlay { AnyView(coordinator.state.root.screen) }
- }
- */

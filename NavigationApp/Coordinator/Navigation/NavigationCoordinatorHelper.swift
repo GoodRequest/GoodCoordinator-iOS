@@ -75,9 +75,3 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
     }
 
 }
-
-/*
- var current: some View {
- Color.clear.overlay { AnyView(coordinator.state.screenWithId(id)) }
- }
- */
