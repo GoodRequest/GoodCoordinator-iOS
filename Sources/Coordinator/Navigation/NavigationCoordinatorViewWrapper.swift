@@ -55,13 +55,13 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
     }
 
     @ViewBuilder private func navigatableContent_old(current: Content) -> some View {
-        current.background {
+        current.background(
             NavigationLink(
                 destination: destination(),
                 isActive: presentationBinding(),
                 label: { EmptyView() }
             ).hidden()
-        }
+        )
     }
 
     @ViewBuilder private func destination() -> some View {
