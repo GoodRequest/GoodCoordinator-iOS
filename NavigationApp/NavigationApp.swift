@@ -55,7 +55,7 @@ final class OtherCoordinator: NavigationCoordinator {
 
     @RootStep(makeRoot) var root
     @PushStep(makeMine) var push
-    @PushStep(makeSampleScreen) var pushSample
+    @PushStep(makeAppCoordinator) var pushSample
     @PresentStep(makeAppCoordinator, .sheet) var present
 
     func makeRoot(name: String) -> RegistrationView {

@@ -107,6 +107,7 @@ class NavigationStack: PresentationState {
 
     let title: String
     init(string: String) {
+        print("+ init \(string)")
         self.title = string
 
         super.init()

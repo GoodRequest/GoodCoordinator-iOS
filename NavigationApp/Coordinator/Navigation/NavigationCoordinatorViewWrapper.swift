@@ -79,7 +79,7 @@ struct NavigationCoordinatorViewWrapper<T: NavigationCoordinator>: ViewModifier 
             navigationHelper.nextChild != nil
         }, set: {
             /// Check that the binding is being set to false and is valid
-            guard !$0 && coordinator.canPopTo(id: id) else { return }
+            guard !$0 && coordinator.canPopToScreen(with: id) else { return }
             coordinator.popTo(id)
         })
     }

@@ -119,12 +119,13 @@ extension PresentationCoordinator {
     }
 
     func canBeDismissed() -> Bool {
-        (parent as? any PresentationCoordinator)?.state.canDismissChild() ?? false
+        (parent as? any PresentationCoordinator)?.canDismissChild() ?? false
     }
 
     func abortChild() {
-        guard canDismissChild() else { return }
-        state.dismissChild()
+        if canDismissChild() {
+            dismissChild()
+        }
     }
 
     func dismiss() {
@@ -133,6 +134,14 @@ extension PresentationCoordinator {
 
     func dismissChild() {
         state.dismissChild()
+    }
+
+    func isPresenting() -> Bool {
+        state.isPresenting()
+    }
+
+    func isPresented() -> Bool {
+        (parent as? (any PresentationCoordinator))?.isPresenting() ?? false
     }
 
 }

@@ -44,29 +44,37 @@ extension NavigationCoordinator {
     }
 
     @ViewBuilder var body: some View {
-        if #available(iOS 16, *) {
-            SwiftUI.NavigationStack {
-                state.screenWithId(-1).makeView()
-                    .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
-                    .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
-            }
+        if hasNavigationParent() {
+            content
+        } else if #available(iOS 16, *) {
+            SwiftUI.NavigationStack { content }
         } else {
-            SwiftUI.NavigationView {
-                state.screenWithId(-1).makeView()
-                    .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
-                    .modifier(NavigationCoordinatorViewWrapper(id: -1, coordinator: self))
-            }.navigationViewStyle(.stack)
+            SwiftUI.NavigationView { content }.navigationViewStyle(.stack)
         }
     }
 
-    func canPopTo(id: Int) -> Bool {
+    @ViewBuilder private var content: some View {
+        let rootIndex = -1
+
+        state.screenWithId(rootIndex).makeView()
+            .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
+            .modifier(NavigationCoordinatorViewWrapper(id: rootIndex, coordinator: self))
+    }
+
+    #warning("TODO: doplnit lepsiu heuristiku ak sa da, toto zatial postacuje")
+    private func hasNavigationParent() -> Bool {
+        let hasParent = (parent != nil)
+        guard hasParent else { return false }
+
+        guard !isPresented() else { return false }
+        return true
+    }
+
+    func canPopToScreen(with id: Int) -> Bool {
         let isValidIndex = state.isValidIndex(id: id)
         let isPresenting = state.isPresenting()
 
-        let childCoordinator = state.top()?.screen as? (any NavigationCoordinator)
-        // let childCoordinatorActive = !(childCoordinator?.state.items.isEmpty ?? false)
-
-        return isValidIndex && !isPresenting // && !childCoordinatorActive
+        return isValidIndex && !isPresenting
     }
 
     internal func popTo(_ int: Int, _ action: (() -> ())? = nil) {
