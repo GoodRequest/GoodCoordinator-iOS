@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - Navigation coordinator
 
-protocol NavigationCoordinator: PresentationCoordinator where State: NavigationStack {
+public protocol NavigationCoordinator: PresentationCoordinator where State: NavigationStack {
 
     associatedtype RootType: Screen
     var root: RootStep<Self, RootType, Input> { get }
@@ -17,7 +17,7 @@ protocol NavigationCoordinator: PresentationCoordinator where State: NavigationS
 
 }
 
-extension NavigationCoordinator where Input == Void {
+public extension NavigationCoordinator where Input == Void {
 
     init() {
         self.init(())
@@ -27,7 +27,7 @@ extension NavigationCoordinator where Input == Void {
 
 // MARK: - Protocol requirements
 
-extension NavigationCoordinator {
+public extension NavigationCoordinator {
 
     var parent: (any Coordinator)? {
         get {
@@ -82,7 +82,7 @@ extension NavigationCoordinator {
 
 // MARK: - Navigation functions - internal
 
-internal extension NavigationCoordinator {
+public extension NavigationCoordinator {
 
     func popTo(_ int: Int, _ action: (() -> ())? = nil) {
         state.pop(to: int)
@@ -92,7 +92,7 @@ internal extension NavigationCoordinator {
 
 // MARK: - Navigation functions
 
-extension NavigationCoordinator {
+public extension NavigationCoordinator {
 
     func pop() {
         if state.items.isEmpty {
@@ -110,7 +110,7 @@ extension NavigationCoordinator {
 
 // MARK: - Helper functions
 
-extension NavigationCoordinator {
+public extension NavigationCoordinator {
 
     #warning("TODO: doplnit lepsiu heuristiku ak sa da, toto zatial postacuje")
     private func hasNavigationParent() -> Bool {

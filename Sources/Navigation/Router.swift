@@ -15,11 +15,11 @@ final class WeakRef<T: AnyObject> {
     }
 }
 
-final class Router<CoordinatorType: Coordinator>: ObservableObject {
+public final class Router<CoordinatorType: Coordinator>: ObservableObject {
 
-    let coordinator: CoordinatorType
+    public let coordinator: CoordinatorType
 
-    init(coordinator: CoordinatorType) {
+    internal init(coordinator: CoordinatorType) {
         self.coordinator = coordinator
     }
 

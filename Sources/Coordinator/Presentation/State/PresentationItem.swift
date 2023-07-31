@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 31/07/2023.
 //
 
-struct PresentationItem<Input> {
+public struct PresentationItem<Input> {
 
     let input: Input
     let style: PresentationStyle

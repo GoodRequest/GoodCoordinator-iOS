@@ -9,13 +9,13 @@ import SwiftUI
 
 // MARK: - Presentation state
 
-class PresentationState: ObservableObject {
+public class PresentationState: ObservableObject {
 
-    var parent: (any Coordinator)?
+    public var parent: (any Coordinator)?
 
-    @Published var root: RootItem
+    @Published public var root: RootItem
 
-    @Published private(set) var presented: [PresentationItem<Any>] = [] { // covariant
+    @Published private(set) public var presented: [PresentationItem<Any>] = [] { // covariant
         willSet {
             print("Will set on: \(address(of: self))")
         }
@@ -24,7 +24,7 @@ class PresentationState: ObservableObject {
         }
     }
 
-    init() {
+    public init() {
         self.root = RootItem(screen: EmptyView())
         print("+ init \(address(of: self))")
     }
@@ -37,7 +37,7 @@ class PresentationState: ObservableObject {
 
 // MARK: - Presentation functions
 
-extension PresentationState {
+public extension PresentationState {
 
     func present(_ item: PresentationItem<Any>) {
         guard presented.count < 1 else { preconditionFailure("Presenting multiple windows is not supported") }
@@ -53,7 +53,7 @@ extension PresentationState {
 
 // MARK: - Helper functions
 
-extension PresentationState {
+public extension PresentationState {
 
     func canDismissChild() -> Bool {
         presented.count == 1

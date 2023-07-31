@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 31/07/2023.
 //
 
-enum PresentationStyle: Equatable {
+public enum PresentationStyle: Equatable {
 
     case sheet
     case fullScreenCover

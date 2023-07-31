@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 31/07/2023.
 //
 
-struct RootItem {
+public struct RootItem {
 
     let screen: any Screen
 

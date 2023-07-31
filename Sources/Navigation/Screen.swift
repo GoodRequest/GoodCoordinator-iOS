@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-protocol Screen {
+public protocol Screen {
 
     func makeView() -> AnyView
 
 }
 
-extension Screen where Self: View {
+public extension Screen where Self: View {
 
     func makeView() -> AnyView {
         AnyView(self)

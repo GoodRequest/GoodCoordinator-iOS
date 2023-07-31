@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - Presentation coordinator
 
-protocol PresentationCoordinator: Coordinator where State: PresentationState {
+public protocol PresentationCoordinator: Coordinator where State: PresentationState {
 
     associatedtype RootType: Screen
     var root: RootStep<Self, RootType, Input> { get }
@@ -17,7 +17,7 @@ protocol PresentationCoordinator: Coordinator where State: PresentationState {
 
 }
 
-extension PresentationCoordinator where Input == Void {
+public extension PresentationCoordinator where Input == Void {
 
     init() {
         self.init(())
@@ -27,7 +27,7 @@ extension PresentationCoordinator where Input == Void {
 
 // MARK: - Protocol requirements
 
-extension PresentationCoordinator {
+public extension PresentationCoordinator {
 
     var parent: (any Coordinator)? {
         get {
@@ -67,7 +67,7 @@ extension PresentationCoordinator {
 
 // MARK: - Presentation functions
 
-extension PresentationCoordinator {
+public extension PresentationCoordinator {
 
     func dismiss() {
         parent?.abortChild()
@@ -81,7 +81,7 @@ extension PresentationCoordinator {
 
 // MARK: - Helper functions
 
-extension PresentationCoordinator {
+public extension PresentationCoordinator {
 
     func canBeDismissed() -> Bool {
         (parent as? any PresentationCoordinator)?.canDismissChild() ?? false

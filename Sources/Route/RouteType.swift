@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 14/06/2023.
 //
 
-protocol RouteType {
+public protocol RouteType {
 
     associatedtype CoordinatorType: Coordinator
     associatedtype ScreenType: Screen
@@ -25,7 +25,7 @@ protocol RouteType {
 
 }
 
-extension RouteType where Options == Void {
+public extension RouteType where Options == Void {
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>, options: Options) {
         self.init(wrappedValue: wrappedValue)
@@ -33,7 +33,7 @@ extension RouteType where Options == Void {
 
 }
 
-extension RouteType {
+public extension RouteType {
 
     func prepareScreen(coordinator: CoordinatorType, input: InputType) -> ScreenType {
         let screen = screenBuilder(coordinator)(input)

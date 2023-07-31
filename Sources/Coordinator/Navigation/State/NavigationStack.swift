@@ -9,13 +9,13 @@ import SwiftUI
 
 // MARK: - Navigation stack
 
-class NavigationStack: PresentationState {
+public class NavigationStack: PresentationState {
 
     private let title: String
 
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    @Published private(set) var items: [NavigationStackItem<Any>] = [] { // covariant
+    @Published private(set) internal var items: [NavigationStackItem<Any>] = [] { // covariant
         willSet {
             print("Will set on: \(title)")
         }
@@ -24,14 +24,18 @@ class NavigationStack: PresentationState {
         }
     }
 
-    init(debugTitle: String) {
+    override public init() {
+        fatalError()
+    }
+
+    public init(debugTitle: String) {
         print("+ init \(debugTitle)")
         self.title = debugTitle
 
         super.init()
     }
 
-    func screenWithNavigationIndex(_ index: Int) -> Screen {
+    public func screenWithNavigationIndex(_ index: Int) -> Screen {
         if index < -1 {
             let _ = assertionFailure("Invalid screen index!")
             return EmptyView()
@@ -47,7 +51,7 @@ class NavigationStack: PresentationState {
 
 // MARK: - Navigation functions
 
-extension NavigationStack {
+public extension NavigationStack {
 
     func push(items newItems: [NavigationStackItem<Any>]) {
         items.append(contentsOf: newItems)
@@ -80,7 +84,7 @@ extension NavigationStack {
 
 // MARK: - Helper functions
 
-extension NavigationStack {
+public extension NavigationStack {
 
     func isValidIndex(_ index: Int) -> Bool {
         -1..<(items.endIndex - 1) ~= index

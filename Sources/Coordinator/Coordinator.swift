@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 14/06/2023.
 //
 
-protocol Coordinator: Screen {
+public protocol Coordinator: Screen {
 
     associatedtype State
     associatedtype Input
@@ -26,7 +26,7 @@ protocol Coordinator: Screen {
 
 }
 
-extension Coordinator {
+public extension Coordinator {
 
     func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Transition.ScreenType where Transition.InputType == Void {
         self.route(to: route, ())
