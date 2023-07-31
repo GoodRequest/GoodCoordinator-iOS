@@ -5,8 +5,6 @@
 //  Created by Filip Šašala on 14/06/2023.
 //
 
-import SwiftUI
-
 protocol Coordinator: Screen {
 
     associatedtype State
@@ -50,6 +48,3 @@ extension Coordinator {
     }
 
 }
-
-#warning("is required?")
-protocol StringIdentifiable: Identifiable<String> {}

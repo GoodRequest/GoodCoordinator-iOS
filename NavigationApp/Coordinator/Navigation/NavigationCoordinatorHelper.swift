@@ -63,7 +63,7 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
 
-        let child = coordinator.state.screenWithId(nextId)
+        let child = coordinator.state.screenWithNavigationIndex(nextId)
         if child is (any Coordinator) {
             self.nextChild = child.makeView()
         } else {

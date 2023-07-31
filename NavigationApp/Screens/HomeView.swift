@@ -15,7 +15,7 @@ struct HomeModel: Hashable {
 
 struct HomeView: View, Screen {
 
-    @EnvironmentObject var router: Router<AppCoordinator>
+    @EnvironmentObject var router: Router<MyCoordinator>
 
     var body: some View {
         VStack {
@@ -29,13 +29,13 @@ struct HomeView: View, Screen {
                 })
 
                 Button(action: {
-                    router.coordinator.pop()
+//                    router.coordinator.pop()
                 }, label: {
                     Text("Pop")
                 })
 
                 Button(action: {
-                    router.coordinator.popToRoot()
+//                    router.coordinator.popToRoot()
                 }, label: {
                     Text("Pop to root")
                 })
@@ -43,7 +43,7 @@ struct HomeView: View, Screen {
             .padding()
 
             Button(action: {
-                router.coordinator.route(to: \.present)
+//                router.coordinator.route(to: \.present)
             }, label: {
                 Text("Present other")
             })

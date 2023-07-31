@@ -1,18 +1,21 @@
 //
-//  Context.swift
+//  NavigationStack.swift
 //  NavigationApp
 //
-//  Created by Filip Šašala on 27/04/2023.
+//  Created by Filip Šašala on 31/07/2023.
 //
 
 import SwiftUI
-import Combine
 
 // MARK: - Navigation stack
 
 class NavigationStack: PresentationState {
 
-    @Published private(set) var items: [NavigationStackItem<Any>] = []  { // covariant
+    private let title: String
+
+    private var lastPoppedItem: (NavigationStackItem<Any>)?
+
+    @Published private(set) var items: [NavigationStackItem<Any>] = [] { // covariant
         willSet {
             print("Will set on: \(title)")
         }
@@ -20,31 +23,29 @@ class NavigationStack: PresentationState {
             print("Navigation stack items: \(oldValue.count) -> \(items.count)")
         }
     }
-    private var lastPoppedItem: (NavigationStackItem<Any>)?
 
-    func screenWithId(_ id: Int) -> Screen {
-        if id < -1 {
-            let _ = assertionFailure("Invalid screen index!")
-            return EmptyView()
-        } else if id == -1 {
-            return root.screen
-        } else {
-            let screen = items[safe: id]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
-            return screen
-        }
-    }
-
-    let title: String
-    init(string: String) {
-        print("+ init \(string)")
-        self.title = string
+    init(debugTitle: String) {
+        print("+ init \(debugTitle)")
+        self.title = debugTitle
 
         super.init()
     }
 
+    func screenWithNavigationIndex(_ index: Int) -> Screen {
+        if index < -1 {
+            let _ = assertionFailure("Invalid screen index!")
+            return EmptyView()
+        } else if index == -1 {
+            return root.screen
+        } else {
+            let screen = items[safe: index]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
+            return screen
+        }
+    }
+
 }
 
-// MARK: - Navigation
+// MARK: - Navigation functions
 
 extension NavigationStack {
 
@@ -81,28 +82,12 @@ extension NavigationStack {
 
 extension NavigationStack {
 
-    func isValidIndex(id: Int) -> Bool {
-        -1..<(items.endIndex - 1) ~= id
+    func isValidIndex(_ index: Int) -> Bool {
+        -1..<(items.endIndex - 1) ~= index
     }
 
     func top() -> NavigationStackItem<Any>? {
         items.last
     }
-
-}
-
-// MARK: - Navigation stack items
-
-struct CoordinatorRootItem {
-
-    let screen: any Screen
-
-}
-
-struct NavigationStackItem<Input> {
-
-    let input: Input
-    var screen: any Screen // child?
-    var dismissAction: VoidClosure? = nil
 
 }

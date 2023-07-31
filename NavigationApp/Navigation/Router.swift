@@ -1,11 +1,11 @@
 //
-//  NavigationRouter.swift
+//  Router.swift
 //  NavigationApp
 //
 //  Created by Filip Šašala on 09/05/2023.
 //
 
-import SwiftUI
+import Foundation
 
 final class WeakRef<T: AnyObject> {
     weak var value: T?

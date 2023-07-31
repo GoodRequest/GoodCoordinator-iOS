@@ -7,74 +7,12 @@
 
 import SwiftUI
 
-enum PresentationStyle: Equatable {
-
-    case sheet
-    case fullScreenCover
-    case popover
-    case inspector
-
-}
-
-struct PresentationItem<Input> {
-
-    let input: Input
-    let style: PresentationStyle
-
-    var screen: any Screen // child?
-    var dismissAction: VoidClosure? = nil
-
-}
-
-class PresentationState: ObservableObject {
-
-    var parent: (any Coordinator)?
-
-    @Published var root: CoordinatorRootItem
-    @Published var presented: [PresentationItem<Any>] = [] { // covariant
-        willSet {
-            print("Will set on: \(address(of: self))")
-        }
-        didSet {
-            print("Presentation state: \(oldValue.count == 1) -> \(presented.count == 1)")
-        }
-    }
-
-    init() {
-        self.root = CoordinatorRootItem(screen: EmptyView())
-        print("+ init \(address(of: self))")
-    }
-
-    deinit {
-        print("- deinit \(address(of: self))")
-    }
-
-    func present(_ item: PresentationItem<Any>) {
-        guard presented.count < 1 else { preconditionFailure("Presenting multiple windows is not supported") }
-        presented.append(item)
-    }
-
-    func dismissChild() {
-        guard presented.count <= 1 else { preconditionFailure("Presenting multiple windows is not supported") }
-        presented = []
-    }
-
-    func canDismissChild() -> Bool {
-        presented.count == 1
-    }
-
-    func isPresenting() -> Bool {
-        canDismissChild()
-    }
-
-}
-
-// MARK: - Protocol declaration
+// MARK: - Presentation coordinator
 
 protocol PresentationCoordinator: Coordinator where State: PresentationState {
 
     associatedtype RootType: Screen
-    var root: Root<Self, RootType, Input> { get }
+    var root: RootStep<Self, RootType, Input> { get }
     init()
 
 }
@@ -100,26 +38,19 @@ extension PresentationCoordinator {
         }
     }
 
-    @ViewBuilder var body: some View {
-        AnyView(state.root.screen.makeView()).modifier(PresentationCoordinatorViewWrapper(coordinator: self))
-    }
-
     init(_ input: Input) {
         self.init()
 
         setRoot(to: root.prepareScreen(coordinator: self, input: input))
     }
 
-    func setRoot(to screen: any Screen) {
-        state.root = CoordinatorRootItem(screen: screen)
+    func makeView() -> AnyView {
+        AnyView(body)
     }
 
-    func canDismissChild() -> Bool {
-        state.canDismissChild()
-    }
-
-    func canBeDismissed() -> Bool {
-        (parent as? any PresentationCoordinator)?.canDismissChild() ?? false
+    @ViewBuilder var body: some View {
+        state.root.screen.makeView()
+            .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
     }
 
     func abortChild() {
@@ -127,6 +58,16 @@ extension PresentationCoordinator {
             dismissChild()
         }
     }
+
+    func setRoot(to screen: any Screen) {
+        state.root = RootItem(screen: screen)
+    }
+
+}
+
+// MARK: - Presentation functions
+
+extension PresentationCoordinator {
 
     func dismiss() {
         parent?.abortChild()
@@ -136,12 +77,26 @@ extension PresentationCoordinator {
         state.dismissChild()
     }
 
-    func isPresenting() -> Bool {
-        state.isPresenting()
+}
+
+// MARK: - Helper functions
+
+extension PresentationCoordinator {
+
+    func canBeDismissed() -> Bool {
+        (parent as? any PresentationCoordinator)?.canDismissChild() ?? false
+    }
+
+    func canDismissChild() -> Bool {
+        state.canDismissChild()
     }
 
     func isPresented() -> Bool {
         (parent as? (any PresentationCoordinator))?.isPresenting() ?? false
+    }
+
+    func isPresenting() -> Bool {
+        state.isPresenting()
     }
 
 }

@@ -23,23 +23,27 @@ import SwiftUI
 
 }
 
-final class AppCoordinator: NavigationCoordinator {
+final class AppCoordinator: PresentationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack = .init(string: "AppCoordinator")
+//    var state: NavigationStack = .init(debugTitle: "AppCoordinator")
+    var state: PresentationState = .init()
 
-    @RootStep(makeRoot) var root
-    @RootStep(makeHome) var `switch`
-    @PushStep(makeOther) var push
-    @PushStep(makeHome) var pushHome
-    @PresentStep(makeOther, .sheet) var present
+    @Root(makeRoot) var root
+    @Root(makeHome) var `switch`
+    // @Push(makeOther) var push
+    // @Push(makeHome) var pushHome
+
+    @Present(makeOther) var push
+    @Present(makeHome) var pushHome
+    @Present(makeOther, .sheet) var present
 
     func makeRoot() -> LoginView {
         LoginView(model: LoginModel())
     }
 
-    func makeHome() -> HomeView {
-        HomeView()
+    func makeHome() -> MyCoordinator {
+        MyCoordinator(())
     }
 
     func makeOther() -> OtherCoordinator {
@@ -51,12 +55,12 @@ final class AppCoordinator: NavigationCoordinator {
 final class OtherCoordinator: NavigationCoordinator {
 
     typealias Input = String
-    var state: NavigationStack = .init(string: "OtherCoordinator")
+    var state: NavigationStack = .init(debugTitle: "OtherCoordinator")
 
-    @RootStep(makeRoot) var root
-    @PushStep(makeMine) var push
-    @PushStep(makeAppCoordinator) var pushSample
-    @PresentStep(makeAppCoordinator, .sheet) var present
+    @Root(makeRoot) var root
+    @Push(makeMine) var push
+    @Push(makeAppCoordinator) var pushSample
+    @Present(makeAppCoordinator, .sheet) var present
 
     func makeRoot(name: String) -> RegistrationView {
         RegistrationView(model: RegistrationModel(name: name))
@@ -79,12 +83,19 @@ final class OtherCoordinator: NavigationCoordinator {
 final class MyCoordinator: NavigationCoordinator {
 
     typealias Input = Void
-    var state: NavigationStack = .init(string: "MyCoordinator")
+    var state: NavigationStack = .init(debugTitle: "MyCoordinator")
 
-    @RootStep(makeRoot) var root
+    @Root(makeRoot) var root
 
-    @ViewBuilder func makeRoot() -> AnyView {
-        AnyView(Text("asdf my coordinator"))
+    func makeRoot() -> HomeView {
+        // AnyView(Text("asdf my coordinator"))
+        HomeView()
+    }
+
+    @Present(makeOther) var push
+    
+    func makeOther() -> OtherCoordinator {
+        OtherCoordinator("Sample text")
     }
 
 }
