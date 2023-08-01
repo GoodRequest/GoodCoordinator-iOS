@@ -12,7 +12,6 @@ public protocol RouteType {
     associatedtype Options
 
     associatedtype InputType
-    // associatedtype ResultType
 
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>)
     init(wrappedValue: @escaping ScreenBuilder<CoordinatorType, InputType, ScreenType>, options: Options)

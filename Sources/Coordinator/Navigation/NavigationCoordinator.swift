@@ -69,7 +69,11 @@ public extension NavigationCoordinator {
     func abortChild() {
         if canDismissChild() {
             dismissChild()
-        } else {
+            return
+        }
+
+        let childIsCoordinator = state.top()?.screen is any Coordinator
+        if childIsCoordinator {
             pop()
         }
     }
@@ -84,7 +88,7 @@ public extension NavigationCoordinator {
 
 public extension NavigationCoordinator {
 
-    #warning("TODO: Completion")
+    #warning("TODO: Completion handler")
 
     func pop() {
         if state.items.isEmpty {
