@@ -1,6 +1,6 @@
 //
 //  PresentationCoordinatorViewWrapper.swift
-//  NavigationApp
+//  GoodCoordinator
 //
 //  Created by Filip Šašala on 03/07/2023.
 //

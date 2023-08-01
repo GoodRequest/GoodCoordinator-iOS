@@ -1,6 +1,6 @@
 //
 //  Address.swift
-//  NavigationApp
+//  GoodCoordinator
 //
 //  Created by Filip Šašala on 26/07/2023.
 //

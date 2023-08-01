@@ -1,6 +1,6 @@
 //
 //  Typealiases.swift
-//  NavigationApp
+//  GoodCoordinator
 //
 //  Created by Filip Šašala on 28/06/2023.
 //

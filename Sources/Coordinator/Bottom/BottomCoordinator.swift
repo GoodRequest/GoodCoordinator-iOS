@@ -1,6 +1,6 @@
 //
 //  BottomCoordinator.swift
-//  
+//  GoodCoordinator
 //
 //  Created by Filip Šašala on 01/08/2023.
 //

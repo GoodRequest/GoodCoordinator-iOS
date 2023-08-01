@@ -1,6 +1,6 @@
 //
 //  NavigationStack.swift
-//  NavigationApp
+//  GoodCoordinator
 //
 //  Created by Filip Šašala on 31/07/2023.
 //
