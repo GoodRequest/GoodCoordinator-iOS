@@ -43,13 +43,8 @@ public protocol Coordinator: Screen, AnyObject {
 
     func setRoot(to: any Screen)
 
-    // Synchronous
     func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Transition.ScreenType where Transition.InputType == Void
     func route<Transition: RouteType>(to route: KeyPath<Self, Transition>, _ input: Transition.InputType) -> Transition.ScreenType
-
-    // Async result
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) async -> Transition.ScreenType.Output where Transition.ScreenType: Coordinator, Transition.InputType == Void
-    func route<Transition: RouteType>(to route: KeyPath<Self, Transition>, _ input: Transition.InputType) async -> Transition.ScreenType.Output where Transition.ScreenType: Coordinator
 
 }
 
