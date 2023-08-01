@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 14/06/2023.
 //
 
-public protocol Coordinator: Screen {
+public protocol Coordinator: Screen, AnyObject {
 
     associatedtype State
     associatedtype Input

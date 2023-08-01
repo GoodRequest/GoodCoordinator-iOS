@@ -59,9 +59,9 @@ public extension NavigationCoordinator {
     }
 
     @ViewBuilder private var content: some View {
-        let rootIndex = -1
+        let rootIndex = NavigationStack.rootIndex
 
-        state.screenWithNavigationIndex(rootIndex).makeView()
+        state.screenAtIndex(rootIndex).makeView()
             .modifier(PresentationCoordinatorViewWrapper(coordinator: self))
             .modifier(NavigationCoordinatorViewWrapper(id: rootIndex, coordinator: self))
     }
@@ -80,19 +80,11 @@ public extension NavigationCoordinator {
 
 }
 
-// MARK: - Navigation functions - internal
+// MARK: - Navigation functions - public
 
 public extension NavigationCoordinator {
 
-    func popTo(_ int: Int, _ action: (() -> ())? = nil) {
-        state.pop(to: int)
-    }
-
-}
-
-// MARK: - Navigation functions
-
-public extension NavigationCoordinator {
+    #warning("TODO: Completion")
 
     func pop() {
         if state.items.isEmpty {
@@ -103,14 +95,24 @@ public extension NavigationCoordinator {
     }
 
     func popToRoot() {
-        popTo(-1, nil)
+        popTo(NavigationStack.rootIndex, nil)
     }
 
 }
 
-// MARK: - Helper functions
+// MARK: - Navigation functions - internal
 
-public extension NavigationCoordinator {
+internal extension NavigationCoordinator {
+
+    func popTo(_ int: Int, _ action: (() -> ())? = nil) {
+        state.pop(to: int)
+    }
+
+}
+
+// MARK: - Helper functions - internal
+
+internal extension NavigationCoordinator {
 
     #warning("TODO: doplnit lepsiu heuristiku ak sa da, toto zatial postacuje")
     private func hasNavigationParent() -> Bool {

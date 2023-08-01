@@ -5,7 +5,7 @@
 //  Created by Filip Šašala on 31/07/2023.
 //
 
-public extension Array {
+internal extension Array {
 
     subscript(safe index: Int) -> Element? {
         guard index >= 0, index < endIndex else {

@@ -11,6 +11,8 @@ import SwiftUI
 
 public class NavigationStack: PresentationState {
 
+    internal static let rootIndex = -1
+
     private let title: String
 
     private var lastPoppedItem: (NavigationStackItem<Any>)?
@@ -24,10 +26,6 @@ public class NavigationStack: PresentationState {
         }
     }
 
-    override public init() {
-        fatalError()
-    }
-
     public init(debugTitle: String) {
         print("+ init \(debugTitle)")
         self.title = debugTitle
@@ -35,11 +33,15 @@ public class NavigationStack: PresentationState {
         super.init()
     }
 
-    public func screenWithNavigationIndex(_ index: Int) -> Screen {
-        if index < -1 {
+    deinit {
+        print("- deinit \(title)")
+    }
+
+    internal func screenAtIndex(_ index: Int) -> Screen {
+        if index < Self.rootIndex {
             let _ = assertionFailure("Invalid screen index!")
             return EmptyView()
-        } else if index == -1 {
+        } else if index == Self.rootIndex {
             return root.screen
         } else {
             let screen = items[safe: index]?.screen ?? lastPoppedItem?.screen ?? EmptyView()
@@ -51,7 +53,7 @@ public class NavigationStack: PresentationState {
 
 // MARK: - Navigation functions
 
-public extension NavigationStack {
+internal extension NavigationStack {
 
     func push(items newItems: [NavigationStackItem<Any>]) {
         items.append(contentsOf: newItems)
@@ -59,7 +61,7 @@ public extension NavigationStack {
 
     func pop(to id: Int) {
         let popIndex = id + 1
-        if id == -1 && items.isEmpty {
+        if id == Self.rootIndex && items.isEmpty {
             return assertionFailure("Already at root. Use `abortChild()` instead.")
         }
         guard items.startIndex..<items.endIndex ~= popIndex else {
@@ -84,10 +86,10 @@ public extension NavigationStack {
 
 // MARK: - Helper functions
 
-public extension NavigationStack {
+internal extension NavigationStack {
 
     func isValidIndex(_ index: Int) -> Bool {
-        -1..<(items.endIndex - 1) ~= index
+        Self.rootIndex..<(items.endIndex - 1) ~= index
     }
 
     func top() -> NavigationStackItem<Any>? {

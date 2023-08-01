@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-final class PresentationCoordinatorHelper<T: PresentationCoordinator>: ObservableObject {
+internal final class PresentationCoordinatorHelper<T: PresentationCoordinator>: ObservableObject {
 
     let presentationState: PresentationState; #warning("Memory leak?")
     var cancellables = Set<AnyCancellable>()

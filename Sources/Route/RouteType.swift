@@ -37,7 +37,7 @@ public extension RouteType {
 
     func prepareScreen(coordinator: CoordinatorType, input: InputType) -> ScreenType {
         let screen = screenBuilder(coordinator)(input)
-        if var screen = screen as? any Coordinator {
+        if let screen = screen as? any Coordinator {
             screen.parent = coordinator
         }
         return screen

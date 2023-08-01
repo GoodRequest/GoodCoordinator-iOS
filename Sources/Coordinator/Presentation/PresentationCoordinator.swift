@@ -65,7 +65,7 @@ public extension PresentationCoordinator {
 
 }
 
-// MARK: - Presentation functions
+// MARK: - Presentation functions - public
 
 public extension PresentationCoordinator {
 
@@ -79,7 +79,7 @@ public extension PresentationCoordinator {
 
 }
 
-// MARK: - Helper functions
+// MARK: - Helper functions - public
 
 public extension PresentationCoordinator {
 

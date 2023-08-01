@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModifier {
+internal struct PresentationCoordinatorViewWrapper<T: PresentationCoordinator>: ViewModifier {
 
     let coordinator: T
     private let router: Router<T>

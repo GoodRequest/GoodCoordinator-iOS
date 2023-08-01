@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObject {
+internal final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObject {
 
     private let id: Int
 
@@ -63,7 +63,7 @@ final class NavigationCoordinatorHelper<T: NavigationCoordinator>: ObservableObj
         // Only apply changes on last screen in navigation stack
         guard isTopScreen else { return }
 
-        let child = coordinator.state.screenWithNavigationIndex(nextId)
+        let child = coordinator.state.screenAtIndex(nextId)
         if child is (any Coordinator) {
             self.nextChild = child.makeView()
         } else {
