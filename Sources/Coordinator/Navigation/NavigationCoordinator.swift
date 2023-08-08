@@ -124,6 +124,8 @@ internal extension NavigationCoordinator {
         guard hasParent else { return false }
 
         guard !isPresented() else { return false }
+        
+        if parent is (any TabCoordinator) { return false }
         return true
     }
 

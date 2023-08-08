@@ -27,3 +27,8 @@ public typealias Present<
     ScreenType: Coordinator,
     InputType
 > = NavigationStep<PresentStep<CoordinatorType, ScreenType, InputType>>
+
+public typealias Tab<
+    CoordinatorType: TabCoordinator,
+    ScreenType: Screen
+> = NavigationStep<TabStep<CoordinatorType, ScreenType>>
