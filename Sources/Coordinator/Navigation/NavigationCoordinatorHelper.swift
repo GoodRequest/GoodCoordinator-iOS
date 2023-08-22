@@ -34,11 +34,6 @@ internal final class NavigationCoordinatorHelper<T: NavigationCoordinator>: Obse
                 onItemsChanged(previous: previous, current: current)
             }
             .store(in: &cancellables)
-
-        navigationStack.$root
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.objectWillChange.send() }
-            .store(in: &cancellables)
     }
 
     func onItemsChanged(previous: [Any], current: [Any]) {

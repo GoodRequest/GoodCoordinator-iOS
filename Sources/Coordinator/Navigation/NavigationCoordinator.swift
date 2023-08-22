@@ -78,10 +78,6 @@ public extension NavigationCoordinator {
         }
     }
 
-    func setRoot(to screen: any Screen) {
-        state.root = RootItem(screen: screen)
-    }
-
 }
 
 // MARK: - Navigation functions - public
@@ -94,7 +90,7 @@ public extension NavigationCoordinator {
         if state.items.isEmpty {
             parent?.abortChild()
         } else {
-            popTo((state.items.count - 1 /* Index */) - 1 /* Previous */ )
+            popTo((state.items.count - 1 /* Count to index */) - 1 /* Previous */ )
         }
     }
 

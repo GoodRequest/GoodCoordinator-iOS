@@ -1,5 +1,5 @@
 //
-//  BottomCoordinator.swift
+//  RootCoordinator.swift
 //  GoodCoordinator
 //
 //  Created by Filip Šašala on 01/08/2023.
@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-public protocol BottomCoordinator: Coordinator where State == BottomState {
+public typealias SimpleCoordinator = RootCoordinator
+
+public protocol RootCoordinator: Coordinator where State == SimpleState {
 
     associatedtype RootType: Screen
     var root: RootStep<Self, RootType, Input> { get }
@@ -15,7 +17,7 @@ public protocol BottomCoordinator: Coordinator where State == BottomState {
     
 }
 
-public extension BottomCoordinator where Input == Void {
+public extension RootCoordinator where Input == Void {
 
     init() {
         self.init(())
@@ -25,7 +27,7 @@ public extension BottomCoordinator where Input == Void {
 
 // MARK: - Protocol requirements
 
-public extension BottomCoordinator {
+public extension RootCoordinator {
 
     var parent: (any Coordinator)? {
         get {

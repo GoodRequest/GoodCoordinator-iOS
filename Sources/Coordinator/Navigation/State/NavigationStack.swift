@@ -38,10 +38,10 @@ public class NavigationStack: PresentationState {
     }
 
     internal func screenAtIndex(_ index: Int) -> Screen {
-        if index < Self.rootIndex {
+        if index < NavigationStack.rootIndex {
             let _ = assertionFailure("Invalid screen index!")
             return EmptyView()
-        } else if index == Self.rootIndex {
+        } else if index == NavigationStack.rootIndex {
             return root.screen
         } else {
             let screen = items[safe: index]?.screen ?? lastPoppedItem?.screen ?? EmptyView()

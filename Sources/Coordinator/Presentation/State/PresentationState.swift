@@ -13,7 +13,11 @@ public class PresentationState: ObservableObject {
 
     internal weak var parent: (any Coordinator)?
 
-    @Published internal var root: RootItem
+    internal var root: RootItem {
+        didSet {
+            print("New root set to \(address(of: root))")
+        }
+    }
 
     @Published private(set) internal var presented: [PresentationItem<Any>] = [] { // covariant
         willSet {

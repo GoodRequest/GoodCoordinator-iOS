@@ -5,6 +5,8 @@
 //  Created by Filip Šašala on 31/07/2023.
 //
 
+import Combine
+
 public struct RootStep<CoordinatorType: Coordinator, ScreenType: Screen, InputType>: RouteType {
 
     public var options: Void
@@ -17,6 +19,8 @@ public struct RootStep<CoordinatorType: Coordinator, ScreenType: Screen, InputTy
 
     public func apply(coordinator: CoordinatorType, input: InputType) -> ScreenType {
         let screen = prepareScreen(coordinator: coordinator, input: input)
+
+        coordinator.objectWillChange.send()
         coordinator.setRoot(to: screen)
 
         return screen

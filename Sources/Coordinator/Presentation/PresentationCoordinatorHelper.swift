@@ -26,11 +26,6 @@ internal final class PresentationCoordinatorHelper<T: PresentationCoordinator>: 
                 onItemsChanged(coordinator: coordinator, previous: previous, current: current)
             }
             .store(in: &cancellables)
-
-        presentationState.$root
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.objectWillChange.send() }
-            .store(in: &cancellables)
     }
 
     func onItemsChanged(coordinator: T, previous: [Any], current: [Any]) {

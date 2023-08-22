@@ -10,7 +10,7 @@ import Foundation
 fileprivate var kAsyncContinuationKey = "kAsyncContinuationKey"
 fileprivate var kAsyncStreamKey = "kAsyncStreamKey"
 
-public protocol Coordinator: Screen, AnyObject {
+public protocol Coordinator: Screen, ObjectWillChangeObservable {
 
     associatedtype State
     associatedtype Input
@@ -30,7 +30,7 @@ public protocol Coordinator: Screen, AnyObject {
     /// dismisses current coordinator.
     func yield(_ output: Output)
 
-    /// Sends new result into asynchronous result stream o
+    /// Sends new result into asynchronous result stream of
     /// current coordinator. Do not forget to call `finish`
     /// on disappear or when no longer required.
     func send(_ output: Output)
