@@ -59,6 +59,10 @@ public extension PresentationCoordinator {
         }
     }
 
+    func reset() {
+        abortChild()
+    }
+
     func setRoot(to screen: any Screen) {
         state.root = RootItem(screen: screen)
     }

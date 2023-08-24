@@ -36,7 +36,7 @@ route(to: \.home, HomeModel(username: username, password: password))
    final class AppCoordinator: NavigationCoordinator {
        typealias Input = Void
        typealias Output = Void
-       var state: NavigationStack = .init(debugTitle: "AppCoordinator")
+       var state: NavigationStack = .init()
 
        @Root(makeRoot) var root
 

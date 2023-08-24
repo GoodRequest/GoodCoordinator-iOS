@@ -13,28 +13,15 @@ public class NavigationStack: PresentationState {
 
     internal static let rootIndex = -1
 
-    private let title: String
-
     private var lastPoppedItem: (NavigationStackItem<Any>)?
 
     @Published private(set) internal var items: [NavigationStackItem<Any>] = [] { // covariant
         willSet {
-            print("Will set on: \(title)")
+            print("Will set on: \(address(of: self))")
         }
         didSet {
             print("Navigation stack items: \(oldValue.count) -> \(items.count)")
         }
-    }
-
-    public init(debugTitle: String) {
-        print("+ init \(debugTitle)")
-        self.title = debugTitle
-
-        super.init()
-    }
-
-    deinit {
-        print("- deinit \(title)")
     }
 
     internal func screenAtIndex(_ index: Int) -> Screen {
@@ -62,7 +49,7 @@ internal extension NavigationStack {
     func pop(to id: Int) {
         let popIndex = id + 1
         if id == Self.rootIndex && items.isEmpty {
-            return assertionFailure("Already at root. Use `abortChild()` instead.")
+            return // Already at root, do nothing
         }
         guard items.startIndex..<items.endIndex ~= popIndex else {
             return assertionFailure("Invalid index. Use `abortChild()` instead.")

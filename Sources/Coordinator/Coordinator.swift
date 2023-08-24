@@ -41,6 +41,7 @@ public protocol Coordinator: Screen, ObjectWillChangeObservable {
     /// behaviour.
     func finish()
 
+    func reset()
     func setRoot(to: any Screen)
 
     func route<Transition: RouteType>(to route: KeyPath<Self, Transition>) -> Transition.ScreenType where Transition.InputType == Void

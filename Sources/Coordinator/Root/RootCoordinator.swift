@@ -53,8 +53,12 @@ public extension RootCoordinator {
             .environmentObject(Router(coordinator: self))
     }
 
-    func abortChild() {
-        fatalError("Bottom coordinator cannot have children")
+    func abortChild() {}
+
+    func reset() {
+        if let visibleCoordinator = state.root.screen as? any Coordinator {
+            visibleCoordinator.reset()
+        }
     }
 
     func setRoot(to screen: any Screen) {

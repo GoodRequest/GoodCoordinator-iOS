@@ -21,6 +21,7 @@ public struct RootStep<CoordinatorType: Coordinator, ScreenType: Screen, InputTy
         let screen = prepareScreen(coordinator: coordinator, input: input)
 
         coordinator.objectWillChange.send()
+        coordinator.reset()
         coordinator.setRoot(to: screen)
 
         return screen

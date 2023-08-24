@@ -78,6 +78,14 @@ public extension NavigationCoordinator {
         }
     }
 
+    func reset() {
+        popToRoot()
+    }
+
+    func setRoot(to screen: Screen) {
+        state.root = RootItem(screen: screen)
+    }
+
 }
 
 // MARK: - Navigation functions - public
@@ -121,7 +129,7 @@ internal extension NavigationCoordinator {
 
         guard !isPresented() else { return false }
         
-        if parent is (any TabCoordinator) { return false }
+        if parent is (any TabCoordinator) || parent is (any RootCoordinator) { return false }
         return true
     }
 
