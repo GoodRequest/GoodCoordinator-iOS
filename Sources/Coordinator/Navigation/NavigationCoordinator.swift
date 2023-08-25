@@ -79,7 +79,12 @@ public extension NavigationCoordinator {
     }
 
     func reset() {
-        popToRoot()
+        if canDismissChild() {
+            dismissChild()
+        }
+        if canPopToScreen(with: NavigationStack.rootIndex) {
+            popToRoot()
+        }
     }
 
     func setRoot(to screen: Screen) {
