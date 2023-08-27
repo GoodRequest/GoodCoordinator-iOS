@@ -78,11 +78,9 @@ route(to: \.home, HomeModel(username: username, password: password))
    @EnvironmentObject var router: Router<AppCoordinator>
 
    // SwiftUI view code
-   Button(action: {
+   Button("Go to new screen") {
        router.coordinator.route(to: \.openNewScreen)
-   }, label: {
-       Text("Go to new screen")
-   })
+   }
    // More SwiftUI view code
    ```
    
@@ -97,4 +95,41 @@ https://github.com/GoodRequest/GoodCoordinator-iOS.git
 ```
 
 ## Advanced examples
-TBD
+
+### A: Pushing data (forwards data flow)
+
+1. <details><summary>Set your datatype as an Input</summary>
+
+   Modify the navigation step that requires input data - add the data as a parameter.
+
+   Note: navigation steps are limited to 1 input parameter only. This is due to practical reasons, as adding 2 or more input parameters would require disproportional amount of additional function overloads in the code base.
+   If you require multiple input parameters, consider making a `struct` out of them and pass the struct.
+   ```swift
+   final class MyCoordinator: NavigationCoordinator {
+       ...
+       func makeRoot(someData: String) -> RootView {
+           RootView(model: RootModel(data: someData))
+       }
+       ...
+   }
+   ```
+   
+   If your input view is the `@Root` step of a coordinator, change the whole coordinator Input typealias to reflect your datatype:
+   ```swift
+   typealias Input = String
+   ```
+   </details>
+
+2. <details><summary>Navigate</summary>
+
+   In a SwiftUI view:
+   ```swift
+   @State private var username: String = ""
+   ...
+   Button("Push with data") {
+       router.coordinator.route(to: \.step, username)
+   }
+   ```
+   
+   Call the route function with additional parameter as an input. Xcode should automatically autocomplete this function with expected data type.
+   </details>
