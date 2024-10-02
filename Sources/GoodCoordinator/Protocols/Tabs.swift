@@ -7,6 +7,6 @@
 
 public protocol Tabs: CaseIterable {
 
-    static var initialDestination: Self { get }
+    @MainActor static var initialDestination: Self { get }
 
 }
