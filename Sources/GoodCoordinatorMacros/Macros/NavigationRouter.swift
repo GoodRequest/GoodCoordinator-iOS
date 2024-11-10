@@ -15,7 +15,7 @@ public struct NavigationRouter: ExpressionMacro {
         of node: some FreestandingMacroExpansionSyntax,
         in context: some MacroExpansionContext
     ) throws -> ExprSyntax {
-        return ExprSyntax("__global_rootNavigationPath()")
+        return ExprSyntax("__module_rootNavigationPath()")
     }
 
 }

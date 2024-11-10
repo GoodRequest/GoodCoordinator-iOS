@@ -12,7 +12,7 @@ import Foundation
 public macro Navigable() = #externalMacro(module: "GoodCoordinatorMacros", type: "Navigable")
 
 @attached(member, names: named(__navigationPath))
-@attached(peer, names: named(__global_rootNavigationPath))
+@attached(peer, names: named(__module_rootNavigationPath))
 public macro NavigationRoot() = #externalMacro(module: "GoodCoordinatorMacros", type: "NavigationRoot")
 
 @freestanding(expression)

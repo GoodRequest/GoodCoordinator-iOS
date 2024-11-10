@@ -136,7 +136,7 @@ final class MacroCollectionTests: XCTestCase {
                 @MainActor static let __navigationPath: Router = Router()
             }
 
-            @MainActor public func __global_rootNavigationPath() -> Router {
+            @MainActor internal func __module_rootNavigationPath() -> Router {
                 return MainWindow.__navigationPath
             }
             """

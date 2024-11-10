@@ -31,7 +31,7 @@ public struct NavigationRoot: MemberMacro, PeerMacro {
         }
 
         let funcBody = "return \(navigationRootDeclarationName).__navigationPath"
-        let navigationRootSyntax = DeclSyntax("@MainActor public func __global_rootNavigationPath() -> Router { \(raw: funcBody) }")
+        let navigationRootSyntax = DeclSyntax("@MainActor internal func __module_rootNavigationPath() -> Router { \(raw: funcBody) }")
 
 
         return [navigationRootSyntax]
