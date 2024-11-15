@@ -65,11 +65,18 @@ private extension AnyReactor {
         navigationPath.cleanup()
     }
 
-//    public func popTo<R: Reactor>(_ reactor: R.Type) {
-//        let lastReactorIndex = navigationPath.count - 1
-//        let poppingToReactorAtIndex = navigationPath.keys.lastIndex(where: { $0 is R }) ?? lastReactorIndex
-//        navigationPath.removeLast(lastReactorIndex - poppingToReactorAtIndex)
-//    }
+    public func popTo<R: Reactor>(_ reactor: R.Type) {
+        var currentNode = navigationPath.lastActiveNode
+        while var parent = currentNode.parent, !parent.value.isTabs {
+            let parentReactor = parent.value.reactor
+            if parentReactor?.is(ofType: reactor) ?? false {
+                parent.value.mutator?(nil)
+                return
+            } else {
+                currentNode = parent
+            }
+        }
+    }
 
 }
 

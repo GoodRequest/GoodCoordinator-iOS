@@ -9,6 +9,8 @@ import Collections
 
 public typealias Tree<T> = TreeNode<T>
 
+// MARK: - Class
+
 public class TreeNode<T> {
     public var value: T
 
@@ -29,6 +31,8 @@ public class TreeNode<T> {
     }
 }
 
+// MARK: - Depth
+
 extension TreeNode {
 
     var depth: Int {
@@ -43,6 +47,8 @@ extension TreeNode {
 
 }
 
+// MARK: - String description
+
 extension TreeNode: CustomStringConvertible {
 
     public var description: String {
@@ -54,6 +60,8 @@ extension TreeNode: CustomStringConvertible {
     }
 
 }
+
+// MARK: - Search
 
 extension TreeNode {
 
