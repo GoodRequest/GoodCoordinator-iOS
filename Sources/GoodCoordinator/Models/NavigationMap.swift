@@ -30,7 +30,7 @@ import GoodLogger
     private let logger = OSLogLogger()
 
     private func logNavigationTreeState() {
-        logger.log(level: .debug, message: root.description, privacy: .auto)
+        logger.log(message: root.description, level: .debug)
     }
 
     // MARK: - Insert
