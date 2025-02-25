@@ -30,7 +30,7 @@ import GoodLogger
     private let logger = OSLogLogger()
 
     private func logNavigationTreeState() {
-        logger.log(message: root.description, level: .debug)
+//        logger.log(message: root.description, level: .debug)
     }
 
     // MARK: - Insert
@@ -82,7 +82,7 @@ import GoodLogger
 
     // MARK: - Get
 
-    nonmutating func get<R: Reactor>(for reactor: R) -> TreeNode<NavigationStep>? {
+    nonmutating func get<R: Reactor>(for reactor: R) -> TreeNode<NavigationStep>? {
 //        if let node = nodeMap[reactor], node.value.isActive {
 //            return node
 //        } else {

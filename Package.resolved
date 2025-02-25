@@ -1,5 +1,5 @@
 {
-  "originHash" : "ae1d02426146566284e7dc2f7273bb19a22bcdca608d29522bdb2a23442c9234",
+  "originHash" : "a7172b13bed06f1fce67cb4dece556aa41014527d8e541e37b2fca464d293065",
   "pins" : [
     {
       "identity" : "combineext",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/GoodRequest/GoodLogger.git",
       "state" : {
-        "revision" : "a561a8590a423a6adbea462840e8301411828ab5",
-        "version" : "1.2.2"
+        "revision" : "14318cd3a38a08ac49e2b1dee56386904fedecc5",
+        "version" : "1.3.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/GoodReactor.git",
       "state" : {
-        "revision" : "162f8972f75fcd3c9b06944e7e7a0428a0762ffb",
-        "version" : "2.0.0"
+        "revision" : "9e8a6a5972db956a96dccb8ede3bfb9d8020c7ba",
+        "version" : "2.1.2"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms.git",
       "state" : {
-        "revision" : "6ae9a051f76b81cc668305ceed5b0e0a7fd93d20",
-        "version" : "1.0.1"
+        "revision" : "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97",
+        "version" : "1.0.3"
       }
     },
     {
@@ -47,29 +47,11 @@
       }
     },
     {
-      "identity" : "swift-macro-testing",
+      "identity" : "swift-syntax-xcframeworks",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-macro-testing.git",
+      "location" : "https://github.com/sjavora/swift-syntax-xcframeworks.git",
       "state" : {
-        "revision" : "20c1a8f3b624fb5d1503eadcaa84743050c350f4",
-        "version" : "0.5.2"
-      }
-    },
-    {
-      "identity" : "swift-snapshot-testing",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
-      "state" : {
-        "revision" : "7b0bbbae90c41f848f90ac7b4df6c4f50068256d",
-        "version" : "1.17.5"
-      }
-    },
-    {
-      "identity" : "swift-syntax",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
-      "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "revision" : "9ee39cc55ade054ed2ec0c6a082476e6d4f074bd",
         "version" : "600.0.1"
       }
     }
