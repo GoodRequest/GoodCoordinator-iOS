@@ -6,7 +6,6 @@
 //
 
 import GoodReactor
-import GoodLogger
 
 // MARK: - Navigation map
 
@@ -27,10 +26,13 @@ import GoodLogger
 
     // MARK: - Logging
 
-    private let logger = OSLogLogger()
-
     private func logNavigationTreeState() {
-        logger.log(message: root.description, level: .debug)
+        CoordinatorConfiguration.logger?.logCoordinatorEvent(
+            root.description,
+            level: .debug,
+            fileName: #file,
+            lineNumber: #line
+        )
     }
 
     // MARK: - Insert
