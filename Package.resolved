@@ -1,5 +1,5 @@
 {
-  "originHash" : "abe62646f1c4f4721dff6ebed3cd7044735f27d85c543bafdf9f057819091531",
+  "originHash" : "d76c0d9c0fbddd392dac6be996a9aebc6fccbeb15724991f3bc40819d424d134",
   "pins" : [
     {
       "identity" : "combineext",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/goodrequest/GoodReactor.git",
       "state" : {
-        "branch" : "feature/remove-goodLogger",
-        "revision" : "ab5ac9d55d320b68ebfd443c18e35e4be881fd05"
+        "revision" : "dcc79f4c1f0f07767f2eec05bf5c5a63477472f3",
+        "version" : "2.2.0"
       }
     },
     {
