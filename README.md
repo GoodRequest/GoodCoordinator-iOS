@@ -87,6 +87,20 @@ route(to: \.home, HomeModel(username: username, password: password))
    Launch the navigation step from your view.
    </details>
 
+## Logging
+```swift
+struct Logger: CoordinatorLogger {
+
+    func logCoordinatorEvent(_ message: Any, level: LogLevel, fileName: String, lineNumber: Int) {
+        print("[\(level.rawValue)] \(message) [\(fileName):\(lineNumber)]")
+    }
+
+}
+        
+
+CoordinatorConfiguration.logger = Logger()
+```
+
 ## Installation
 You can use Swift Package Manager (SPM) to import this package. Use the following URL:
 
