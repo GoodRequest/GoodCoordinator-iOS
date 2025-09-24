@@ -65,7 +65,8 @@ public struct Navigable: ExtensionMacro, PeerMacro {
 
         let enclosingClassName = enclosingClassDecl.name.text
 
-        let classHeader = "@Observable @MainActor final class _DestinationsActive {"
+        let classConformances = "__ReactorDirectWritable"
+        let classHeader = "@Observable @MainActor final class _DestinationsActive: \(classConformances) {"
         let classFields = "fileprivate weak var reactor: \(enclosingClassName)?"
         let classFooter = "}"
 
@@ -97,9 +98,9 @@ public struct Navigable: ExtensionMacro, PeerMacro {
         let observationTracked = DeclSyntax("""
         {
             get {
-                defer { modelActive = true }
+                defer { _modelActive = true }
                 access(keyPath: \\.destination)
-                if !modelActive {
+                if !_modelActive {
                     return #router.getOrInsert(for: self)
                 } else {
                     return #router.get(for: self)
@@ -130,8 +131,8 @@ public struct Navigable: ExtensionMacro, PeerMacro {
         // var destinations
         let destinationsDecl = DeclSyntax("var destinations = _DestinationsActive()")
 
-        // var modelActive
-        let modelActiveVarDecl = DeclSyntax("var modelActive: Bool = false")
+        // var _modelActive
+        let modelActiveVarDecl = DeclSyntax("var _modelActive: Bool = false")
 
         return [
             destinationsActiveDecl,

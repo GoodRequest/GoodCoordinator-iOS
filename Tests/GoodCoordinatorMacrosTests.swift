@@ -24,9 +24,9 @@ final class MacroCollectionTests: XCTestCase {
     }
 
     func testNavigableMacroExpansion() {
-        assertMacro(record: .all) {
+        assertMacro(record: .never) {
             """
-            @Observable final class Model: Reactor {
+            struct Model {
                 @Navigable enum Destination: Tabs {
             
                     static let initialDestination = .home
@@ -38,7 +38,7 @@ final class MacroCollectionTests: XCTestCase {
             """
         } diagnostics: {
             """
-            @Observable final class Model: Reactor {
+            struct Model {
                 @Navigable enum Destination: Tabs {
                 ┬─────────
                 ╰─ 🛑 Navigable macro must be applied to a class that conforms to Reactor.
@@ -88,7 +88,7 @@ final class MacroCollectionTests: XCTestCase {
     }
 
     func testNavigableMacroExpansionEnumParentNotObservable() {
-        assertMacro(record: .all) {
+        assertMacro(record: .never) {
             """
             final class Model: Reactor {
                 @Navigable enum Destination: Tabs {
@@ -105,7 +105,7 @@ final class MacroCollectionTests: XCTestCase {
             final class Model: Reactor {
                 @Navigable enum Destination: Tabs {
                 ┬─────────
-                ╰─ 🛑 Navigable macro must be applied to a class that conforms to Reactor.
+                ╰─ 🛑 Parent class is not marked @Observable.
 
                     static let initialDestination = .home
 
@@ -140,6 +140,88 @@ final class MacroCollectionTests: XCTestCase {
                 return MainWindow.__navigationPath
             }
             """
+        }
+    }
+
+    func testNavigableDestinationsActiveExpansion() {
+        assertMacro(record: .never) {
+            """
+            @Observable final class Model: Reactor {
+                @Navigable enum Destination {
+                    case home
+                }
+            }
+            """
+        } expansion: {
+            #"""
+            @Observable final class Model: Reactor {
+                enum Destination {
+                    case home
+                }
+
+                @Observable @MainActor final class _DestinationsActive: __ReactorDirectWritable {
+                    fileprivate weak var reactor: Model?
+                    var home: Bool {
+                        get {
+                            guard let reactor else {
+                                return false
+                            }
+                            if case .home = reactor.destination {
+                                return true
+                            } else {
+                                return false
+                            }
+                        }
+                        set {
+                            if let reactor, !newValue {
+                                if case .home = reactor.destination {
+                                    reactor.destination = nil
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var destination: Destination? {
+                    get {
+                        defer {
+                            _modelActive = true
+                        }
+                        access(keyPath: \.destination)
+                        if !_modelActive {
+                            return #router.getOrInsert(for: self)
+                        } else {
+                            return #router.get(for: self)
+                        }
+                    }
+                    set {
+                        if let newValue {
+                            reduce(state: &state, event: Event(destination: newValue))
+                        }
+
+                        destinations.reactor = self
+                        withMutation(keyPath: \.destination) {
+                            #router.set(self, destination: newValue)
+                        }
+                    }
+                    _modify {
+                        access(keyPath: \.destination)
+                        _$observationRegistrar.willSet(self, keyPath: \.destination)
+                        defer {
+                            _$observationRegistrar.didSet(self, keyPath: \.destination)
+                        }
+                        yield &destination
+                    }
+                }
+
+                var destinations = _DestinationsActive()
+
+                var _modelActive: Bool = false
+            }
+
+            extension Model.Destination: DestinationCaseNavigable {
+            }
+            """#
         }
     }
 

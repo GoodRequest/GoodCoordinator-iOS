@@ -19,8 +19,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/goodrequest/GoodReactor.git", .upToNextMajor(from: "2.2.0")),
         .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.1.3")),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.0-latest"),
-        .package(url: "https://github.com/pointfreeco/swift-macro-testing.git", from: "0.5.2")
+        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMajor(from: "602.0.0")),
+        .package(url: "https://github.com/pointfreeco/swift-macro-testing.git", from: "0.6.4")
     ],
     targets: [
         .target(
@@ -56,3 +56,4 @@ let package = Package(
         )
     ]
 )
+
