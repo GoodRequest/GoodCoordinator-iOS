@@ -1,5 +1,5 @@
 {
-  "originHash" : "d504e25fe623a1d6740a881fd0fff11e08de6419269e000bd4b18036521de16b",
+  "originHash" : "12cfd2d36ff3bb2e03c47f436f5c437a7701d472899a3e7d664d47938b8d29ee",
   "pins" : [
     {
       "identity" : "combineext",
@@ -16,7 +16,7 @@
       "location" : "https://github.com/goodrequest/GoodReactor.git",
       "state" : {
         "branch" : "feature/typeerasure",
-        "revision" : "37690c38d9f0de72543eab75ae46e3ce4cb781ce"
+        "revision" : "e4fbf39b73ca4bf37431959dd924f06258784e46"
       }
     },
     {
@@ -24,8 +24,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms.git",
       "state" : {
-        "revision" : "6ae9a051f76b81cc668305ceed5b0e0a7fd93d20",
-        "version" : "1.0.1"
+        "revision" : "042e1c4d9d19748c9c228f8d4ebc97bb1e339b0b",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swift-case-paths",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-case-paths.git",
+      "state" : {
+        "revision" : "6989976265be3f8d2b5802c722f9ba168e227c71",
+        "version" : "1.7.2"
       }
     },
     {

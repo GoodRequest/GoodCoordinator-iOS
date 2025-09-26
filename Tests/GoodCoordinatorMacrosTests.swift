@@ -12,6 +12,8 @@ import XCTest
 
 final class MacroCollectionTests: XCTestCase {
 
+    // MARK: - Test invocation
+
     override func invokeTest() {
         withMacroTesting(
             macros: [
@@ -22,6 +24,8 @@ final class MacroCollectionTests: XCTestCase {
             super.invokeTest()
         }
     }
+
+    // MARK: - Diagnostics
 
     func testNavigableMacroExpansion() {
         assertMacro(record: .never) {
@@ -117,6 +121,8 @@ final class MacroCollectionTests: XCTestCase {
         }
     }
 
+    // MARK: - NavigationRoot
+
     func testNavigationRootMacroExpansion() {
         assertMacro(record: .never) {
             """
@@ -143,6 +149,8 @@ final class MacroCollectionTests: XCTestCase {
         }
     }
 
+    // MARK: - Navigable
+
     func testNavigableDestinationsActiveExpansion() {
         assertMacro(record: .never) {
             """
@@ -157,29 +165,31 @@ final class MacroCollectionTests: XCTestCase {
             @Observable final class Model: Reactor {
                 enum Destination {
                     case home
-                }
 
-                @Observable @MainActor final class _DestinationsActive: __ReactorDirectWritable {
-                    fileprivate weak var reactor: Model?
-                    var home: Bool {
-                        get {
-                            guard let reactor else {
-                                return false
+                    public struct AllCasePaths: CasePaths.CasePathReflectable, Swift.Sendable, Swift.Sequence {
+                        public subscript(root: Destination) -> CasePaths.PartialCaseKeyPath<Destination> {
+                            if root.is(\.home) {
+                                return \.home
                             }
-                            if case .home = reactor.destination {
-                                return true
-                            } else {
-                                return false
+                            return \.never
+                        }
+                        public var home: CasePaths.AnyCasePath<Destination, Void> {
+                            ._$embed({
+                                    Destination.home
+                                }) {
+                                guard case .home = $0 else {
+                                    return nil
+                                }
+                                return ()
                             }
                         }
-                        set {
-                            if let reactor, !newValue {
-                                if case .home = reactor.destination {
-                                    reactor.destination = nil
-                                }
-                            }
+                        public func makeIterator() -> Swift.IndexingIterator<[CasePaths.PartialCaseKeyPath<Destination>]> {
+                            var allCasePaths: [CasePaths.PartialCaseKeyPath<Destination>] = []
+                            allCasePaths.append(\.home)
+                            return allCasePaths.makeIterator()
                         }
                     }
+                    public static var allCasePaths: AllCasePaths { AllCasePaths() }
                 }
 
                 var destination: Destination? {
@@ -199,22 +209,21 @@ final class MacroCollectionTests: XCTestCase {
                             reduce(state: &state, event: Event(destination: newValue))
                         }
 
-                        destinations.reactor = self
                         withMutation(keyPath: \.destination) {
                             #router.set(self, destination: newValue)
                         }
                     }
-                    _modify {
-                        access(keyPath: \.destination)
-                        _$observationRegistrar.willSet(self, keyPath: \.destination)
-                        defer {
-                            _$observationRegistrar.didSet(self, keyPath: \.destination)
-                        }
-                        yield &destination
-                    }
                 }
 
-                var destinations = _DestinationsActive()
+                @available(*, deprecated, renamed: "destination")
+                var destinations: Destination? {
+                    get {
+                        destination
+                    }
+                    set {
+                        destination = newValue
+                    }
+                }
 
                 var _modelActive: Bool = false
             }

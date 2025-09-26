@@ -9,7 +9,9 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct Navigable: ExtensionMacro, PeerMacro {
+public struct Navigable: ExtensionMacro, PeerMacro, MemberMacro {
+
+    // MARK: - Extension macro
 
     public static func expansion(
         of node: AttributeSyntax,
@@ -18,10 +20,38 @@ public struct Navigable: ExtensionMacro, PeerMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        let extensionDeclaration = DeclSyntax("extension \(type.trimmed): DestinationCaseNavigable {}")
-
+        let extensionDeclaration = DeclSyntax("\(declaration.attributes.availability)extension \(type.trimmed): DestinationCaseNavigable {}")
         return [extensionDeclaration.as(ExtensionDeclSyntax.self)!]
     }
+
+    // MARK: - Member macro
+
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        guard declaration.is(EnumDeclSyntax.self) else {
+            return [] // no diagnostic
+        }
+
+        return try CasePathableMacro.expansion(of: node, providingMembersOf: declaration, in: context)
+    }
+
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        guard declaration.is(EnumDeclSyntax.self) else {
+            return [] // no diagnostic
+        }
+
+        return try CasePathableMacro.expansion(of: node, providingMembersOf: declaration, in: context)
+    }
+
+    // MARK: - Peer macro
 
     public static func expansion(
         of node: AttributeSyntax,
@@ -29,19 +59,9 @@ public struct Navigable: ExtensionMacro, PeerMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         // _DestinationsActive
-        guard let enumSyntax = declaration.as(EnumDeclSyntax.self) else {
+        guard declaration.is(EnumDeclSyntax.self) else {
             throw NavigableMacroError.notAnEnum
         }
-
-        let enumMembers = enumSyntax.memberBlock.members
-        let rawCases: [TokenSyntax] = enumMembers.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }.reduce(into: [], { result, elementList in
-            let enumCaseElements = elementList.elements.reduce(into: [], { result, element in
-                result.append(element)
-            })
-            result.append(contentsOf: enumCaseElements.map { $0.name })
-        })
-
-        let enumCases = rawCases.map { $0.text }
 
         guard let enclosingClassDecl = context.lexicalContext.first?.as(ClassDeclSyntax.self) else {
             throw NavigableMacroError.noParentClass
@@ -63,37 +83,6 @@ public struct Navigable: ExtensionMacro, PeerMacro {
             throw NavigableMacroError.parentNotObservable
         }
 
-        let enclosingClassName = enclosingClassDecl.name.text
-
-        let classConformances = "__ReactorDirectWritable"
-        let classHeader = "@Observable @MainActor final class _DestinationsActive: \(classConformances) {"
-        let classFields = "fileprivate weak var reactor: \(enclosingClassName)?"
-        let classFooter = "}"
-
-        let classBody = enumCases.map { name in
-            """
-            var \(name): Bool {
-                get {
-                    guard let reactor else { return false }
-                    if case .\(name) = reactor.destination {
-                        return true
-                    } else {
-                        return false
-                    }
-                }
-                set {
-                    if let reactor, !newValue {
-                        if case .\(name) = reactor.destination {
-                            reactor.destination = nil
-                        }
-                    }
-                }
-            }
-            """
-        }.joined(separator: "\n")
-
-        let destinationsActiveDecl = DeclSyntax("\(raw: classHeader)\n\(raw: classFields)\n\(raw: classBody)\n\(raw: classFooter)")
-
         // var destination
         let observationTracked = DeclSyntax("""
         {
@@ -111,38 +100,28 @@ public struct Navigable: ExtensionMacro, PeerMacro {
                     reduce(state: &state, event: Event(destination: newValue))
                 }
                 
-                destinations.reactor = self
                 withMutation(keyPath: \\.destination) {
                     #router.set(self, destination: newValue)
                 }
             }
-            _modify {
-                access(keyPath: \\.destination)
-                _$observationRegistrar.willSet(self, keyPath: \\.destination)
-                defer {
-                    _$observationRegistrar.didSet(self, keyPath: \\.destination)
-                }
-                yield &destination
-            }
         }
         """)
+
+        // Peers
         let destinationObservationDecl = DeclSyntax("var destination: Destination? \(raw: observationTracked)")
-
-        // var destinations
-        let destinationsDecl = DeclSyntax("var destinations = _DestinationsActive()")
-
-        // var _modelActive
         let modelActiveVarDecl = DeclSyntax("var _modelActive: Bool = false")
+        let compatibilityAccessorDecl = DeclSyntax("@available(*, deprecated, renamed: \"destination\")\nvar destinations: Destination? { get { destination } set { destination = newValue }}")
 
         return [
-            destinationsActiveDecl,
             destinationObservationDecl,
-            destinationsDecl,
+            compatibilityAccessorDecl,
             modelActiveVarDecl
         ]
     }
 
 }
+
+// MARK: - Errors
 
 enum NavigableMacroError: Error, CustomStringConvertible {
 

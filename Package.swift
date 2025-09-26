@@ -20,6 +20,7 @@ let package = Package(
         .package(url: "https://github.com/goodrequest/GoodReactor.git", branch: "feature/typeerasure"),
         .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.1.3")),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "603.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-case-paths.git", .upToNextMajor(from: "1.7.2")),
         .package(url: "https://github.com/pointfreeco/swift-macro-testing.git", from: "0.6.4")
     ],
     targets: [
@@ -28,7 +29,9 @@ let package = Package(
             dependencies: [
                 .target(name: "GoodCoordinatorMacros"),
                 .product(name: "GoodReactor", package: "GoodReactor"),
-                .product(name: "Collections", package: "swift-collections")
+                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "CasePaths", package: "swift-case-paths"),
+                .product(name: "CasePathsCore", package: "swift-case-paths")
             ],
             swiftSettings: [
                 .swiftLanguageMode(.v6),
