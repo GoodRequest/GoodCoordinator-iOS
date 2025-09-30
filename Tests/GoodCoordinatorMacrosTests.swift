@@ -12,6 +12,8 @@ import XCTest
 
 final class MacroCollectionTests: XCTestCase {
 
+    // MARK: - Test invocation
+
     override func invokeTest() {
         withMacroTesting(
             macros: [
@@ -23,10 +25,12 @@ final class MacroCollectionTests: XCTestCase {
         }
     }
 
+    // MARK: - Diagnostics
+
     func testNavigableMacroExpansion() {
-        assertMacro(record: .all) {
+        assertMacro(record: .never) {
             """
-            @Observable final class Model: Reactor {
+            struct Model {
                 @Navigable enum Destination: Tabs {
             
                     static let initialDestination = .home
@@ -38,7 +42,7 @@ final class MacroCollectionTests: XCTestCase {
             """
         } diagnostics: {
             """
-            @Observable final class Model: Reactor {
+            struct Model {
                 @Navigable enum Destination: Tabs {
                 ┬─────────
                 ╰─ 🛑 Navigable macro must be applied to a class that conforms to Reactor.
@@ -88,7 +92,7 @@ final class MacroCollectionTests: XCTestCase {
     }
 
     func testNavigableMacroExpansionEnumParentNotObservable() {
-        assertMacro(record: .all) {
+        assertMacro(record: .never) {
             """
             final class Model: Reactor {
                 @Navigable enum Destination: Tabs {
@@ -105,7 +109,7 @@ final class MacroCollectionTests: XCTestCase {
             final class Model: Reactor {
                 @Navigable enum Destination: Tabs {
                 ┬─────────
-                ╰─ 🛑 Navigable macro must be applied to a class that conforms to Reactor.
+                ╰─ 🛑 Parent class is not marked @Observable.
 
                     static let initialDestination = .home
 
@@ -116,6 +120,8 @@ final class MacroCollectionTests: XCTestCase {
             """
         }
     }
+
+    // MARK: - NavigationRoot
 
     func testNavigationRootMacroExpansion() {
         assertMacro(record: .never) {
@@ -140,6 +146,91 @@ final class MacroCollectionTests: XCTestCase {
                 return MainWindow.__navigationPath
             }
             """
+        }
+    }
+
+    // MARK: - Navigable
+
+    func testNavigableDestinationsActiveExpansion() {
+        assertMacro(record: .never) {
+            """
+            @Observable final class Model: Reactor {
+                @Navigable enum Destination {
+                    case home
+                }
+            }
+            """
+        } expansion: {
+            #"""
+            @Observable final class Model: Reactor {
+                enum Destination {
+                    case home
+
+                    public struct AllCasePaths: CasePaths.CasePathReflectable, Swift.Sendable, Swift.Sequence {
+                        public subscript(root: Destination) -> CasePaths.PartialCaseKeyPath<Destination> {
+                            if root.is(\.home) {
+                                return \.home
+                            }
+                            return \.never
+                        }
+                        public var home: CasePaths.AnyCasePath<Destination, Void> {
+                            ._$embed({
+                                    Destination.home
+                                }) {
+                                guard case .home = $0 else {
+                                    return nil
+                                }
+                                return ()
+                            }
+                        }
+                        public func makeIterator() -> Swift.IndexingIterator<[CasePaths.PartialCaseKeyPath<Destination>]> {
+                            var allCasePaths: [CasePaths.PartialCaseKeyPath<Destination>] = []
+                            allCasePaths.append(\.home)
+                            return allCasePaths.makeIterator()
+                        }
+                    }
+                    public static var allCasePaths: AllCasePaths { AllCasePaths() }
+                }
+
+                var destination: Destination? {
+                    get {
+                        defer {
+                            _modelActive = true
+                        }
+                        access(keyPath: \.destination)
+                        if !_modelActive {
+                            return #router.getOrInsert(for: self)
+                        } else {
+                            return #router.get(for: self)
+                        }
+                    }
+                    set {
+                        if let newValue {
+                            reduce(state: &state, event: Event(destination: newValue))
+                        }
+
+                        withMutation(keyPath: \.destination) {
+                            #router.set(self, destination: newValue)
+                        }
+                    }
+                }
+
+                @available(*, deprecated, renamed: "destination")
+                var destinations: Destination? {
+                    get {
+                        destination
+                    }
+                    set {
+                        destination = newValue
+                    }
+                }
+
+                var _modelActive: Bool = false
+            }
+
+            extension Model.Destination: DestinationCaseNavigable {
+            }
+            """#
         }
     }
 

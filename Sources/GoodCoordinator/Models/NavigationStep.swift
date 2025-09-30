@@ -5,8 +5,6 @@
 //  Created by Filip Šašala on 26/09/2024.
 //
 
-import GoodReactor
-
 struct NavigationStep {
 
     var reactor: AnyReactor?

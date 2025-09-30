@@ -84,7 +84,7 @@ import GoodReactor
 
     // MARK: - Get
 
-    nonmutating func get<R: Reactor>(for reactor: R) -> TreeNode<NavigationStep>? {
+    nonmutating func get<R: Reactor>(for reactor: R) -> TreeNode<NavigationStep>? {
 //        if let node = nodeMap[reactor], node.value.isActive {
 //            return node
 //        } else {

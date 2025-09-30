@@ -8,6 +8,7 @@
 import Foundation
 
 @attached(extension, conformances: DestinationCaseNavigable)
+@attached(member, names: named(AllCasePaths), named(allCasePaths), named(_$Element))
 @attached(peer, names: arbitrary)
 public macro Navigable() = #externalMacro(module: "GoodCoordinatorMacros", type: "Navigable")
 
