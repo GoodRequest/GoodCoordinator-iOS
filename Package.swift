@@ -17,7 +17,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/goodrequest/GoodReactor.git", branch: "feature/typeerasure"),
+        .package(url: "https://github.com/goodrequest/GoodReactor.git", .upToNextMajor(from: "2.3.0")),
         .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.1.3")),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "600.0.0" ..< "603.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-case-paths.git", .upToNextMajor(from: "1.7.2")),
