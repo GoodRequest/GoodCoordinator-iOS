@@ -7,6 +7,7 @@
 
 import Collections
 import GoodReactor
+import IssueReporting
 
 typealias AnyReactor = AnyHashable
 
@@ -54,10 +55,23 @@ private extension AnyReactor {
         guard count < currentDepth else { return pop(last: currentDepth - 1) }
 
         for _ in 0..<count {
-            let lastActiveNodeParent = navigationPath.lastActiveNode.parent
+            let currentNode = navigationPath.lastActiveNode
+            let parentNode = currentNode.parent
 
-            guard let lastActiveNodeParent, !lastActiveNodeParent.value.isTabs else { return }
-            lastActiveNodeParent.value.mutator?(nil)
+            if let parentNode {
+                if parentNode.value.isTabs {
+                    // parent is tabs and screen may be presenting something directly
+                    if currentNode.value.currentDestination != nil && !currentNode.value.isTabs {
+                        currentNode.value.mutator?(nil)
+                    } else {
+                        popTabAttemptDetected()
+                        return
+                    }
+                } else {
+                    // current destination is a reactor, pop from parent
+                    parentNode.value.mutator?(nil)
+                }
+            }
         }
     }
 
@@ -67,13 +81,32 @@ private extension AnyReactor {
 
     public func popTo<R: Reactor>(_ reactor: R.Type) {
         var currentNode = navigationPath.lastActiveNode
-        while var parent = currentNode.parent, !parent.value.isTabs {
-            let parentReactor = parent.value.reactor
-            if parentReactor?.is(ofType: reactor) ?? false {
-                parent.value.mutator?(nil)
-                return
+        while var parentNode = currentNode.parent {
+            if parentNode.value.isTabs {
+                // parent is tabs, something is presented and presenting node has specified type
+                if currentNode.value.currentDestination != nil && !currentNode.value.isTabs {
+                    if currentNode.value.reactor?.is(ofType: reactor) ?? false {
+                        currentNode.value.mutator?(nil)
+                        return
+                    } else {
+                        currentNode = parentNode
+                        continue
+                    }
+                } else {
+                    popTabAttemptDetected()
+                    return
+                }
             } else {
-                currentNode = parent
+                // current destination is a reactor, pop from parent if this is the expected destination
+                // or continue searching up the hierarchy
+                let parentReactor = parentNode.value.reactor
+                if parentReactor?.is(ofType: reactor) ?? false {
+                    parentNode.value.mutator?(nil)
+                    return
+                } else {
+                    currentNode = parentNode
+                    continue
+                }
             }
         }
     }
@@ -125,6 +158,24 @@ public extension Router {
         } else {
             navigationPath.updateDestination(to: destination, for: reactor)
         }
+    }
+
+}
+
+// MARK: - Issue reporting
+
+private extension Router {
+
+    func popTabAttemptDetected() {
+        IssueReporting.reportIssue(
+            """
+            Attempted to pop a tab - this is not allowed as tabs must always point to a valid \
+            destination. Use #router.route(:,:) instead and specify the destination tab manually.
+            
+            If the current tab should forget its state after switching, use #router.cleanup()
+            to allow the router to drop inactive tabs.
+            """
+        )
     }
 
 }
