@@ -33,19 +33,49 @@ private extension AnyReactor {
 
     // MARK: - Public
 
-    public func route<R: Reactor>(_ reactor: R.Type = R.self, _ destination: R.Destination) {
-        route(type: reactor, destination: destination)
+    /// Routes to a specified destination within a reactor. The reactor must be present in the navigation hierarchy.
+    ///
+    /// This function searches for the specified reactor type within the navigation hierarchy and attempts to route to
+    /// the given destination if the reactor is found.
+    ///
+    /// - Parameters:
+    ///   - reactor: The type of reactor to search for in the navigation hierarchy
+    ///   - destination: The destination associated with the given reactor
+    /// - Returns: `true` if routing succeeded (the reactor was found in the hierarchy), `false` otherwise
+    @discardableResult
+    public func route<R: Reactor>(_ reactor: R.Type = R.self, _ destination: R.Destination) -> Bool {
+        let lastFoundReactor = navigationPath.root.depthFirstSearch(NavigationStep(), predicate: { lhs, rhs in
+            guard let rReactor = rhs.reactor else { return false }
+            return rReactor.is(ofType: reactor)
+        })
+
+        guard let lastFoundReactor else { return false }
+        lastFoundReactor.value.mutator?((destination as! AnyDestination))
+
+        return true
     }
-
-    public func route<each R: Reactor>(type: repeat (each R).Type, destination: repeat (each R).Destination) {
+    
+    /// Routes through a path of destinations across multiple reactors.
+    ///
+    /// Routing starts with the first reactor, which must be present in the navigation hierarchy.
+    /// For subsequent destinations, if their reactors are not in the navigation hierarchy, this function yields
+    /// to the main run loop, allowing the UI to update its state. This process enables SwiftUI to create
+    /// destination reactors from previous steps.
+    ///
+    /// - Parameters:
+    ///   - type: A pack representing the reactors to route through
+    ///   - destination: A pack representing the destinations associated with each reactor type
+    public func route<each R: Reactor>(type: repeat (each R).Type, destination: repeat (each R).Destination) async {
         for (type, destination) in repeat (each type, each destination) {
-            let lastSuchReactor = navigationPath.root.depthFirstSearch(NavigationStep(), predicate: { lhs, rhs in
-                guard let rReactor = rhs.reactor else { return false }
-                return rReactor.is(ofType: type)
-            })
-
-            guard let lastSuchReactor else { continue }
-            lastSuchReactor.value.mutator?((destination as! AnyDestination))
+            var attempts = 0
+            var success = false
+            repeat {
+                attempts += 1
+                success = route(type, destination)
+                if !success {
+                    await Task.yield()
+                }
+            } while !success || attempts > 10
         }
     }
 
