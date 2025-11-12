@@ -98,8 +98,13 @@ private extension AnyReactor {
                         return
                     }
                 } else {
-                    // current destination is a reactor, pop from parent
-                    parentNode.value.mutator?(nil)
+                    if currentNode.value.currentDestination != nil && !currentNode.value.isTabs {
+                        // screen is presenting something directly
+                        currentNode.value.mutator?(nil)
+                    } else {
+                        // screen is a reactor, pop from parent
+                        parentNode.value.mutator?(nil)
+                    }
                 }
             }
         }
