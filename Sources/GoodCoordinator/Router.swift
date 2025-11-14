@@ -33,6 +33,10 @@ private extension AnyReactor {
 
     // MARK: - Public
 
+    public func route<R: Reactor>(_ reactor: R.Type = R.self, _ destination: R.Destination) {
+        Task { await self.route(reactor, destination) }
+    }
+
     /// Routes to a specified destination within a reactor. The reactor must be present in the navigation hierarchy.
     ///
     /// This function searches for the specified reactor type within the navigation hierarchy and attempts to route to
@@ -43,16 +47,44 @@ private extension AnyReactor {
     ///   - destination: The destination associated with the given reactor
     /// - Returns: `true` if routing succeeded (the reactor was found in the hierarchy), `false` otherwise
     @discardableResult
-    public func route<R: Reactor>(_ reactor: R.Type = R.self, _ destination: R.Destination) -> Bool {
+    public func route<R: Reactor>(_ reactor: R.Type = R.self, _ destination: R.Destination) async -> Bool {
+        // find the requested reactor in the tree
         let lastFoundReactor = navigationPath.root.depthFirstSearch(NavigationStep(), predicate: { lhs, rhs in
             guard let rReactor = rhs.reactor else { return false }
             return rReactor.is(ofType: reactor)
         })
 
+        // abort when reactor is not present
         guard let lastFoundReactor else { return false }
-        lastFoundReactor.value.mutator?((destination as! AnyDestination))
 
-        return true
+        // check if reactor is already presenting something
+        if let currentDestination = lastFoundReactor.value.currentDestination {
+            let requestedDestination = (destination as! AnyDestination)
+            // destination is the same as required
+            if currentDestination.hashValue == requestedDestination.hashValue {
+                return true
+            }
+
+            // go to bottom-most node under this reactor
+            let bottomMost = bottomMostDescendant(from: lastFoundReactor)
+
+            // pop towards the reactor asynchronously
+            let popped = await popTo(reactor, from: bottomMost)
+
+            // navigate on the target reactor
+            lastFoundReactor.value.mutator?(requestedDestination)
+
+            // cleanup when switching contexts
+            if !popped {
+                cleanup()
+            }
+
+            return true
+        } else {
+            // reactor has no destination, we can navigate directly
+            lastFoundReactor.value.mutator?((destination as! AnyDestination))
+            return true
+        }
     }
     
     /// Routes through a path of destinations across multiple reactors.
@@ -71,7 +103,7 @@ private extension AnyReactor {
             var success = false
             repeat {
                 attempts += 1
-                success = route(type, destination)
+                success = await route(type, destination)
                 if !success {
                     await Task.yield()
                 }
@@ -117,30 +149,8 @@ private extension AnyReactor {
     /// - Parameters:
     ///   - reactor: The reactor type to pop to
     public func popTo<R: Reactor>(_ reactor: R.Type) async {
-        var nodesToPop: [TreeNode<NavigationStep>] = []
-        var currentNode = navigationPath.lastActiveNode
-        var foundMatch = false
-
-        // iterate upwards to find matching reactor
-        while let parentNode = currentNode.parent {
-            nodesToPop.append(currentNode)
-
-            if currentNode.value.reactor?.is(ofType: reactor) ?? false {
-                foundMatch = true
-                break
-            }
-
-            currentNode = parentNode
-        }
-
-        // check if there is a match
-        guard foundMatch else { return }
-
-        // pop screens only if possible
-        for node in nodesToPop {
-            guard pop(node: node) else { return }
-            await Task.yield()
-        }
+        let currentNode = navigationPath.lastActiveNode
+        await popTo(reactor, from: currentNode)
     }
 
     /// Drops inactive navigation branches (including tabs) and preserves only the active path.
@@ -167,6 +177,30 @@ private extension AnyReactor {
 // MARK: - Private
 
 private extension Router {
+
+    func bottomMostDescendant(from node: TreeNode<NavigationStep>) -> TreeNode<NavigationStep> {
+        var currentNode = node
+        while true {
+            if currentNode.value.isTabs {
+                // prefer active tabs, else take first
+                if let active = currentNode.children.first(where: { $0.value.isActive }) {
+                    currentNode = active
+                } else if let first = currentNode.children.first {
+                    currentNode = first
+                } else {
+                    break
+                }
+            } else {
+                // always take first child if it exists
+                if let first = currentNode.children.first {
+                    currentNode = first
+                } else {
+                    break
+                }
+            }
+        }
+        return currentNode
+    }
 
     @discardableResult
     func pop(node currentNode: TreeNode<NavigationStep>) -> Bool {
@@ -196,6 +230,40 @@ private extension Router {
                 return true
             }
         }
+    }
+
+    @discardableResult
+    func popTo<R: Reactor>(_ reactor: R.Type, from node: TreeNode<NavigationStep>) async -> Bool {
+        // find nearest matching ancestor starting from 'from'
+        var current: TreeNode<NavigationStep>? = node
+        var targetNode: TreeNode<NavigationStep>? = nil
+        while let candidate = current {
+            if candidate.value.reactor?.is(ofType: reactor) ?? false {
+                targetNode = candidate
+                break
+            }
+            current = candidate.parent
+        }
+        guard let targetNode else { return false }
+
+        // pop until we reach the target reactor
+        // attempt counter to avoid infinite loops
+        var attempts = 255
+        while attempts > 0 {
+            attempts -= 1
+            // bottom-most under target
+            let bottom = bottomMostDescendant(from: targetNode)
+
+            // target has no children, stop
+            if bottom === targetNode { return true }
+
+            // pop one step and yield
+            guard pop(node: bottom) else { return false }
+            await Task.yield()
+        }
+
+        // attempts exceeded
+        return false
     }
 
 }
