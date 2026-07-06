@@ -60,8 +60,9 @@ private extension AnyReactor {
         // check if reactor is already presenting something
         if let currentDestination = lastFoundReactor.value.currentDestination {
             let requestedDestination = (destination as! AnyDestination)
-            // destination is the same as required
-            if currentDestination.hashValue == requestedDestination.hashValue {
+            // Non-tab destinations do not need to be routed again when already presented.
+            // Tabs still need to flow through the mutator so an inactive tab can become active again.
+            if currentDestination.hashValue == requestedDestination.hashValue, !(destination is any Tabs) {
                 return true
             }
 
