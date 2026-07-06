@@ -62,7 +62,8 @@ private extension AnyReactor {
             let requestedDestination = (destination as! AnyDestination)
             // Non-tab destinations do not need to be routed again when already presented.
             // Tabs still need to flow through the mutator so an inactive tab can become active again.
-            if currentDestination.hashValue == requestedDestination.hashValue, !(destination is any Tabs) {
+            // Compare via AnyHashable for correct value equality (hashValue alone can collide).
+            if AnyHashable(currentDestination) == AnyHashable(requestedDestination), !(destination is any Tabs) {
                 return true
             }
 
